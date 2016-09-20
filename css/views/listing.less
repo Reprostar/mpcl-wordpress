@@ -1,0 +1,157 @@
+.mpcl-listing-grid {
+  width: 100%;
+  display: block;
+  clear: both;
+
+  table {
+    width: 100%;
+    border: 0;
+    border-collapse: collapse;
+
+    tbody,
+    tbody tr,
+    tbody tr td {
+      border: 0 !important;
+      padding: 8px !important;
+    }
+
+    thead,
+    thead tr,
+    thead tr td {
+      height: 0;
+      border: 0;
+      visibility: hidden;
+      padding: 0;
+    }
+
+    tbody.captions tr td {
+      padding-bottom: 23px !important;
+    }
+  }
+
+  .entries-row {
+    margin: 30px -5px 0 -5px;
+    position: relative;
+    width: 100%;
+    display: block;
+    clear: both;
+
+    .mpcl-entry {
+      background: #fff;
+      padding: 0;
+      float: left;
+      overflow: hidden;
+      position: relative;
+      display: inline-block;
+      border: 1px solid #e0e0e0;
+      text-decoration: none;
+      margin: 0 5px 10px 5px;
+
+      &:hover {
+        border-color: #2dc1e9;
+      }
+
+      .thumb {
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+      }
+
+      h4 {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        margin: 8px 0 5px 0;
+        font-size: 13px;
+        letter-spacing: 0;
+        color: #444;
+        padding: 0 10px;
+        font-weight: normal;
+        font-family: Helvetica, Arial, sans-serif;
+        line-height: 20px;
+        overflow: hidden;
+        width: 100%;
+        text-transform: none;
+      }
+
+      small {
+        display: block;
+        clear: both;
+        color: #888;
+        font-size: 10px;
+        padding: 0 15px 10px 15px;
+        width: 100%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+
+        i.fa {
+          margin-right: 2px;
+        }
+
+        .separator {
+          color: #aaa;
+          margin: 0 3px;
+        }
+      }
+    }
+  }
+
+  .thumbnail {
+    width: 100%;
+
+    a {
+      display: inline-block;
+      border: 1px solid #e0e0e0;
+    }
+
+    img {
+      width: 100%;
+      max-width: 100%;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      padding: 2px;
+      margin: 0 !important;
+      transition: 0.2s all ease;
+
+      a:hover {
+        cursor: pointer;
+        box-shadow: 0 0 10px -5px #888;
+        opacity: 0.9;
+      }
+    }
+  }
+
+  tbody.captions a {
+    text-decoration: none !important;
+    color: inherit !important;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  h5 {
+    text-align: center;
+
+    @media all and (max-width: 1600px) {
+      font-size: 100% !important;
+    }
+  }
+
+  .pagination {
+    display: block;
+    width: 100%;
+    clear: both;
+
+    .page-prev {
+      float: left;
+      display: inline-block;
+    }
+
+    .page-next {
+      float: right;
+      display: inline-block;
+    }
+  }
+}

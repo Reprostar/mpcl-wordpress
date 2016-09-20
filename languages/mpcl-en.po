@@ -1,0 +1,124 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2016-03-27 17:08+0200\n"
+"PO-Revision-Date: 2016-03-27 17:09+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: classes/MyPCListPlugin.php:230
+msgid "Unknown"
+msgstr "Unknown"
+
+#: classes/MyPCListPlugin.php:231
+msgid "Broken"
+msgstr "Broken"
+
+#: classes/MyPCListPlugin.php:232
+msgid "Needs repair"
+msgstr "Needs repair"
+
+#: classes/MyPCListPlugin.php:233
+msgid "Partially broken"
+msgstr "Partially broken"
+
+#: classes/MyPCListPlugin.php:234
+msgid "Good"
+msgstr "Good"
+
+#: classes/MyPCListPlugin.php:235
+msgid "Very good"
+msgstr "Very good"
+
+#: classes/MyPCListPluginSettings.php:39
+msgid "Authorization"
+msgstr "Authorization"
+
+#: classes/MyPCListPluginSettings.php:41
+msgid "API key"
+msgstr "API key"
+
+#: classes/MyPCListPluginSettings.php:42
+msgid "API token"
+msgstr "API token"
+
+#: classes/MyPCListPluginSettings.php:44
+msgid "Data cache"
+msgstr "Data cache"
+
+#: classes/MyPCListPluginSettings.php:46
+msgid "Cache enabled"
+msgstr "Cache enabled"
+
+#: classes/MyPCListPluginSettings.php:47
+msgid "Enable image cache"
+msgstr "Enable image cache"
+
+#: classes/MyPCListPluginSettings.php:48
+msgid "Enable cache auto-update"
+msgstr "Enable cache auto-update"
+
+#: classes/MyPCListPluginSettings.php:49
+msgid "Update interval (seconds)"
+msgstr "Update interval (seconds)"
+
+#: classes/MyPCListPluginSettings.php:56
+msgid "Cache has been cleared."
+msgstr "Cache has been cleared."
+
+#: classes/MyPCListPluginSettings.php:102
+msgid ""
+"Enter your API authorization codes, which can be generated <a target=\"_blank"
+"\" href=\"http://mypclist.net/index.php?p=api-settings\">here</a>. They're "
+"required to connect with MyPCList server."
+msgstr ""
+"Enter your API authorization codes, which can be generated <a target=\"_blank"
+"\" href=\"http://mypclist.net/index.php?p=api-settings\">here</a>. They're "
+"required to connect with MyPCList server."
+
+#: classes/MyPCListPluginSettings.php:106
+msgid ""
+"For less server-to-server bandwith usage you can enable cache of your data. "
+"Activating cache will make your blog loading faster."
+msgstr ""
+"For less server-to-server bandwith usage you can enable cache of your data. "
+"Activating cache will make your blog loading faster."
+
+#: views/listing-grid.php:47 views/single.php:17
+msgid "Unnamed"
+msgstr "Unnamed"
+
+#: views/options.php:7
+msgid "Clear cache"
+msgstr "Clear cache"
+
+#: views/single.php:10
+msgid "&laquo; Back to the list"
+msgstr "&laquo; Back to the list"
+
+#: views/single.php:21
+msgid "Manufacturer"
+msgstr "Manufacturer"
+
+#: views/single.php:27
+msgid "Machine type"
+msgstr "Machine type"
+
+#: views/single.php:33
+msgid "Custom name"
+msgstr "Custom name"
+
+#: views/single.php:38
+msgid "Physical state"
+msgstr "Physical state"
+
+#: views/single.php:64
+msgid "Requested machine cannot be found. Check if you entered a valid URL."
+msgstr "Requested machine cannot be found. Check if you entered a valid URL."
