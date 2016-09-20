@@ -9,7 +9,7 @@ dependencies bundled into, so the package is ready to go.
 [Latest version (ZIP package)](https://github.com/Reprostar/mpcl-wordpress/releases)
  
 ### Installation (the hard way)
-Clone this repo to your `/wp-contents/plugins` directory and run `composer update` within it. This method 
+Clone this repo to your `/wp-content/plugins` directory and run `composer update` within it. This method 
 is not really recommended unless you want to contribute to this repository.
 
 ### Usage
