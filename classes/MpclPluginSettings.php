@@ -9,20 +9,17 @@ class MpclPluginSettings{
     private $cwd;
     private $baseUrl;
     private $database;
-    private $defaultOptions;
 
     /**
      * MpclPluginSettings constructor.
      * @param $cwd
      * @param $baseUrl
      * @param $dbHandler
-     * @param $defaultOptions
      */
-    public function __construct($cwd, $baseUrl, MpclDatabase $dbHandler, $defaultOptions){
+    public function __construct($cwd, $baseUrl, MpclDatabase $dbHandler){
         $this->cwd = $cwd;
         $this->baseUrl = $baseUrl;
         $this->database = $dbHandler;
-        $this->defaultOptions = $defaultOptions;
 
         add_action('init', array(&$this, 'register_assets'));
 

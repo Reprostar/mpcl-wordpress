@@ -52,7 +52,7 @@
                         <div class="mpcl-baguette-list">
                             {foreach from=$machine['photos'] item=photo}
                                 <a class="single-photo" href="{esc_url($photo['raw'])}" target="_blank">
-                                    <img class="thumbnail" src="{esc_url($photo[100])}"/>
+                                    <img class="thumbnail" src="{esc_url($photo[300])}"/>
                                 </a>
                             {/foreach}
                         </div>

@@ -15,7 +15,41 @@ class MpclSynchronisator
     const USER_AGENT = "WordPress";
     const API_TIMEOUT = 20;
 
+    /**
+     * @var MpclSynchronisator
+     */
+    private static $instance;
+
+    /**
+     * @var MpclConnector
+     */
+    private $connector;
+
+    /**
+     * @var MpclDatabase
+     */
     private $database;
+
+    /**
+     * @param MpclDatabase $database
+     * @param $apiKey
+     * @param $apiToken
+     * @return MpclSynchronisator
+     */
+    public static function getInstance($database = null, $apiKey = null, $apiToken = null){
+        if(!is_object(self::$instance)){
+            self::$instance = new MpclSynchronisator($database, $apiKey, $apiToken);
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * @return MpclConnector
+     */
+    public static function getConnector(){
+        return self::getInstance()->connector;
+    }
 
     /**
      * MyPCListConnector constructor.
@@ -23,7 +57,7 @@ class MpclSynchronisator
      * @param string $apiKey
      * @param string $apiToken
      */
-    public function __construct(MpclDatabase $database, $apiKey, $apiToken)
+    public function __construct($database, $apiKey, $apiToken)
     {
         $this->database = $database;
         $this->connector = new MpclConnector($apiKey, $apiToken, self::USER_AGENT, self::API_TIMEOUT);
@@ -48,7 +82,7 @@ class MpclSynchronisator
                 return false;
             }
 
-            // Purge existing ones on successfull retreive
+            // Purge existing ones after successful retrieving
             if ($firstIteration) {
                 $this->database->deleteAllMachines();
             }

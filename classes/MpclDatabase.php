@@ -10,11 +10,24 @@ class MpclDatabase
     const TABLE_OPTIONS = "mpcl_options";
     const TABLE_MACHINES = "mpcl_machines";
 
+    /**
+     * @var MpclDatabase
+     */
+    private static $instance;
+
     // Prefixed table names, for use in direct queries
     private $tableNameOptions;
     private $tableNameMachines;
 
     private $wpdb;
+
+    public static function getInstance(){
+        if(!is_object(self::$instance)){
+            self::$instance = new MpclDatabase();
+        }
+
+        return self::$instance;
+    }
 
     /**
      * MpclDatabase constructor.
