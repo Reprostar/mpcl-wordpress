@@ -40,5 +40,5 @@ abstract class Controller
         return $smarty;
     }
 
-    abstract public function execute(array $params);
+    abstract public function execute(TagHandler $tagHandler);
 }

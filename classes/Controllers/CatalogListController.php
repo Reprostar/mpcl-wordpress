@@ -11,10 +11,12 @@ namespace Reprostar\MpclWordpress;
 
 class CatalogListController extends Controller
 {
-    public function execute(array $params)
+    public function execute(TagHandler $tagHandler)
     {
-        $columnsWidth = ( (string) (100 / $params['columnsAmount']) ) . "%";
-        $columnsAmount = $params['columnsAmount'];
+        $params = $tagHandler->getTagAttributes();
+
+        $columnsWidth = ( (string) (100 / $params['columns']) ) . "%";
+        $columnsAmount = $params['columns'];
 
         $limit = 20;
         $offset = 0;

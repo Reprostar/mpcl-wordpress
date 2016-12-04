@@ -14,11 +14,10 @@ use JBBCode\Parser;
 
 class CatalogSingleController extends Controller
 {
-    public function execute(array $params)
+    public function execute(TagHandler $tagHandler)
     {
-        $machine_id = get_query_var('machine_id', null);
-
-        $machine = MpclDatabase::getInstance()->getMachine($machine_id);
+        $machineId = $tagHandler->getMachineId();
+        $machine = MpclDatabase::getInstance()->getMachine($machineId);
         if(!is_object($machine)){
             $machine = false;
         } else{

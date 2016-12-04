@@ -11,7 +11,7 @@ namespace Reprostar\MpclWordpress;
 
 class BoxController extends Controller
 {
-    public function execute(array $params)
+    public function execute(TagHandler $tagHandler)
     {
 
     }
