@@ -22,7 +22,7 @@ class Utils
      */
     public static function getPhotoURI($photo, $size = -1)
     {
-        $fallback = MpclPlugin::getBaseUrl() . "/img/sample_machine.png";
+        $fallback = Plugin::getBaseUrl() . "/img/sample_machine.png";
 
         if (is_object($photo) && $photo instanceof MpclPhotoRemoteModel) {
             /**

@@ -1,15 +1,11 @@
 <?php
 
 namespace Reprostar\MpclWordpress;
-use JBBCode\DefaultCodeDefinitionSet;
-use JBBCode\Parser;
-use Reprostar\MpclConnector\MpclPhotoRemoteModel;
-use Smarty;
 
 /**
  * Class MpclPlugin
  */
-class MpclPlugin
+class Plugin
 {
 
     const SHORTCODE_CATALOG = "mypclist";
@@ -25,12 +21,12 @@ class MpclPlugin
     private $wpdb;
 
     /**
-     * @var MpclPluginSettings
+     * @var PluginSettings
      */
     private $pluginSettings;
 
     /**
-     * @var MpclDatabase
+     * @var Database
      */
     private $database;
 
@@ -67,8 +63,8 @@ class MpclPlugin
 
         $this->wpdb = $wpdb;
         self::$baseUrl = $baseUrl;
-        $this->database = MpclDatabase::getInstance();
-        $this->pluginSettings = new MpclPluginSettings(self::getCwd(), self::$baseUrl, $this->database);
+        $this->database = Database::getInstance();
+        $this->pluginSettings = new PluginSettings(self::getCwd(), self::$baseUrl, $this->database);
         $this->tagHandler = new TagHandler();
 
         add_filter('query_vars', array(&$this, 'queryVars'));
@@ -76,7 +72,7 @@ class MpclPlugin
 
         Configuration::getInstance();
 
-        $this->connector = MpclSynchronisator::getInstance($this->database, Configuration::getInstance()->get("api_key"), Configuration::getInstance()->get("api_token"));
+        $this->connector = Synchronizator::getInstance($this->database, Configuration::getInstance()->get("api_key"), Configuration::getInstance()->get("api_token"));
 
         // Perform database check (and recreate tables if needed)
         if (!$this->database->checkIfInitialized()) {

@@ -22,10 +22,10 @@ class CatalogListController extends Controller
         $offset = 0;
         if (Configuration::getInstance()->get("cache_autoupdate_enabled") && time() - (int) Configuration::getInstance()->get("last_listing_cache") >= (int) Configuration::getInstance()->get("cache_autoupdate_interval")) {
             // Auto-update machines list
-            MpclSynchronisator::getInstance()->importMachinesOneByOne();
+            Synchronizator::getInstance()->importMachinesOneByOne();
         }
 
-        $machines = MpclDatabase::getInstance()->getMachines("id", "DESC", $limit, $offset);
+        $machines = Database::getInstance()->getMachines("id", "DESC", $limit, $offset);
         if(!is_array($machines)){
             $machines = array();
         }
@@ -45,10 +45,10 @@ class CatalogListController extends Controller
             $rows[$row_idx][] = $machine;
         }
 
-        $this->view->assign("columns_width", $columnsWidth);
-        $this->view->assign("columns_amount", $columnsAmount);
-        $this->view->assign("rows", $rows);
+        $this->assign("columns_width", $columnsWidth);
+        $this->assign("columns_amount", $columnsAmount);
+        $this->assign("rows", $rows);
 
-        $this->view->display("listing.tpl");
+        return $this->display("listing.tpl");
     }
 }

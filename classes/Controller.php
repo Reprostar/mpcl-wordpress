@@ -15,7 +15,7 @@ abstract class Controller
     /**
      * @var Smarty
      */
-    protected $view;
+    private $view;
 
     /**
      * Controller constructor.
@@ -35,9 +35,17 @@ abstract class Controller
         $smarty->caching = true;
         $smarty->cache_lifetime = 120;
 
-        $smarty->setTemplateDir(MpclPlugin::getCwd() . "/templates");
+        $smarty->setTemplateDir(Plugin::getCwd() . "/templates");
 
         return $smarty;
+    }
+
+    protected function assign($key, $value){
+        $this->view->assign($key, $value);
+    }
+
+    protected function display($template){
+        return $this->view->fetch($template);
     }
 
     abstract public function execute(TagHandler $tagHandler);

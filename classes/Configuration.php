@@ -42,14 +42,15 @@ class Configuration
 
     /**
      * @param $key
-     * @return null
+     * @param null $default
+     * @return mixed|null
      */
-    public function get($key){
+    public function get($key, $default = null){
         if(isset($this->options[$key])){
             return $this->options[$key];
+        } else{
+            return $default;
         }
-
-        return null;
     }
 
     /**

@@ -27,7 +27,7 @@ class TagHandler
     public function handle($attr){
         $this->parseQueryVars();
         $this->parseAttributes($attr);
-        $this->controller->execute($this);
+        return $this->controller->execute($this);
     }
 
     private function parseQueryVars(){

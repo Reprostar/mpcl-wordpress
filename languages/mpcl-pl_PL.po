@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: MyPClist WP\n"
-"POT-Creation-Date: 2016-03-27 17:08+0200\n"
-"PO-Revision-Date: 2016-03-27 17:08+0200\n"
+"POT-Creation-Date: 2016-12-04 22:46+0100\n"
+"PO-Revision-Date: 2016-12-04 22:48+0100\n"
 "Last-Translator: \n"
 "Language-Team: MyPClist\n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
@@ -17,77 +17,72 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: classes/MyPCListPlugin.php:230
-msgid "Unknown"
-msgstr "Nieznany"
+#: classes/Controllers/BoxController.php:22
+#: classes/Controllers/CatalogListController.php:43
+#: classes/Controllers/CatalogSingleController.php:25
+#: mpcl/classes/MpclPlugin.php:117 mpcl/classes/MpclPlugin.php:169
+msgid "Unnamed"
+msgstr "Bez nazwy"
 
-#: classes/MyPCListPlugin.php:231
-msgid "Broken"
-msgstr "Zniszczony"
-
-#: classes/MyPCListPlugin.php:232
-msgid "Needs repair"
-msgstr "Wymaga naprawy"
-
-#: classes/MyPCListPlugin.php:233
-msgid "Partially broken"
-msgstr "Cżęściowo uszkodzony"
-
-#: classes/MyPCListPlugin.php:234
-msgid "Good"
-msgstr "Dobry"
-
-#: classes/MyPCListPlugin.php:235
-msgid "Very good"
-msgstr "Bardzo dobry"
-
-#: classes/MyPCListPluginSettings.php:39
+#: classes/PluginSettings.php:38 mpcl/classes/MpclPluginSettings.php:41
 msgid "Authorization"
 msgstr "Autoryzacja"
 
-#: classes/MyPCListPluginSettings.php:41
+#: classes/PluginSettings.php:40 mpcl/classes/MpclPluginSettings.php:43
 msgid "API key"
 msgstr "ID klucza API"
 
-#: classes/MyPCListPluginSettings.php:42
+#: classes/PluginSettings.php:41 mpcl/classes/MpclPluginSettings.php:44
 msgid "API token"
 msgstr "Token klucza API"
 
-#: classes/MyPCListPluginSettings.php:44
+#: classes/PluginSettings.php:43
+msgid "Catalog page"
+msgstr "Strona katalogu"
+
+#: classes/PluginSettings.php:45
+msgid "Catalog page ID"
+msgstr "ID strony katalogu"
+
+#: classes/PluginSettings.php:47
+msgid "Appearance"
+msgstr "Wygląd"
+
+#: classes/PluginSettings.php:49
+msgid "Full-width boxes"
+msgstr "Pełna szerokość boxów"
+
+#: classes/PluginSettings.php:51 mpcl/classes/MpclPluginSettings.php:46
 msgid "Data cache"
 msgstr "Pamięć podręczna danych"
 
-#: classes/MyPCListPluginSettings.php:46
-msgid "Cache enabled"
-msgstr "Włącz pamięć podr."
-
-#: classes/MyPCListPluginSettings.php:47
+#: classes/PluginSettings.php:53 mpcl/classes/MpclPluginSettings.php:48
 msgid "Enable image cache"
 msgstr "Włącz pamięć podr. obrazków"
 
-#: classes/MyPCListPluginSettings.php:48
+#: classes/PluginSettings.php:54 mpcl/classes/MpclPluginSettings.php:49
 msgid "Enable cache auto-update"
 msgstr "Włącz automatyczne aktualizowanie pamięci podr."
 
-#: classes/MyPCListPluginSettings.php:49
+#: classes/PluginSettings.php:55 mpcl/classes/MpclPluginSettings.php:50
 msgid "Update interval (seconds)"
 msgstr "Czas pomiędzy odświeżeniami (sek.)"
 
-#: classes/MyPCListPluginSettings.php:56
+#: classes/PluginSettings.php:62 mpcl/classes/MpclPluginSettings.php:57
 msgid "Cache has been cleared."
 msgstr "Pamięć podręczna została wyczyszczona."
 
-#: classes/MyPCListPluginSettings.php:102
+#: classes/PluginSettings.php:115 mpcl/classes/MpclPluginSettings.php:110
 msgid ""
 "Enter your API authorization codes, which can be generated <a target=\"_blank"
-"\" href=\"http://mypclist.net/index.php?p=api-settings\">here</a>. They're "
-"required to connect with MyPCList server."
+"\" href=\"http://mypclist.net/settings/api\">here</a>. They're required to "
+"connect with MyPCList server."
 msgstr ""
-"Wprowadź klucz API w celu autoryzacji. Możesz go wygenerować <a target="
-"\"_blank\" href=\"http://mypclist.net/index.php?p=api-settings\">tutaj</a>. "
-"Jest on wymagany przez plugin, by móc pobrać Twoją kolekcję urządzeń."
+"Wprowadź dane autoryzacyjne API, które mogą być wygenerowane <a target="
+"\"_blank\" href=\"http://mypclist.net/settings/api\">tutaj</a>. Dane te są "
+"niezbędne do połączenia z serwerem MyPClist."
 
-#: classes/MyPCListPluginSettings.php:106
+#: classes/PluginSettings.php:119 mpcl/classes/MpclPluginSettings.php:114
 msgid ""
 "For less server-to-server bandwith usage you can enable cache of your data. "
 "Activating cache will make your blog loading faster."
@@ -96,36 +91,75 @@ msgstr ""
 "podręczną danych. Aktywowanie tej opcji spowoduje szybsze ładowanie się "
 "bloga."
 
-#: views/listing-grid.php:47 views/single.php:17
-msgid "Unnamed"
-msgstr "Bez nazwy"
+#: classes/PluginSettings.php:123
+msgid ""
+"Please enter ID of the page that is used as a Catalog template. This "
+"reference is required to display links in embedded machine boxes in posts."
+msgstr ""
+"Wprowadź ID strony, która jest używana do wyświetlenia katalogu maszyn "
+"MyPClist. Odniesienie do tej strony jest niezbędne do poprawnego "
+"wyświetlenia linków w boxach umieszczanych na innych postach."
 
-#: views/options.php:7
+#: classes/PluginSettings.php:127
+msgid "There you can customize plugin appearance on yout blog."
+msgstr "Tutaj możesz zmienić wygląd pluginu na Twoim blogu."
+
+#: classes/Utils.php:69 mpcl/classes/MpclPlugin.php:257
+msgid "Unknown"
+msgstr "Nieznany"
+
+#: classes/Utils.php:72 mpcl/classes/MpclPlugin.php:260
+msgid "Broken"
+msgstr "Zniszczony"
+
+#: classes/Utils.php:75 mpcl/classes/MpclPlugin.php:263
+msgid "Needs repair"
+msgstr "Wymaga naprawy"
+
+#: classes/Utils.php:78 mpcl/classes/MpclPlugin.php:266
+msgid "Partially broken"
+msgstr "Cżęściowo uszkodzony"
+
+#: classes/Utils.php:81 mpcl/classes/MpclPlugin.php:269
+msgid "Good"
+msgstr "Dobry"
+
+#: classes/Utils.php:84 mpcl/classes/MpclPlugin.php:272
+msgid "Very good"
+msgstr "Bardzo dobry"
+
+#: mpcl/views/options.php:7 views/options.php:7
 msgid "Clear cache"
 msgstr "Wyczyść pamięć podręczną"
 
-#: views/single.php:10
-msgid "&laquo; Back to the list"
-msgstr "&laquo; Powrót do listy"
+#~ msgid "Cache enabled"
+#~ msgstr "Włącz pamięć podr."
 
-#: views/single.php:21
-msgid "Manufacturer"
-msgstr "Producent"
+#~ msgid ""
+#~ "Enter your API authorization codes, which can be generated <a target="
+#~ "\"_blank\" href=\"http://mypclist.net/index.php?p=api-settings\">here</"
+#~ "a>. They're required to connect with MyPCList server."
+#~ msgstr ""
+#~ "Wprowadź klucz API w celu autoryzacji. Możesz go wygenerować <a target="
+#~ "\"_blank\" href=\"http://mypclist.net/index.php?p=api-settings\">tutaj</"
+#~ "a>. Jest on wymagany przez plugin, by móc pobrać Twoją kolekcję urządzeń."
 
-#: views/single.php:27
-msgid "Machine type"
-msgstr "Rodzaj"
+#~ msgid "&laquo; Back to the list"
+#~ msgstr "&laquo; Powrót do listy"
 
-#: views/single.php:33
-msgid "Custom name"
-msgstr "Nazwa własna"
+#~ msgid "Manufacturer"
+#~ msgstr "Producent"
 
-#: views/single.php:38
-msgid "Physical state"
-msgstr "Stan fizyczny"
+#~ msgid "Machine type"
+#~ msgstr "Rodzaj"
 
-#: views/single.php:64
-msgid "Requested machine cannot be found. Check if you entered a valid URL."
-msgstr ""
-"Żądana maszyna nie została odnaleziona. Upewnij się, czy podany adres URL "
-"jest poprawny."
+#~ msgid "Custom name"
+#~ msgstr "Nazwa własna"
+
+#~ msgid "Physical state"
+#~ msgstr "Stan fizyczny"
+
+#~ msgid "Requested machine cannot be found. Check if you entered a valid URL."
+#~ msgstr ""
+#~ "Żądana maszyna nie została odnaleziona. Upewnij się, czy podany adres URL "
+#~ "jest poprawny."

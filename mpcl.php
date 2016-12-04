@@ -14,4 +14,4 @@ License: MIT
 
 require_once __DIR__  . "/vendor/autoload.php";
 
-$mpcl = new \Reprostar\MpclWordpress\MpclPlugin(plugin_dir_path(__FILE__), plugin_dir_url(__FILE__));
+$mpcl = new \Reprostar\MpclWordpress\Plugin(plugin_dir_path(__FILE__), plugin_dir_url(__FILE__));

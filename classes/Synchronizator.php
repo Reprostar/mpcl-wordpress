@@ -10,13 +10,13 @@ use Reprostar\MpclConnector\MpclMachinesSetRemoteModel;
 /**
  * Class MpclSynchronisator
  */
-class MpclSynchronisator
+class Synchronizator
 {
     const USER_AGENT = "WordPress";
     const API_TIMEOUT = 20;
 
     /**
-     * @var MpclSynchronisator
+     * @var Synchronizator
      */
     private static $instance;
 
@@ -26,19 +26,19 @@ class MpclSynchronisator
     private $connector;
 
     /**
-     * @var MpclDatabase
+     * @var Database
      */
     private $database;
 
     /**
-     * @param MpclDatabase $database
+     * @param Database $database
      * @param $apiKey
      * @param $apiToken
-     * @return MpclSynchronisator
+     * @return Synchronizator
      */
     public static function getInstance($database = null, $apiKey = null, $apiToken = null){
         if(!is_object(self::$instance)){
-            self::$instance = new MpclSynchronisator($database, $apiKey, $apiToken);
+            self::$instance = new Synchronizator($database, $apiKey, $apiToken);
         }
 
         return self::$instance;
@@ -53,7 +53,7 @@ class MpclSynchronisator
 
     /**
      * MyPCListConnector constructor.
-     * @param MpclDatabase $database
+     * @param Database $database
      * @param string $apiKey
      * @param string $apiToken
      */

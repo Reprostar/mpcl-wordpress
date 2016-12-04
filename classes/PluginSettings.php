@@ -5,7 +5,7 @@ namespace Reprostar\MpclWordpress;
 /**
  * Class MpclPluginSettings
  */
-class MpclPluginSettings{
+class PluginSettings{
     private $cwd;
     private $baseUrl;
     private $database;
@@ -16,7 +16,7 @@ class MpclPluginSettings{
      * @param $baseUrl
      * @param $dbHandler
      */
-    public function __construct($cwd, $baseUrl, MpclDatabase $dbHandler){
+    public function __construct($cwd, $baseUrl, Database $dbHandler){
         $this->cwd = $cwd;
         $this->baseUrl = $baseUrl;
         $this->database = $dbHandler;
@@ -39,6 +39,14 @@ class MpclPluginSettings{
 
         add_settings_field('api_key', __('API key', 'mpcl'), array(&$this, 'field_text'), 'mpcl-options', 'mpcl-section-auth', array('mpcl-options', 'api_key'));
         add_settings_field('api_token', __('API token', 'mpcl'), array(&$this, 'field_text'), 'mpcl-options', 'mpcl-section-auth', array('mpcl-options', 'api_token'));
+
+        add_settings_section('mpcl-section-catalog', __('Catalog page', 'mpcl'), array(&$this, 'description_catalog'), 'mpcl-options');
+
+        add_settings_field('catalog_page_id', __('Catalog page ID', 'mpcl'), array(&$this, 'field_text'), 'mpcl-options', 'mpcl-section-catalog', array('mpcl-options', 'catalog_page_id'));
+
+        add_settings_section('mpcl-section-appearance', __('Appearance', 'mpcl'), array(&$this, 'description_appearance'), 'mpcl-options');
+
+        add_settings_field('box_full_width', __('Full-width boxes', 'mpcl'), array(&$this, 'field_checkbox'), 'mpcl-options', 'mpcl-section-appearance', array('mpcl-options', 'box_full_width'));
 
         add_settings_section('mpcl-section-cache', __('Data cache', 'mpcl'), array(&$this, 'description_cache'), 'mpcl-options');
 
@@ -109,5 +117,13 @@ class MpclPluginSettings{
 
     public function description_cache(){
         echo __('For less server-to-server bandwith usage you can enable cache of your data. Activating cache will make your blog loading faster.', 'mpcl');
+    }
+
+    public function description_catalog(){
+        echo __('Please enter ID of the page that is used as a Catalog template. This reference is required to display links in embedded machine boxes in posts.', 'mpcl');
+    }
+
+    public function description_appearance(){
+        echo __('There you can customize plugin appearance on yout blog.', 'mpcl');
     }
 }

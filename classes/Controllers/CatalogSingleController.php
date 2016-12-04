@@ -8,7 +8,6 @@
 
 namespace Reprostar\MpclWordpress;
 
-
 use JBBCode\DefaultCodeDefinitionSet;
 use JBBCode\Parser;
 
@@ -17,7 +16,7 @@ class CatalogSingleController extends Controller
     public function execute(TagHandler $tagHandler)
     {
         $machineId = $tagHandler->getMachineId();
-        $machine = MpclDatabase::getInstance()->getMachine($machineId);
+        $machine = Database::getInstance()->getMachine($machineId);
         if(!is_object($machine)){
             $machine = false;
         } else{
@@ -28,7 +27,8 @@ class CatalogSingleController extends Controller
             foreach($machine['photos'] as $k => $photo){
                 $machine['photos'][$k] = array(
                     "raw" => Utils::getPhotoURI($photo),
-                    300 => Utils::getPhotoURI($photo, 300)
+                    300 => Utils::getPhotoURI($photo, 300),
+                    100 => Utils::getPhotoURI($photo, 100)
                 );
             }
 
@@ -45,8 +45,8 @@ class CatalogSingleController extends Controller
             $machine['physical_state'] = Utils::getStateString($machine['physical_state']);
         }
 
-        $this->view->assign("machine", $machine);
+        $this->assign("machine", $machine);
 
-        $this->view->display("single.tpl");
+        return $this->display("single.tpl");
     }
 }

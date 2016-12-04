@@ -8,13 +8,7 @@
                     <img class="thumbnail" src="{$machine['thumbnail_uri']}"/>
                 </td>
                 <td style="width: 66.666%">
-                    <h2>
-                        {if !empty($machine['name'])}
-                            {esc_html($machine['name'])}
-                        {else}
-                            {__("Unnamed", "mpcl")}
-                        {/if}
-                    </h2>
+                    <h2>{esc_html($machine['name'])}</h2>
                     <table>
                         {if !empty($machine['manufacturer'])}
                             <tr>
@@ -52,7 +46,7 @@
                         <div class="mpcl-baguette-list">
                             {foreach from=$machine['photos'] item=photo}
                                 <a class="single-photo" href="{esc_url($photo['raw'])}" target="_blank">
-                                    <img class="thumbnail" src="{esc_url($photo[300])}" width="100"/>
+                                    <img class="thumbnail" src="{esc_url($photo[100])}" width="100"/>
                                 </a>
                             {/foreach}
                         </div>

@@ -5,13 +5,13 @@ namespace Reprostar\MpclWordpress;
 /**
  * Class MpclDatabase
  */
-class MpclDatabase
+class Database
 {
     const TABLE_OPTIONS = "mpcl_options";
     const TABLE_MACHINES = "mpcl_machines";
 
     /**
-     * @var MpclDatabase
+     * @var Database
      */
     private static $instance;
 
@@ -23,7 +23,7 @@ class MpclDatabase
 
     public static function getInstance(){
         if(!is_object(self::$instance)){
-            self::$instance = new MpclDatabase();
+            self::$instance = new Database();
         }
 
         return self::$instance;
