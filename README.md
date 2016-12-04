@@ -15,12 +15,19 @@ is not really recommended unless you want to contribute to this repository.
 ### Usage
 To display your collection, create a new WordPress page (not a post!), then paste the following shortcode:
 ```
-[mypclist columns=4]
+[mpcl columns=4]
 ```
 
 Of course, you can change the *columns* parameter to display different amount of columns in a grid.
 View of single machine is also displayed in the place of this shortcode (you don't need any other page for 
 the other views).
+
+You can also display a box referencing specific machine by pasting shortcode on any post or page:
+```
+[mpcl id=15]
+```
+
+Where `15` should be replaced with target machine ID.
 
 ### Dependencies
 This WordPress plugin is using the following packages/modules: 
