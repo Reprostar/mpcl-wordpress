@@ -29,4 +29,4 @@ do
 done
 
 # Create a package
-zip mpcl-wordpress-1.2.zip `find $TMP_DIR`
+zip mpcl-wordpress-1.2.1.zip `find $TMP_DIR`

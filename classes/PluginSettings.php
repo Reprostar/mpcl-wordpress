@@ -35,26 +35,79 @@ class PluginSettings{
     }
 
     public function register_settings(){
-        add_settings_section('mpcl-section-auth', __('Authorization', 'mpcl'), array(&$this, 'description_auth'), 'mpcl-options');
+        $settings = [
+            'auth' => [
+                'name' => __('Authorization', 'mpcl'),
+                'fields' => [
+                    'api_key' => [
+                        'name' => __('API key', 'mpcl'),
+                        'handler' => [&$this, 'field_text']
+                    ],
+                    'api_token' => [
+                        'name' => __('API token', 'mpcl'),
+                        'handler' => [&$this, 'field_text']
+                    ]
+                ]
+            ],
+            'catalog' => [
+                'name' => __('Catalog page', 'mpcl'),
+                'fields' => [
+                    'catalog_page_id' => [
+                        'name' => __('Catalog page ID', 'mpcl'),
+                        'handler' => [&$this, 'field_text']
+                    ],
+                ]
+            ],
+            'appearance' => [
+                'name' => __('Appearance', 'mpcl'),
+                'fields' => [
+                    'box_full_width' => [
+                        'name' => __('Full-width boxes', 'mpcl'),
+                        'handler' => [&$this, 'field_checkbox']
+                    ],
+                    'entries_per_page' => [
+                        'name' => __('Entries per page', 'mpcl'),
+                        'handler' => [&$this, 'field_text']
+                    ]
+                ]
+            ],
+            'cache' => [
+                'name' => __('Data cache', 'mpcl'),
+                'fields' => [
+                    'cache_images' => [
+                        'name' => __('Enable image cache', 'mpcl'),
+                        'handler' => [&$this, 'field_checkbox']
+                    ],
+                    'cache_autoupdate_enabled' => [
+                        'name' => __('Enable cache auto-update', 'mpcl'),
+                        'handler' => [&$this, 'field_checkbox']
+                    ],
+                    'cache_autoupdate_interval' => [
+                        'name' => __('Update interval (seconds)', 'mpcl'),
+                        'handler' => [&$this, 'field_text']
+                    ],
+                ]
+            ]
+        ];
 
-        add_settings_field('api_key', __('API key', 'mpcl'), array(&$this, 'field_text'), 'mpcl-options', 'mpcl-section-auth', array('mpcl-options', 'api_key'));
-        add_settings_field('api_token', __('API token', 'mpcl'), array(&$this, 'field_text'), 'mpcl-options', 'mpcl-section-auth', array('mpcl-options', 'api_token'));
+        $sectionPrefix = 'mpcl-section-';
+        $optionsKey = 'mpcl-options';
+        foreach($settings as $sectionKey => $section){
+            $sectionKeyPrefixed = $sectionPrefix . $sectionKey;
+            $sectionName = $section['name'];
+            $descriptionCallback = [&$this, 'description_' . $sectionKey];
 
-        add_settings_section('mpcl-section-catalog', __('Catalog page', 'mpcl'), array(&$this, 'description_catalog'), 'mpcl-options');
+            add_settings_section($sectionKeyPrefixed, $sectionName, $descriptionCallback, $optionsKey);
 
-        add_settings_field('catalog_page_id', __('Catalog page ID', 'mpcl'), array(&$this, 'field_text'), 'mpcl-options', 'mpcl-section-catalog', array('mpcl-options', 'catalog_page_id'));
+            foreach($section['fields'] as $fieldKey => $field){
+                $fieldName = $field['name'];
+                $fieldHandler = $field['handler'];
 
-        add_settings_section('mpcl-section-appearance', __('Appearance', 'mpcl'), array(&$this, 'description_appearance'), 'mpcl-options');
+                add_settings_field($fieldKey, $fieldName, $fieldHandler, $optionsKey, $sectionKeyPrefixed, [$optionsKey, $fieldKey]);
+            }
+        }
 
-        add_settings_field('box_full_width', __('Full-width boxes', 'mpcl'), array(&$this, 'field_checkbox'), 'mpcl-options', 'mpcl-section-appearance', array('mpcl-options', 'box_full_width'));
-
-        add_settings_section('mpcl-section-cache', __('Data cache', 'mpcl'), array(&$this, 'description_cache'), 'mpcl-options');
-
-        add_settings_field('cache_images', __('Enable image cache', 'mpcl'), array(&$this, 'field_checkbox'), 'mpcl-options', 'mpcl-section-cache', array('mpcl-options', 'cache_images'));
-        add_settings_field('cache_autoupdate_enabled', __('Enable cache auto-update', 'mpcl'), array(&$this, 'field_checkbox'), 'mpcl-options', 'mpcl-section-cache', array('mpcl-options', 'cache_autoupdate_enabled'));
-        add_settings_field('cache_autoupdate_interval', __('Update interval (seconds)', 'mpcl'), array(&$this, 'field_text'), 'mpcl-options', 'mpcl-section-cache', array('mpcl-options', 'cache_autoupdate_interval'));
-
-        register_setting('mpcl-options', 'mpcl-options', array(&$this, 'save_theme_option'));
+        register_setting($optionsKey, $optionsKey, [&$this, 'save_theme_option']);
     }
 
     public function save_theme_option($input) {
