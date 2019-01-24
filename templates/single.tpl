@@ -45,7 +45,7 @@
                     <td colspan="3">
                         <div class="mpcl-baguette-list">
                             {foreach from=$machine['photos'] item=photo}
-                                <a class="single-photo" href="{esc_url($photo['raw'])}" target="_blank">
+                                <a class="single-photo" href="{esc_url($photo['raw'])}">
                                     <img class="thumbnail" src="{esc_url($photo[100])}" width="100"/>
                                 </a>
                             {/foreach}
