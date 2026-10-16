@@ -18,6 +18,7 @@ $W cron event run --due-now >/dev/null 2>&1
 expect "cron imports all pages (120 machines over 50-item pages)" "$(rows)" "^120$"
 expect "import used 3 API calls" "$(api_calls)" "^3$"
 expect "last_listing_cache written" "$($W eval 'echo time() - get_option("mpcl-options")["last_listing_cache"];')" "^[0-9]$|^[1-5][0-9]$"
+expect "plain-text token is encrypted on load" "$($W option pluck mpcl-options api_token)" "^mpcl:v1:"
 expect "emoji stored" "$($W eval 'global $wpdb; echo $wpdb->get_var("SELECT name FROM {$wpdb->prefix}mpcl_machines WHERE id = 120");')" "💾"
 for mode in null empty error html; do
     api_mode "$mode"
@@ -81,6 +82,21 @@ expect "settings page requires manage_options" "$SETTINGS" "capability: manage_o
 expect "settings are sanitised and merged" "$SETTINGS" 'sanitized: .*"api_key":"a\\"b\\\\c".*"catalog_page_id":12'
 expect_not "unknown input keys are dropped" "$SETTINGS" '"evil"'
 expect "stored values are escaped in the form" "$SETTINGS" 'value="k&quot;&gt;x"'
+expect "a new token is stored encrypted" "$SETTINGS" "stored token: mpcl:v1:"
+expect "an empty token field keeps the saved token" "$SETTINGS" "after empty submit: encrypted"
+expect "the token field is an empty password input" "$SETTINGS" '<input type="password" id="mpcl-field-api-token" name="mpcl-options\[api_token\]" value=""'
+expect_not "the token never appears in the form" "$SETTINGS" "secret-token"
+expect "a saved token can be removed" "$SETTINGS" 'name="mpcl-options\[api_token_clear\]"'
+ADMIN_SAVE='wp_set_current_user(1); do_action("admin_init"); update_option("mpcl-options", array_merge(get_option("mpcl-options"), json_decode(getenv("MPCL_INPUT"), true)));'
+MPCL_INPUT='{"api_key":"k","api_token":"t"}' $W --exec='define("WP_ADMIN", true);' eval "$ADMIN_SAVE"
+api_mode ok
+$W eval 'do_action("mpcl_sync", true);'
+expect "a token saved through the form authenticates the sync" "$(api_calls)" "^3$"
+RENDER_ONLY='wp_set_current_user(1); require_once ABSPATH . "wp-admin/includes/template.php"; do_action("admin_menu"); do_action("admin_init"); do_action(get_plugin_page_hookname("mpcl-settings", "options-general.php"));'
+expect "a token encrypted with another key is reported" "$($W --exec='define("WP_ADMIN", true); define("MPCL_ENCRYPTION_KEY", "another key");' eval "$RENDER_ONLY")" "cannot be decrypted"
+MPCL_INPUT='{"api_token_clear":"1"}' $W --exec='define("WP_ADMIN", true);' eval "$ADMIN_SAVE"
+expect_empty "removing the token empties it" "$($W option pluck mpcl-options api_token)"
+MPCL_INPUT='{"api_token":"t"}' $W --exec='define("WP_ADMIN", true);' eval "$ADMIN_SAVE"
 expect_not "no image cache field" "$SETTINGS" "cache_images"
 
 echo "== translations"

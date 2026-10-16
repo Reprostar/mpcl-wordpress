@@ -7,6 +7,12 @@ wp_set_current_user(1);
 do_action('admin_menu');
 do_action('admin_init');
 
+$token = static function (): string {
+    $option = get_option('mpcl-options');
+
+    return is_array($option) ? (string) $option['api_token'] : '';
+};
+
 echo 'capability: ' . $GLOBALS['submenu']['options-general.php'][0][1] . "\n";
 echo 'sanitized: ' . wp_json_encode(sanitize_option('mpcl-options', [
     'api_key' => ' a"b\\c ',
@@ -15,7 +21,10 @@ echo 'sanitized: ' . wp_json_encode(sanitize_option('mpcl-options', [
     'evil' => 'x',
 ])) . "\n";
 
-update_option('mpcl-options', array_merge((array) get_option('mpcl-options'), ['api_key' => 'k"><b>x']));
+update_option('mpcl-options', array_merge((array) get_option('mpcl-options'), ['api_key' => 'k"><b>x', 'api_token' => 'secret-token']));
+echo 'stored token: ' . $token() . "\n";
+update_option('mpcl-options', array_merge((array) get_option('mpcl-options'), ['api_token' => '']));
+echo 'after empty submit: ' . (0 === strpos($token(), 'mpcl:v1:') ? 'encrypted' : 'lost') . "\n";
 
 ob_start();
 do_action(get_plugin_page_hookname('mpcl-settings', 'options-general.php'));

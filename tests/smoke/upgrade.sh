@@ -17,7 +17,7 @@ echo "== replace files"
 rm -rf wp-content/plugins/mpcl && mkdir -p wp-content/plugins/mpcl && cp -r /plugin-src/. wp-content/plugins/mpcl/
 $W eval 'echo "";'
 expect "plugin is still active" "$($W plugin list --name=mpcl --fields=status --format=csv)" "active"
-expect "settings are unchanged" "$($W option get mpcl-options --format=json)" "^$(printf '%s' "$OPTION_BEFORE" | sed 's/[][\.*^$|?+(){}]/\\&/g')$"
+expect "settings keep their values (token decrypts to the 1.x value)" "$(MPCL_BEFORE="$OPTION_BEFORE" $W eval '$before = json_decode(getenv("MPCL_BEFORE"), true); $after = get_option("mpcl-options"); $after["api_token"] = \Reprostar\MpclWordpress\Plugin::create(WP_PLUGIN_DIR . "/mpcl/mpcl.php") ? (new \Reprostar\MpclWordpress\Settings\SettingsRepository(new \Reprostar\MpclWordpress\Security\Secrets()))->load()->apiToken : ""; $diff = []; foreach ($before as $k => $v) { $n = static function ($x): string { return "" === (string) $x ? "0" : (string) $x; }; if ($n($v) !== $n($after[$k] ?? "")) { $diff[] = $k; } } echo [] === $diff ? "same" : "differs: " . implode(",", $diff);')" "^same$"
 expect "machine rows are unchanged" "$($W db query "SELECT id, name, description FROM wp_mpcl_machines ORDER BY id" --skip-column-names)" "^$(printf '%s' "$ROWS_BEFORE" | sed 's/[][\.*^$|?+(){}]/\\&/g')$"
 expect "schema migrated to version 2" "$($W option get mpcl_db_version)" "^2$"
 expect "table converted to utf8mb4" "$($W db query "SELECT TABLE_COLLATION FROM information_schema.TABLES WHERE TABLE_NAME='wp_mpcl_machines'" --skip-column-names)" "^utf8mb4_"
@@ -30,6 +30,7 @@ expect "migrated rows render" "$(render "set_query_var('machine_id', 15); echo d
 expect "box keeps full width and catalogue link" "$(render "echo do_shortcode('[mpcl id=16]');")" "mpcl-box full-width.*page_id=$PAGE&#038;machine_id=16"
 api_mode ok
 $W cron event run --due-now >/dev/null 2>&1
+expect "the 1.x plain-text token is now encrypted" "$($W option pluck mpcl-options api_token)" "^mpcl:v1:"
 expect "first cron run syncs with the preserved credentials" "$(rows)" "^120$"
 expect "emoji stored after conversion" "$($W eval 'global $wpdb; echo $wpdb->get_var("SELECT name FROM {$wpdb->prefix}mpcl_machines WHERE id = 120");')" "💾"
 expect "unknown option keys survive a save" "$($W option get mpcl-options --format=json)" '"third_party":"keep me"'

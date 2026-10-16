@@ -6,6 +6,7 @@ namespace Reprostar\MpclWordpress\Settings;
 
 use Reprostar\MpclWordpress\Machine\MachineRepository;
 use Reprostar\MpclWordpress\Machine\SyncScheduler;
+use Reprostar\MpclWordpress\Security\Secrets;
 use Reprostar\MpclWordpress\Support\Cast;
 
 defined('ABSPATH') || exit;
@@ -19,17 +20,24 @@ final class SettingsPage
     private const SECTION_PREFIX = 'mpcl-section-';
     private const FIELD_TEXT = 'text';
     private const FIELD_CHECKBOX = 'checkbox';
+    private const FIELD_SECRET = 'secret';
+    private const CLEAR_TOKEN_KEY = 'api_token_clear';
 
+    private SettingsRepository $settings;
+    private Secrets $secrets;
     private MachineRepository $machines;
     private SyncScheduler $scheduler;
     private string $templateDirectory;
 
     public function __construct(
+        SettingsRepository $settings,
+        Secrets $secrets,
         MachineRepository $machines,
         SyncScheduler $scheduler,
         string $templateDirectory
-    )
-    {
+    ) {
+        $this->settings = $settings;
+        $this->secrets = $secrets;
         $this->machines = $machines;
         $this->scheduler = $scheduler;
         $this->templateDirectory = rtrim($templateDirectory, '/');
@@ -67,7 +75,7 @@ final class SettingsPage
                     [$this, 'renderField'],
                     $option,
                     $sectionId,
-                    ['key' => $fieldKey, 'type' => $field['type']]
+                    ['key' => $fieldKey, 'type' => $field['type'], 'label_for' => $this->fieldId($fieldKey)]
                 );
             }
         }
@@ -77,7 +85,8 @@ final class SettingsPage
 
     /**
      * Also runs for programmatic update_option() calls during admin requests, so
-     * it merges into the stored settings instead of replacing them.
+     * it merges into the stored settings instead of replacing them, and accepts
+     * an already encrypted token as the stored one.
      *
      * @param mixed $input
      * @return array<string, mixed>
@@ -92,7 +101,7 @@ final class SettingsPage
 
         $input = is_array($input) ? $input : [];
         $current = get_option(SettingsRepository::OPTION);
-        $settings = Settings::fromArray(is_array($current) ? $current : []);
+        $settings = $this->settings->fromOption(is_array($current) ? $current : []);
         $previousKey = $settings->apiKey;
         $previousToken = $settings->apiToken;
 
@@ -100,7 +109,10 @@ final class SettingsPage
             $settings->apiKey = sanitize_text_field(Cast::string($input['api_key']));
         }
         if (array_key_exists('api_token', $input)) {
-            $settings->apiToken = sanitize_text_field(Cast::string($input['api_token']));
+            $this->applyToken($settings, Cast::string($input['api_token']));
+        }
+        if (Cast::bool($input[self::CLEAR_TOKEN_KEY] ?? null)) {
+            $settings->apiToken = '';
         }
         if (array_key_exists('catalog_page_id', $input)) {
             $settings->catalogPageId = absint(Cast::string($input['catalog_page_id']));
@@ -125,7 +137,7 @@ final class SettingsPage
             $this->scheduler->requestImmediate();
         }
 
-        return $settings->toArray();
+        return $this->settings->toOption($settings);
     }
 
     public function renderPage(): void
@@ -154,20 +166,78 @@ final class SettingsPage
      */
     public function renderField(array $field): void
     {
-        $stored = get_option(SettingsRepository::OPTION);
-        $value = is_array($stored) && isset($stored[$field['key']]) && is_scalar($stored[$field['key']])
-            ? (string) $stored[$field['key']]
-            : '';
         $name = SettingsRepository::OPTION . '[' . $field['key'] . ']';
+        $id = $this->fieldId($field['key']);
 
-        if (self::FIELD_CHECKBOX === $field['type']) {
-            echo '<input type="hidden" name="' . esc_attr($name) . '" value="0"/>';
-            echo '<input type="checkbox" name="' . esc_attr($name) . '" value="1"' . checked((bool) $value, true, false) . '/>';
+        if (self::FIELD_SECRET === $field['type']) {
+            $this->renderSecretField($name, $id);
 
             return;
         }
 
-        echo '<input type="text" name="' . esc_attr($name) . '" value="' . esc_attr($value) . '"/>';
+        $stored = get_option(SettingsRepository::OPTION);
+        $value = is_array($stored) && isset($stored[$field['key']]) && is_scalar($stored[$field['key']])
+            ? (string) $stored[$field['key']]
+            : '';
+
+        if (self::FIELD_CHECKBOX === $field['type']) {
+            echo '<input type="hidden" name="' . esc_attr($name) . '" value="0"/>';
+            echo '<input type="checkbox" id="' . esc_attr($id) . '" name="' . esc_attr($name) . '" value="1"' . checked((bool) $value, true, false) . '/>';
+
+            return;
+        }
+
+        echo '<input type="text" id="' . esc_attr($id) . '" name="' . esc_attr($name) . '" value="' . esc_attr($value) . '"/>';
+    }
+
+    /**
+     * An encrypted value comes from a programmatic save of the stored option; an
+     * empty one from a form submit that leaves the saved token alone.
+     */
+    private function applyToken(Settings $settings, string $value): void
+    {
+        if ($this->secrets->isEncrypted($value)) {
+            $decrypted = $this->secrets->decrypt($value);
+            if (null !== $decrypted) {
+                $settings->apiToken = $decrypted;
+            }
+
+            return;
+        }
+
+        $value = sanitize_text_field($value);
+        if ('' !== $value) {
+            $settings->apiToken = $value;
+        }
+    }
+
+    private function renderSecretField(string $name, string $id): void
+    {
+        $settings = $this->settings->load();
+
+        echo '<input type="password" id="' . esc_attr($id) . '" name="' . esc_attr($name) . '" value="" autocomplete="new-password"/>';
+
+        if ($settings->apiTokenUnreadable) {
+            echo '<p class="description" style="color: #b32d2e;">'
+                . esc_html__('The saved token cannot be decrypted, probably because the site\'s security keys changed. Enter it again.', 'mpcl')
+                . '</p>';
+
+            return;
+        }
+
+        if ('' === $settings->apiToken) {
+            return;
+        }
+
+        $clearName = SettingsRepository::OPTION . '[' . self::CLEAR_TOKEN_KEY . ']';
+        echo '<p class="description">' . esc_html__('A token is saved. Leave the field empty to keep it.', 'mpcl') . '</p>';
+        echo '<p><label><input type="checkbox" name="' . esc_attr($clearName) . '" value="1"/> '
+            . esc_html__('Remove the saved token', 'mpcl') . '</label></p>';
+    }
+
+    private function fieldId(string $key): string
+    {
+        return 'mpcl-field-' . str_replace('_', '-', $key);
     }
 
     /**
@@ -180,7 +250,7 @@ final class SettingsPage
                 'title' => __('Authorization', 'mpcl'),
                 'fields' => [
                     'api_key' => ['title' => __('API key', 'mpcl'), 'type' => self::FIELD_TEXT],
-                    'api_token' => ['title' => __('API token', 'mpcl'), 'type' => self::FIELD_TEXT],
+                    'api_token' => ['title' => __('API token', 'mpcl'), 'type' => self::FIELD_SECRET],
                 ],
             ],
             'catalog' => [

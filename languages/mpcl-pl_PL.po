@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MyPClist WP\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/p\n"
-"POT-Creation-Date: 2026-10-16T19:47:07+00:00\n"
+"POT-Creation-Date: 2026-10-16T20:06:21+00:00\n"
 "PO-Revision-Date: 2016-12-04 23:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: MyPClist\n"
@@ -42,67 +42,79 @@ msgstr ""
 msgid "https://mypclist.net"
 msgstr ""
 
-#: src/Settings/SettingsPage.php:90
+#: src/Settings/SettingsPage.php:97
 msgid "Cache has been cleared."
 msgstr "Pamięć podręczna została wyczyszczona."
 
-#: src/Settings/SettingsPage.php:145
+#: src/Settings/SettingsPage.php:155
 msgid "Enter your API authorization codes, which can be generated <a target=\"_blank\" href=\"https://mypclist.net/settings/api\">here</a>. They're required to connect with MyPCList server."
 msgstr "Wprowadź dane autoryzacyjne API, które mogą być wygenerowane <a target=\"_blank\" href=\"https://mypclist.net/settings/api\">tutaj</a>. Dane te są niezbędne do połączenia z serwerem MyPClist."
 
-#: src/Settings/SettingsPage.php:146
+#: src/Settings/SettingsPage.php:156
 msgid "Please enter ID of the page that is used as a Catalog template. This reference is required to display links in embedded machine boxes in posts."
 msgstr "Wprowadź ID strony, która jest używana do wyświetlenia katalogu maszyn MyPClist. Odniesienie do tej strony jest niezbędne do poprawnego wyświetlenia linków w boxach umieszczanych na innych postach."
 
-#: src/Settings/SettingsPage.php:147
+#: src/Settings/SettingsPage.php:157
 msgid "There you can customize plugin appearance on yout blog."
 msgstr "Tutaj możesz zmienić wygląd pluginu na Twoim blogu."
 
-#: src/Settings/SettingsPage.php:148
+#: src/Settings/SettingsPage.php:158
 msgid "For less server-to-server bandwith usage you can enable cache of your data. Activating cache will make your blog loading faster."
 msgstr "W celu zmniejszenia zużycia transferu na serwerze, możesz włączyć pamięć podręczną danych. Aktywowanie tej opcji spowoduje szybsze ładowanie się bloga."
 
-#: src/Settings/SettingsPage.php:182
+#: src/Settings/SettingsPage.php:222
+msgid "The saved token cannot be decrypted, probably because the site's security keys changed. Enter it again."
+msgstr "Nie można odszyfrować zapisanego tokenu, prawdopodobnie z powodu zmiany kluczy bezpieczeństwa witryny. Wprowadź go ponownie."
+
+#: src/Settings/SettingsPage.php:233
+msgid "A token is saved. Leave the field empty to keep it."
+msgstr "Token jest zapisany. Pozostaw pole puste, aby go zachować."
+
+#: src/Settings/SettingsPage.php:235
+msgid "Remove the saved token"
+msgstr "Usuń zapisany token"
+
+#: src/Settings/SettingsPage.php:250
 msgid "Authorization"
 msgstr "Autoryzacja"
 
-#: src/Settings/SettingsPage.php:184
+#: src/Settings/SettingsPage.php:252
 msgid "API key"
 msgstr "ID klucza API"
 
-#: src/Settings/SettingsPage.php:185
+#: src/Settings/SettingsPage.php:253
 msgid "API token"
 msgstr "Token klucza API"
 
-#: src/Settings/SettingsPage.php:189
+#: src/Settings/SettingsPage.php:257
 msgid "Catalog page"
 msgstr "Strona katalogu"
 
-#: src/Settings/SettingsPage.php:191
+#: src/Settings/SettingsPage.php:259
 msgid "Catalog page ID"
 msgstr "ID strony katalogu"
 
-#: src/Settings/SettingsPage.php:195
+#: src/Settings/SettingsPage.php:263
 msgid "Appearance"
 msgstr "Wygląd"
 
-#: src/Settings/SettingsPage.php:197
+#: src/Settings/SettingsPage.php:265
 msgid "Full-width boxes"
 msgstr "Pełna szerokość boxów"
 
-#: src/Settings/SettingsPage.php:198
+#: src/Settings/SettingsPage.php:266
 msgid "Entries per page"
 msgstr "Liczba wpisów na stronie"
 
-#: src/Settings/SettingsPage.php:202
+#: src/Settings/SettingsPage.php:270
 msgid "Data cache"
 msgstr "Pamięć podręczna danych"
 
-#: src/Settings/SettingsPage.php:204
+#: src/Settings/SettingsPage.php:272
 msgid "Enable cache auto-update"
 msgstr "Włącz automatyczne aktualizowanie pamięci podr."
 
-#: src/Settings/SettingsPage.php:205
+#: src/Settings/SettingsPage.php:273
 msgid "Update interval (seconds)"
 msgstr "Czas pomiędzy odświeżeniami (sek.)"
 

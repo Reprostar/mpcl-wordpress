@@ -17,7 +17,12 @@ final class Settings
     public const DEFAULT_ENTRIES_PER_PAGE = 100;
 
     public string $apiKey = '';
+    /** Plain text in memory; SettingsRepository encrypts it for storage. */
     public string $apiToken = '';
+
+    /** The stored token exists but cannot be decrypted with the current key. */
+    public bool $apiTokenUnreadable = false;
+
     public int $catalogPageId = 0;
     public bool $boxFullWidth = false;
     /** 0 means the default limit */

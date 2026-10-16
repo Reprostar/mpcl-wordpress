@@ -11,6 +11,7 @@ use Reprostar\MpclWordpress\Machine\MachineRepository;
 use Reprostar\MpclWordpress\Machine\SyncScheduler;
 use Reprostar\MpclWordpress\Machine\Synchronizer;
 use Reprostar\MpclWordpress\Settings\SettingsPage;
+use Reprostar\MpclWordpress\Security\Secrets;
 use Reprostar\MpclWordpress\Settings\SettingsRepository;
 use Reprostar\MpclWordpress\Shortcode\ShortcodeHandler;
 use Reprostar\MpclWordpress\View\MachinePresenter;
@@ -50,7 +51,8 @@ final class Plugin
         $baseUrl = plugin_dir_url($this->file);
 
         $schema = new Schema($wpdb);
-        $settingsRepository = new SettingsRepository();
+        $secrets = new Secrets();
+        $settingsRepository = new SettingsRepository($secrets);
         $machines = new MachineRepository($wpdb, $schema->getMachinesTable());
         $scheduler = $this->createScheduler($settingsRepository, $machines);
         $presenter = new MachinePresenter(new BbCode(), $baseUrl . 'img/sample_machine.png');
@@ -74,7 +76,7 @@ final class Plugin
         ))->register();
 
         if (is_admin()) {
-            (new SettingsPage($machines, $scheduler, $directory . 'templates'))->register();
+            (new SettingsPage($settingsRepository, $secrets, $machines, $scheduler, $directory . 'templates'))->register();
         }
 
         if (!$schema->isCurrent()) {
@@ -87,7 +89,7 @@ final class Plugin
         $schema = new Schema($this->wpdb);
         $schema->migrate();
 
-        $settingsRepository = new SettingsRepository();
+        $settingsRepository = new SettingsRepository(new Secrets());
         $settingsRepository->load();
 
         $scheduler = $this->createScheduler($settingsRepository, new MachineRepository($this->wpdb, $schema->getMachinesTable()));
@@ -98,7 +100,7 @@ final class Plugin
     public function deactivate(): void
     {
         $schema = new Schema($this->wpdb);
-        $this->createScheduler(new SettingsRepository(), new MachineRepository($this->wpdb, $schema->getMachinesTable()))
+        $this->createScheduler(new SettingsRepository(new Secrets()), new MachineRepository($this->wpdb, $schema->getMachinesTable()))
             ->unschedule();
     }
 
