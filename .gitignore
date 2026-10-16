@@ -1,9 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/
 composer.lock
-css/front.css
-css/views/listing.css
-css/views/single.css
 mpcl/
 vendor/
 *.zip

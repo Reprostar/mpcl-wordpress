@@ -1,0 +1,278 @@
+.mpcl-listing-grid {
+  width: 100%;
+  display: block;
+  clear: both;
+}
+.mpcl-listing-grid table {
+  width: 100%;
+  border: 0;
+  border-collapse: collapse;
+}
+.mpcl-listing-grid table tbody,
+.mpcl-listing-grid table tbody tr,
+.mpcl-listing-grid table tbody tr td {
+  border: 0 !important;
+  padding: 8px !important;
+}
+.mpcl-listing-grid table thead,
+.mpcl-listing-grid table thead tr,
+.mpcl-listing-grid table thead tr td {
+  height: 0;
+  border: 0;
+  visibility: hidden;
+  padding: 0;
+}
+.mpcl-listing-grid table tbody.captions tr td {
+  padding-bottom: 23px !important;
+}
+.mpcl-listing-grid .entries-row {
+  margin: 30px -5px 0 -5px;
+  position: relative;
+  width: 100%;
+  display: block;
+  clear: both;
+}
+.mpcl-listing-grid .entries-row .mpcl-entry {
+  background: #fff;
+  padding: 0;
+  float: left;
+  overflow: hidden;
+  position: relative;
+  display: inline-block;
+  border: 1px solid #e0e0e0;
+  text-decoration: none;
+  margin: 0 5px 10px 5px;
+}
+.mpcl-listing-grid .entries-row .mpcl-entry:hover {
+  border-color: #2dc1e9;
+}
+.mpcl-listing-grid .entries-row .mpcl-entry .thumb {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+}
+.mpcl-listing-grid .entries-row .mpcl-entry h4 {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 8px 0 5px 0;
+  font-size: 13px;
+  letter-spacing: 0;
+  color: #444;
+  padding: 0 10px;
+  font-weight: normal;
+  font-family: Helvetica, Arial, sans-serif;
+  line-height: 20px;
+  overflow: hidden;
+  width: 100%;
+  text-transform: none;
+}
+.mpcl-listing-grid .entries-row .mpcl-entry small {
+  display: block;
+  clear: both;
+  color: #888;
+  font-size: 10px;
+  padding: 0 15px 10px 15px;
+  width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.mpcl-listing-grid .entries-row .mpcl-entry small i.fa {
+  margin-right: 2px;
+}
+.mpcl-listing-grid .entries-row .mpcl-entry small .separator {
+  color: #aaa;
+  margin: 0 3px;
+}
+.mpcl-listing-grid .thumbnail {
+  width: 100%;
+}
+.mpcl-listing-grid .thumbnail a {
+  display: inline-block;
+  border: 1px solid #e0e0e0;
+}
+.mpcl-listing-grid .thumbnail img {
+  width: 100%;
+  max-width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 2px;
+  margin: 0 !important;
+  transition: 0.2s all ease;
+}
+.mpcl-listing-grid .thumbnail img a:hover {
+  cursor: pointer;
+  box-shadow: 0 0 10px -5px #888;
+  opacity: 0.9;
+}
+.mpcl-listing-grid tbody.captions a {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+.mpcl-listing-grid tbody.captions a:hover {
+  opacity: 0.8;
+}
+.mpcl-listing-grid h5 {
+  text-align: center;
+}
+@media all and (max-width: 1600px) {
+  .mpcl-listing-grid h5 {
+    font-size: 100% !important;
+  }
+}
+.mpcl-listing-grid .pagination {
+  display: block;
+  width: 100%;
+  clear: both;
+}
+.mpcl-listing-grid .pagination .page-prev {
+  float: left;
+  display: inline-block;
+}
+.mpcl-listing-grid .pagination .page-next {
+  float: right;
+  display: inline-block;
+}
+.mpcl-single {
+  width: 100%;
+  clear: both;
+  display: block;
+  margin-bottom: 15px;
+}
+.mpcl-single .head > td {
+  vertical-align: top;
+  padding: 15px 8px;
+}
+.mpcl-single .head img {
+  max-width: 100%;
+}
+.mpcl-single .head table {
+  width: 100%;
+  border: none;
+}
+.mpcl-single .head table tr:first-child td {
+  border-top: none;
+}
+.mpcl-single .head table tr:last-child td {
+  border-bottom: none;
+}
+.mpcl-single .head table tr td {
+  border-left: none;
+  border-right: none;
+}
+.mpcl-single .head table tr td:first-child {
+  width: 150px;
+  font-weight: bold;
+}
+.mpcl-single .description td,
+.mpcl-single .photos td {
+  padding: 15px 8px;
+}
+.mpcl-single table > tbody > tr:last-child td {
+  border-bottom: none;
+}
+.mpcl-single img.thumbnail {
+  max-width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 2px;
+  margin: 0 !important;
+  transition: 0.2s all ease;
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 1px;
+}
+.mpcl-single .photos img.thumbnail:hover {
+  opacity: 0.8;
+}
+.mpcl-single .trigger-back {
+  margin-bottom: 10px;
+  display: inline-block;
+}
+.mpcl-embed .mpcl-box {
+  display: table;
+  clear: both;
+  width: 100%;
+  max-width: 500px;
+  padding: 10px 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #d0d0d0;
+  margin-bottom: 15px;
+  table-layout: fixed;
+  border-radius: 2px;
+}
+.mpcl-embed .mpcl-box.full-width {
+  max-width: none;
+}
+.mpcl-embed .mpcl-box h1,
+.mpcl-embed .mpcl-box h2,
+.mpcl-embed .mpcl-box h3,
+.mpcl-embed .mpcl-box h4,
+.mpcl-embed .mpcl-box h5,
+.mpcl-embed .mpcl-box h6,
+.mpcl-embed .mpcl-box p,
+.mpcl-embed .mpcl-box a {
+  text-decoration: none;
+  text-transform: none;
+  box-shadow: none;
+  font-family: 'Arial', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+.mpcl-embed .mpcl-box .mpcl-box-thumbnail {
+  width: 140px;
+  display: table-cell;
+  padding-right: 10px;
+  vertical-align: top;
+}
+.mpcl-embed .mpcl-box .mpcl-box-thumbnail img {
+  background: #fff;
+  padding: 2px;
+  border: 1px solid #d0d0d0;
+}
+.mpcl-embed .mpcl-box .mpcl-box-contents {
+  display: table-cell;
+  vertical-align: top;
+}
+.mpcl-embed .mpcl-box .mpcl-box-contents .mpcl-box-info {
+  display: block;
+  clear: both;
+  width: 100%;
+}
+.mpcl-embed .mpcl-box .mpcl-box-contents .mpcl-box-info h6 {
+  font-size: 18px;
+  color: #000;
+  margin: 0 0 2px 0;
+  padding: 0;
+  font-weight: bold;
+}
+.mpcl-embed .mpcl-box .mpcl-box-contents .mpcl-box-info p {
+  font-size: 13px;
+  color: #555;
+  margin: 0;
+  padding: 0;
+}
+.mpcl-embed .mpcl-box .mpcl-box-contents .mpcl-box-cta {
+  display: block;
+  clear: both;
+  width: 100%;
+}
+.mpcl-embed .mpcl-box .mpcl-box-contents .mpcl-box-cta a {
+  display: inline-block;
+  float: right;
+  padding: 5px 10px;
+  background: #fff;
+  border: 1px solid #d0d0d0;
+  border-radius: 2px;
+  font-size: 13px;
+  color: #222;
+}
+.mpcl-embed .mpcl-box .mpcl-box-contents .mpcl-box-cta a:hover {
+  background: #f7f7f7;
+}
