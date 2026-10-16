@@ -4,7 +4,7 @@
 Plugin Name: MyPCList
 Plugin URI: http://mypclist.net/wordpress
 Description: Official MyPCList integration plugin. Show your machine collection on your own blog!
-Version: 1.1
+Version: 1.2.2
 Author: pfcode
 Author URI: http://mypclist.net
 Text Domain: mpcl
