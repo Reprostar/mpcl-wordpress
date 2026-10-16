@@ -24,6 +24,12 @@ all settings and the synced machines; no reactivation is needed.
 - Front-end assets are loaded only on pages that use the shortcode.
 - The settings page requires the `manage_options` capability and sanitises
   its input.
+- The API token is no longer shown on the settings page and is stored encrypted
+  (libsodium). The key comes from the site's auth salt, or from
+  `MPCL_ENCRYPTION_KEY` if defined in wp-config.php. Changing the salts makes the
+  stored token unreadable; the settings page then asks for it again. A token
+  saved by 1.x is encrypted on the first request after the update. Going back to
+  1.x requires entering the token again.
 - No PHP deprecation notices on PHP 8.x.
 
 After updating, the `templates_c/` and `cache/` directories that 1.x left in the

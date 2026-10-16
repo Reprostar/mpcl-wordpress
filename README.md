@@ -38,4 +38,8 @@ This WordPress plugin bundles:
 Version 2.x requires **WordPress 6.9** or newer and **PHP 7.4** or newer. The collection is refreshed in the
 background by WP-Cron; sites with `DISABLE_WP_CRON` need a system cron calling `wp-cron.php`.
 
+The API token is stored encrypted with a key derived from the site's security salts. To use a dedicated
+key instead, define `MPCL_ENCRYPTION_KEY` in `wp-config.php` before entering the token. This protects the
+token in database dumps and backups, not on a compromised server.
+
 Version 1.2.2 is the last release for older sites (declared for WordPress 4.4 on PHP 5.6).
