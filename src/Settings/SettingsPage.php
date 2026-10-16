@@ -142,7 +142,7 @@ final class SettingsPage
     {
         $key = substr($section['id'], strlen(self::SECTION_PREFIX));
         $descriptions = [
-            'auth' => __('Enter your API authorization codes, which can be generated <a target="_blank" href="http://mypclist.net/settings/api">here</a>. They\'re required to connect with MyPCList server.', 'mpcl'),
+            'auth' => __('Enter your API authorization codes, which can be generated <a target="_blank" href="https://mypclist.net/settings/api">here</a>. They\'re required to connect with MyPCList server.', 'mpcl'),
             'catalog' => __('Please enter ID of the page that is used as a Catalog template. This reference is required to display links in embedded machine boxes in posts.', 'mpcl'),
             'appearance' => __('There you can customize plugin appearance on yout blog.', 'mpcl'),
             'cache' => __('For less server-to-server bandwith usage you can enable cache of your data. Activating cache will make your blog loading faster.', 'mpcl'),

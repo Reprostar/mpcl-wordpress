@@ -44,7 +44,10 @@ final class Plugin
         $scheduler = $this->createScheduler($settingsRepository, $machines);
         $presenter = new MachinePresenter(new BbCode(), $baseUrl . 'img/sample_machine.png');
 
-        load_plugin_textdomain('mpcl', false, dirname(plugin_basename($this->file)) . '/languages/');
+        $languagesPath = dirname(plugin_basename($this->file)) . '/languages/';
+        add_action('init', static function () use ($languagesPath): void {
+            load_plugin_textdomain('mpcl', false, $languagesPath);
+        });
 
         $assets = new Assets($baseUrl, MPCL_VERSION);
         $assets->register();
