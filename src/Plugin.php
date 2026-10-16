@@ -32,6 +32,17 @@ final class Plugin
         $this->wpdb = $wpdb;
     }
 
+    public static function create(string $file): self
+    {
+        global $wpdb;
+
+        if (!$wpdb instanceof \wpdb) {
+            throw new \RuntimeException('mpcl: $wpdb is not available');
+        }
+
+        return new self($file, $wpdb);
+    }
+
     public function boot(): void
     {
         $wpdb = $this->wpdb;
@@ -63,7 +74,7 @@ final class Plugin
         ))->register();
 
         if (is_admin()) {
-            (new SettingsPage($settingsRepository, $machines, $scheduler, $directory . 'templates'))->register();
+            (new SettingsPage($machines, $scheduler, $directory . 'templates'))->register();
         }
 
         if (!$schema->isCurrent()) {
@@ -94,7 +105,8 @@ final class Plugin
     private function createScheduler(SettingsRepository $settingsRepository, MachineRepository $machines): SyncScheduler
     {
         $settings = $settingsRepository->load();
-        $apiUrl = defined('MPCL_API_URL') ? (string) constant('MPCL_API_URL') : ApiClient::DEFAULT_URL;
+        $configuredUrl = defined('MPCL_API_URL') ? constant('MPCL_API_URL') : null;
+        $apiUrl = is_string($configuredUrl) ? $configuredUrl : ApiClient::DEFAULT_URL;
         $client = new ApiClient($apiUrl, $settings->apiKey, $settings->apiToken);
 
         return new SyncScheduler(new Synchronizer($client, $machines), $settingsRepository);

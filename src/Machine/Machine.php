@@ -36,7 +36,7 @@ final class Machine
     public ?int $synchronized = null;
 
     /**
-     * @param array<string, mixed> $data one item of an API v1 machines list
+     * @param array<mixed> $data one item of an API v1 machines list
      */
     public static function fromApi(array $data): self
     {
@@ -52,7 +52,7 @@ final class Machine
     }
 
     /**
-     * @param array<string, mixed> $row one row of the machines table
+     * @param array<mixed> $row one row of the machines table
      */
     public static function fromRow(array $row): self
     {
@@ -109,7 +109,7 @@ final class Machine
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<mixed> $data
      */
     private static function fromScalars(array $data): self
     {

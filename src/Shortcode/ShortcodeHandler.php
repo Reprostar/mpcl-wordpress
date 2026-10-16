@@ -8,6 +8,7 @@ use Reprostar\MpclWordpress\Assets;
 use Reprostar\MpclWordpress\Machine\MachineRepository;
 use Reprostar\MpclWordpress\Settings\Settings;
 use Reprostar\MpclWordpress\Settings\SettingsRepository;
+use Reprostar\MpclWordpress\Support\Cast;
 use Reprostar\MpclWordpress\View\BoxView;
 use Reprostar\MpclWordpress\View\ListingView;
 use Reprostar\MpclWordpress\View\MachinePresenter;
@@ -68,7 +69,7 @@ final class ShortcodeHandler
     }
 
     /**
-     * @param array<string, string>|string $attributes WordPress passes '' when the shortcode has none
+     * @param array<int|string, string>|string $attributes WordPress passes '' when the shortcode has none
      */
     public function handle($attributes): string
     {
@@ -81,7 +82,7 @@ final class ShortcodeHandler
             return $this->renderBox((int) $attributes['id'], $settings);
         }
 
-        $machineId = (int) get_query_var(self::QUERY_VAR, 0);
+        $machineId = Cast::int(get_query_var(self::QUERY_VAR, 0));
         if (0 < $machineId) {
             return $this->renderSingle($machineId);
         }
@@ -91,14 +92,17 @@ final class ShortcodeHandler
         return $this->renderListing($columns, $settings);
     }
 
+    /**
+     * @param positive-int $columns
+     */
     private function renderListing(int $columns, Settings $settings): string
     {
-        $rows = [];
-        foreach ($this->machines->findAll('id', 'DESC', $settings->getListingLimit(), 0) as $index => $machine) {
-            $rows[intdiv($index, $columns)][] = $this->presenter->forListing($machine);
-        }
+        $entries = array_map(
+            [$this->presenter, 'forListing'],
+            $this->machines->findAll('id', 'DESC', $settings->getListingLimit(), 0)
+        );
 
-        return $this->renderer->render('listing', new ListingView((string) (100 / $columns) . '%', $rows));
+        return $this->renderer->render('listing', new ListingView((string) (100 / $columns) . '%', array_chunk($entries, $columns)));
     }
 
     private function renderSingle(int $machineId): string

@@ -6,6 +6,7 @@ namespace Reprostar\MpclWordpress\Machine;
 
 use Reprostar\MpclWordpress\Settings\Settings;
 use Reprostar\MpclWordpress\Settings\SettingsRepository;
+use Reprostar\MpclWordpress\Support\Cast;
 
 defined('ABSPATH') || exit;
 
@@ -107,7 +108,7 @@ final class SyncScheduler
             return false;
         }
 
-        $lastAttempt = max($settings->lastListingCache, (int) get_option(self::ATTEMPT_OPTION, 0));
+        $lastAttempt = max($settings->lastListingCache, Cast::int(get_option(self::ATTEMPT_OPTION, 0)));
 
         return time() - $lastAttempt >= $settings->cacheAutoupdateInterval;
     }

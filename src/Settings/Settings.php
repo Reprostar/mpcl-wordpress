@@ -41,7 +41,7 @@ final class Settings
     ];
 
     /**
-     * @param array<string, mixed> $option
+     * @param array<mixed> $option
      */
     public static function fromArray(array $option): self
     {

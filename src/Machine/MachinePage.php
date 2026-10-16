@@ -19,7 +19,7 @@ final class MachinePage
     public array $items = [];
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<mixed> $data
      */
     public static function fromApi(array $data): self
     {

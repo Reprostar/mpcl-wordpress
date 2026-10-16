@@ -6,6 +6,7 @@ namespace Reprostar\MpclWordpress\Settings;
 
 use Reprostar\MpclWordpress\Machine\MachineRepository;
 use Reprostar\MpclWordpress\Machine\SyncScheduler;
+use Reprostar\MpclWordpress\Support\Cast;
 
 defined('ABSPATH') || exit;
 
@@ -19,19 +20,16 @@ final class SettingsPage
     private const FIELD_TEXT = 'text';
     private const FIELD_CHECKBOX = 'checkbox';
 
-    private SettingsRepository $settings;
     private MachineRepository $machines;
     private SyncScheduler $scheduler;
     private string $templateDirectory;
 
     public function __construct(
-        SettingsRepository $settings,
         MachineRepository $machines,
         SyncScheduler $scheduler,
         string $templateDirectory
     )
     {
-        $this->settings = $settings;
         $this->machines = $machines;
         $this->scheduler = $scheduler;
         $this->templateDirectory = rtrim($templateDirectory, '/');
@@ -99,22 +97,22 @@ final class SettingsPage
         $previousToken = $settings->apiToken;
 
         if (array_key_exists('api_key', $input)) {
-            $settings->apiKey = sanitize_text_field((string) $input['api_key']);
+            $settings->apiKey = sanitize_text_field(Cast::string($input['api_key']));
         }
         if (array_key_exists('api_token', $input)) {
-            $settings->apiToken = sanitize_text_field((string) $input['api_token']);
+            $settings->apiToken = sanitize_text_field(Cast::string($input['api_token']));
         }
         if (array_key_exists('catalog_page_id', $input)) {
-            $settings->catalogPageId = absint($input['catalog_page_id']);
+            $settings->catalogPageId = absint(Cast::string($input['catalog_page_id']));
         }
         if (array_key_exists('entries_per_page', $input)) {
-            $settings->entriesPerPage = absint($input['entries_per_page']);
+            $settings->entriesPerPage = absint(Cast::string($input['entries_per_page']));
         }
         if (array_key_exists('cache_autoupdate_interval', $input)) {
-            $settings->cacheAutoupdateInterval = absint($input['cache_autoupdate_interval']);
+            $settings->cacheAutoupdateInterval = absint(Cast::string($input['cache_autoupdate_interval']));
         }
         if (array_key_exists('last_listing_cache', $input)) {
-            $settings->lastListingCache = absint($input['last_listing_cache']);
+            $settings->lastListingCache = absint(Cast::string($input['last_listing_cache']));
         }
         if (array_key_exists('box_full_width', $input)) {
             $settings->boxFullWidth = (bool) $input['box_full_width'];

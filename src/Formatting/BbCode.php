@@ -87,6 +87,7 @@ final class BbCode
         return $tokens;
     }
 
+    /** @phpstan-impure */
     private function hasNext(): bool
     {
         return $this->position < count($this->tokens);

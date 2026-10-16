@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reprostar\MpclWordpress\Database;
 
+use Reprostar\MpclWordpress\Support\Cast;
+
 defined('ABSPATH') || exit;
 
 /**
@@ -34,7 +36,7 @@ final class Schema
 
     public function isCurrent(): bool
     {
-        return self::VERSION <= (int) get_option(self::VERSION_OPTION, 0);
+        return self::VERSION <= Cast::int(get_option(self::VERSION_OPTION, 0));
     }
 
     public function migrate(): void
@@ -111,8 +113,8 @@ final class Schema
             2
         );
 
-        foreach (array_unique($indexes) as $index) {
-            $this->wpdb->query("ALTER TABLE `{$this->machinesTable}` DROP INDEX `" . esc_sql((string) $index) . '`');
+        foreach (array_unique(array_filter($indexes, 'is_string')) as $index) {
+            $this->wpdb->query("ALTER TABLE `{$this->machinesTable}` DROP INDEX `" . esc_sql($index) . '`');
         }
     }
 }

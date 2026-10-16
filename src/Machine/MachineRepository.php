@@ -9,7 +9,6 @@ defined('ABSPATH') || exit;
 final class MachineRepository
 {
     private const ORDER_COLUMNS = ['id', 'name', 'created'];
-    private const ORDER_DIRECTIONS = ['DESC', 'ASC'];
 
     private \wpdb $wpdb;
     private string $table;
@@ -61,7 +60,7 @@ final class MachineRepository
     public function find(int $id): ?Machine
     {
         $row = $this->wpdb->get_row(
-            $this->wpdb->prepare("SELECT * FROM `{$this->table}` WHERE id = %d LIMIT 1", $id),
+            $this->wpdb->prepare('SELECT * FROM %i WHERE id = %d LIMIT 1', $this->table, $id),
             ARRAY_A
         );
 
@@ -73,16 +72,15 @@ final class MachineRepository
      */
     public function findAll(string $orderBy, string $orderDirection, int $limit, int $offset): array
     {
-        $query = "SELECT * FROM `{$this->table}`";
-
-        if (in_array($orderBy, self::ORDER_COLUMNS, true) && in_array($orderDirection, self::ORDER_DIRECTIONS, true)) {
-            $query .= " ORDER BY {$orderBy} {$orderDirection}";
+        if (!in_array($orderBy, self::ORDER_COLUMNS, true)) {
+            $query = $this->wpdb->prepare('SELECT * FROM %i LIMIT %d OFFSET %d', $this->table, $limit, $offset);
+        } elseif ('ASC' === $orderDirection) {
+            $query = $this->wpdb->prepare('SELECT * FROM %i ORDER BY %i ASC LIMIT %d OFFSET %d', $this->table, $orderBy, $limit, $offset);
+        } else {
+            $query = $this->wpdb->prepare('SELECT * FROM %i ORDER BY %i DESC LIMIT %d OFFSET %d', $this->table, $orderBy, $limit, $offset);
         }
 
-        $rows = $this->wpdb->get_results(
-            $this->wpdb->prepare($query . ' LIMIT %d OFFSET %d', $limit, $offset),
-            ARRAY_A
-        );
+        $rows = $this->wpdb->get_results($query, ARRAY_A);
         if (!is_array($rows)) {
             return [];
         }
