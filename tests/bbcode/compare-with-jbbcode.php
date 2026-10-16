@@ -17,6 +17,8 @@ if (!isset($argv[1])) {
     exit(2);
 }
 
+define('ABSPATH', __DIR__ . '/');
+
 function esc_html($text) { return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8'); }
 function esc_attr($text) { return htmlspecialchars((string) $text, ENT_QUOTES, 'UTF-8'); }
 function esc_url($url) { return htmlspecialchars((string) $url, ENT_QUOTES, 'UTF-8'); }
@@ -49,6 +51,7 @@ $fixed = [
 $failures = 0;
 $skipped = 0;
 $checked = 0;
+$known = 0;
 $ours = new \Reprostar\MpclWordpress\Formatting\BbCode();
 
 for ($n = 0; $n < $iterations + count($fixed); ++$n) {
@@ -74,6 +77,13 @@ for ($n = 0; $n < $iterations + count($fixed); ++$n) {
     $actual = $ours->toHtml($input);
     ++$checked;
 
+    // Known difference: with more than one option JBBCode emits a literal
+    // "{option}" placeholder; the plugin leaves the tag as text instead.
+    if (false !== strpos($expected, '{option}')) {
+        ++$known;
+        continue;
+    }
+
     if (html_entity_decode($actual, ENT_QUOTES) !== $expected) {
         if ($failures < 15) {
             printf("MISMATCH\n  input:    %s\n  jbbcode:  %s\n  plugin:   %s\n", json_encode($input), json_encode($expected), json_encode($actual));
@@ -82,5 +92,5 @@ for ($n = 0; $n < $iterations + count($fixed); ++$n) {
     }
 }
 
-printf("checked %d, mismatches %d, skipped (JBBCode threw) %d\n", $checked, $failures, $skipped);
-exit($failures > 0 ? 1 : 0);
+printf("checked %d, mismatches %d, known differences %d, skipped (JBBCode threw) %d\n", $checked, $failures, $known, $skipped);
+exit($failures > 0 || 0 === $checked ? 1 : 0);

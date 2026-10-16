@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Runs every check: syntax on PHP 7.4 and the newest PHP, PHPCS (PHP 7.4+
+# compatibility), PHPStan, the BBCode differential test and the Docker smoke
+# tests on WordPress 6.9 with PHP 7.4 and 8.4.
+#
+# Set LEGACY_PLUGIN=<unpacked 1.x plugin directory> to also run the upgrade test.
+# Requires Docker and `composer install`.
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+FILES=$(find mpcl.php src templates -name '*.php')
+
+step() { printf '\n### %s\n' "$1"; }
+
+step "Syntax (PHP 7.4)"
+docker run --rm -v "$PWD":/app:ro -w /app php:7.4-cli sh -c "for f in $(echo $FILES); do php -l \$f >/dev/null || exit 1; done" && echo ok
+
+step "Syntax (latest PHP)"
+docker run --rm -v "$PWD":/app:ro -w /app php:cli sh -c "for f in $(echo $FILES); do php -l \$f >/dev/null || exit 1; done" && echo ok
+
+step "PHPCS"
+vendor/bin/phpcs -q && echo ok
+
+step "PHPStan"
+vendor/bin/phpstan analyse --no-progress --memory-limit=1G
+
+step "BBCode differential test"
+php tests/bbcode/compare-with-jbbcode.php vendor/jbbcode/jbbcode/JBBCode 20000
+
+for php_version in 7.4 8.4; do
+    step "Smoke test: WordPress 6.9, PHP $php_version"
+    tests/smoke/run.sh "$php_version" 6.9 fresh
+done
+
+if [ -n "${LEGACY_PLUGIN:-}" ]; then
+    step "Upgrade test from $LEGACY_PLUGIN"
+    tests/smoke/run.sh 7.4 6.9 upgrade
+fi
+
+printf '\nAll checks passed.\n'

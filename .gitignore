@@ -1,6 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/
-composer.lock
 mpcl/
 vendor/
 *.zip
+# Smoke test downloads and temporary plugin copies
+tests/smoke/.cache/
