@@ -31,7 +31,7 @@ class PluginSettings{
 
 
     public function register_options_page(){
-        add_options_page('MyPCList Integration', 'MyPCList Integration', 'administrator', 'mpcl-settings', array(&$this, 'view_options_page'));
+        add_options_page('MyPCList Integration', 'MyPCList Integration', 'manage_options', 'mpcl-settings', array(&$this, 'view_options_page'));
     }
 
     public function register_settings(){
@@ -116,7 +116,47 @@ class PluginSettings{
             $this->database->initDatabase(true);
         }
 
-        return $input;
+        return $this->sanitize_options($input);
+    }
+
+    private function sanitize_options($input) {
+        if (!is_array($input)) {
+            $input = [];
+        }
+
+        $current = get_option('mpcl-options');
+        if (!is_array($current)) {
+            $current = [];
+        }
+
+        $textFields = ['api_key', 'api_token'];
+        $integerFields = ['catalog_page_id', 'entries_per_page', 'cache_autoupdate_interval', 'last_listing_cache'];
+        $checkboxFields = ['box_full_width', 'cache_images', 'cache_autoupdate_enabled'];
+
+        $sanitized = [];
+        foreach ($textFields as $key) {
+            if (array_key_exists($key, $input)) {
+                $sanitized[$key] = sanitize_text_field((string) $input[$key]);
+            } elseif (array_key_exists($key, $current)) {
+                $sanitized[$key] = (string) $current[$key];
+            }
+        }
+        foreach ($integerFields as $key) {
+            if (array_key_exists($key, $input)) {
+                $sanitized[$key] = absint($input[$key]);
+            } elseif (array_key_exists($key, $current)) {
+                $sanitized[$key] = absint($current[$key]);
+            }
+        }
+        foreach ($checkboxFields as $key) {
+            if (array_key_exists($key, $input)) {
+                $sanitized[$key] = (int) (bool) $input[$key];
+            } elseif (array_key_exists($key, $current)) {
+                $sanitized[$key] = (int) (bool) $current[$key];
+            }
+        }
+
+        return $sanitized;
     }
 
     public function register_assets(){
@@ -146,7 +186,7 @@ class PluginSettings{
             $value = '';
         }
 
-        echo '<input type="text" name="'.$opt.'['.$subopt.']" value="'.$value.'"/>';
+        echo '<input type="text" name="'.esc_attr($opt.'['.$subopt.']').'" value="'.esc_attr($value).'"/>';
     }
 
     public function field_checkbox($args){
@@ -160,8 +200,8 @@ class PluginSettings{
             $value = '';
         }
 
-        echo '<input type="hidden" name="'.$opt.'['.$subopt.']" value="0"/>';
-        echo '<input type="checkbox" name="'.$opt.'['.$subopt.']" value="1"'.($value ? ' checked="checked"' : '').'/>';
+        echo '<input type="hidden" name="'.esc_attr($opt.'['.$subopt.']').'" value="0"/>';
+        echo '<input type="checkbox" name="'.esc_attr($opt.'['.$subopt.']').'" value="1"'.checked((bool) $value, true, false).'/>';
     }
 
     public function description_auth(){
