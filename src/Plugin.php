@@ -55,11 +55,17 @@ final class Plugin
         ))->register();
 
         if (is_admin()) {
-            (new SettingsPage($settingsRepository, $schema, $directory . 'templates'))->register();
+            (new SettingsPage($settingsRepository, $machines, $directory . 'templates'))->register();
         }
 
-        if (!$schema->isInitialized()) {
-            $schema->initialize();
+        if (!$schema->isCurrent()) {
+            $schema->migrate();
         }
+    }
+
+    public function activate(): void
+    {
+        (new Schema($this->wpdb))->migrate();
+        (new SettingsRepository())->load();
     }
 }

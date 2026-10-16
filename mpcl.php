@@ -14,6 +14,10 @@ License: MIT
 
 require_once __DIR__ . '/src/autoload.php';
 
+register_activation_hook(__FILE__, static function (): void {
+    (new \Reprostar\MpclWordpress\Plugin(__FILE__, $GLOBALS['wpdb']))->activate();
+});
+
 add_action('plugins_loaded', static function (): void {
     (new \Reprostar\MpclWordpress\Plugin(__FILE__, $GLOBALS['wpdb']))->boot();
 });

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Reprostar\MpclWordpress\Settings;
 
-use Reprostar\MpclWordpress\Database\Schema;
+use Reprostar\MpclWordpress\Machine\MachineRepository;
 
 /**
  * Settings → MyPCList Integration.
@@ -17,13 +17,13 @@ final class SettingsPage
     private const FIELD_CHECKBOX = 'checkbox';
 
     private SettingsRepository $settings;
-    private Schema $schema;
+    private MachineRepository $machines;
     private string $templateDirectory;
 
-    public function __construct(SettingsRepository $settings, Schema $schema, string $templateDirectory)
+    public function __construct(SettingsRepository $settings, MachineRepository $machines, string $templateDirectory)
     {
         $this->settings = $settings;
-        $this->schema = $schema;
+        $this->machines = $machines;
         $this->templateDirectory = rtrim($templateDirectory, '/');
     }
 
@@ -78,7 +78,7 @@ final class SettingsPage
     {
         if (isset($_POST['reset'])) {
             add_settings_error('settingName', 'SettingSlug', __('Cache has been cleared.', 'mpcl'), 'updated');
-            $this->schema->initialize(true);
+            $this->machines->deleteAll();
         }
 
         $input = is_array($input) ? $input : [];

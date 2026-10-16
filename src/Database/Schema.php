@@ -4,17 +4,25 @@ declare(strict_types=1);
 
 namespace Reprostar\MpclWordpress\Database;
 
+/**
+ * Creates and migrates the plugin's tables. Version 1 is everything 1.x created
+ * (no version option was stored then); the migration keeps the machines table
+ * and its rows.
+ */
 final class Schema
 {
+    public const VERSION = 2;
+    private const VERSION_OPTION = 'mpcl_db_version';
+
     private \wpdb $wpdb;
     private string $machinesTable;
-    private string $optionsTable;
+    private string $legacyOptionsTable;
 
     public function __construct(\wpdb $wpdb)
     {
         $this->wpdb = $wpdb;
         $this->machinesTable = $wpdb->prefix . 'mpcl_machines';
-        $this->optionsTable = $wpdb->prefix . 'mpcl_options';
+        $this->legacyOptionsTable = $wpdb->prefix . 'mpcl_options';
     }
 
     public function getMachinesTable(): string
@@ -22,70 +30,87 @@ final class Schema
         return $this->machinesTable;
     }
 
-    public function isInitialized(): bool
+    public function isCurrent(): bool
     {
-        return $this->tableExists($this->machinesTable) && $this->tableExists($this->optionsTable);
+        return self::VERSION <= (int) get_option(self::VERSION_OPTION, 0);
+    }
+
+    public function migrate(): void
+    {
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+        dbDelta($this->machinesTableDefinition());
+        $this->convertToUtf8mb4();
+        $this->dropDuplicateIdIndexes();
+        $this->wpdb->query("DROP TABLE IF EXISTS `{$this->legacyOptionsTable}`");
+
+        update_option(self::VERSION_OPTION, self::VERSION);
+    }
+
+    private function machinesTableDefinition(): string
+    {
+        return "CREATE TABLE {$this->machinesTable} (
+  id int(11) NOT NULL,
+  uid int(11) DEFAULT NULL,
+  created int(11) DEFAULT NULL,
+  modified int(11) DEFAULT NULL,
+  slug tinytext,
+  is_visible tinyint(1) NOT NULL DEFAULT '0',
+  description text,
+  physical_state int(11) DEFAULT NULL,
+  custom_name tinytext,
+  name tinytext,
+  manufacturer tinytext,
+  manufacturer_id int(11) DEFAULT NULL,
+  year_of_production tinytext,
+  type_name tinytext,
+  type_id int(11) DEFAULT NULL,
+  serial_number tinytext,
+  price tinytext,
+  photos text,
+  is_extension tinyint(1) NOT NULL DEFAULT '0',
+  is_standalone tinyint(1) NOT NULL DEFAULT '0',
+  synchronized int(11) DEFAULT NULL,
+  PRIMARY KEY  (id)
+) {$this->wpdb->get_charset_collate()};";
     }
 
     /**
-     * Recreates the machines table, and the options table unless asked to keep it.
+     * 1.x created the table with the server's default charset, which on many
+     * hosts cannot store 4-byte characters such as emoji. Converting in place
+     * keeps the rows.
      */
-    public function initialize(bool $preserveOptions = false): void
+    private function convertToUtf8mb4(): void
     {
-        $this->recreateMachinesTable();
-
-        if (!$preserveOptions) {
-            $this->recreateOptionsTable();
+        if ('utf8mb4' !== $this->wpdb->charset) {
+            return;
         }
+
+        $collation = $this->wpdb->get_var($this->wpdb->prepare(
+            'SELECT TABLE_COLLATION FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s',
+            $this->machinesTable
+        ));
+
+        if (!is_string($collation) || 0 === strpos($collation, 'utf8mb4_')) {
+            return;
+        }
+
+        $collate = '' !== (string) $this->wpdb->collate ? ' COLLATE ' . $this->wpdb->collate : '';
+        $this->wpdb->query("ALTER TABLE `{$this->machinesTable}` CONVERT TO CHARACTER SET utf8mb4{$collate}");
     }
 
-    private function recreateOptionsTable(): void
+    /**
+     * 1.x added UNIQUE(id) next to the primary key every time it recreated the table.
+     */
+    private function dropDuplicateIdIndexes(): void
     {
-        $this->wpdb->get_results("DROP TABLE `" . $this->optionsTable . "`;", OBJECT);
-        $this->wpdb->get_results(
-            "CREATE TABLE `" . $this->optionsTable . "` (
-                `name` TINYTEXT NOT NULL ,
-                `value` TEXT NOT NULL
-              )  ENGINE = InnoDB DEFAULT CHARSET=utf8;",
-            OBJECT
+        $indexes = $this->wpdb->get_col(
+            "SHOW INDEX FROM `{$this->machinesTable}` WHERE Key_name <> 'PRIMARY' AND Non_unique = 0 AND Column_name = 'id'",
+            2
         );
-    }
 
-    private function recreateMachinesTable(): void
-    {
-        $this->wpdb->get_results("DROP TABLE `" . $this->machinesTable . "`", OBJECT);
-        $this->wpdb->get_results(
-            "CREATE TABLE `" . $this->machinesTable . "`
-                (
-                id INT(11) PRIMARY KEY NOT NULL,
-                uid INT(11),
-                created INT(11),
-                modified INT(11),
-                slug TINYTEXT,
-                is_visible TINYINT(1) DEFAULT '0' NOT NULL,
-                description TEXT,
-                physical_state INT(11),
-                custom_name TINYTEXT,
-                name TINYTEXT,
-                manufacturer TINYTEXT,
-                manufacturer_id INT(11),
-                year_of_production TINYTEXT,
-                type_name TINYTEXT,
-                type_id INT(11),
-                serial_number TINYTEXT,
-                price TINYTEXT,
-                photos TEXT,
-                is_extension TINYINT(1) DEFAULT '0' NOT NULL,
-                is_standalone TINYINT(1) DEFAULT '0' NOT NULL,
-                synchronized INT(11)
-            );",
-            OBJECT
-        );
-        $this->wpdb->get_results("ALTER TABLE `" . $this->machinesTable . "` ADD UNIQUE(`id`);", OBJECT);
-    }
-
-    private function tableExists(string $table): bool
-    {
-        return $table === $this->wpdb->get_var("SHOW TABLES LIKE '" . $table . "'");
+        foreach (array_unique($indexes) as $index) {
+            $this->wpdb->query("ALTER TABLE `{$this->machinesTable}` DROP INDEX `" . esc_sql((string) $index) . '`');
+        }
     }
 }
