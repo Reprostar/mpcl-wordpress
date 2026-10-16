@@ -32,6 +32,8 @@ all settings and the synced machines; no reactivation is needed.
   1.x requires entering the token again.
 - The catalogue page is chosen from a list of pages instead of typing its ID;
   pages that use the shortcode are marked.
+- A "Test connection" button on the settings page checks the API key and token
+  (typed or saved) without saving, and reports the collection size or the error.
 - No PHP deprecation notices on PHP 8.x.
 
 After updating, the `templates_c/` and `cache/` directories that 1.x left in the

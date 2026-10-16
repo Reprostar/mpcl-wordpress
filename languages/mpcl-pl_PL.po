@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MyPClist WP\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/p\n"
-"POT-Creation-Date: 2026-10-16T20:09:40+00:00\n"
+"POT-Creation-Date: 2026-10-16T20:15:10+00:00\n"
 "PO-Revision-Date: 2016-12-04 23:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: MyPClist\n"
@@ -42,89 +42,124 @@ msgstr ""
 msgid "https://mypclist.net"
 msgstr ""
 
-#: src/Settings/SettingsPage.php:99
+#: src/Settings/ConnectionTest.php:52
+msgid "Testing..."
+msgstr "Testowanie..."
+
+#: src/Settings/ConnectionTest.php:58
+msgid "Test connection"
+msgstr "Testuj połączenie"
+
+#: src/Settings/ConnectionTest.php:65
+msgid "You are not allowed to do this."
+msgstr "Nie masz uprawnień do wykonania tej operacji."
+
+#: src/Settings/ConnectionTest.php:75
+msgid "Enter the API key and token first."
+msgstr "Najpierw wprowadź klucz i token API."
+
+#. translators: %s: error reported by the API or the HTTP client.
+#: src/Settings/ConnectionTest.php:82
+#, php-format
+msgid "Connection failed: %s"
+msgstr "Połączenie nieudane: %s"
+
+#. translators: %d: number of machines in the MyPCList collection.
+#: src/Settings/ConnectionTest.php:87
+#, php-format
+msgid "Connection works. Your collection has %d machine."
+msgid_plural "Connection works. Your collection has %d machines."
+msgstr[0] "Połączenie działa. Twoja kolekcja ma %d maszynę."
+msgstr[1] "Połączenie działa. Twoja kolekcja ma %d maszyny."
+msgstr[2] "Połączenie działa. Twoja kolekcja ma %d maszyn."
+
+#: src/Settings/SettingsPage.php:103
 msgid "Cache has been cleared."
 msgstr "Pamięć podręczna została wyczyszczona."
 
-#: src/Settings/SettingsPage.php:157
+#: src/Settings/SettingsPage.php:161
 msgid "Enter your API authorization codes, which can be generated <a target=\"_blank\" href=\"https://mypclist.net/settings/api\">here</a>. They're required to connect with MyPCList server."
 msgstr "Wprowadź dane autoryzacyjne API, które mogą być wygenerowane <a target=\"_blank\" href=\"https://mypclist.net/settings/api\">tutaj</a>. Dane te są niezbędne do połączenia z serwerem MyPClist."
 
-#: src/Settings/SettingsPage.php:158
+#: src/Settings/SettingsPage.php:162
 msgid "Select the page that shows your catalogue (the one with the [mpcl] shortcode). Machine boxes embedded in posts link to it."
 msgstr "Wybierz stronę, na której wyświetlany jest katalog (tę z shortcode'em [mpcl]). Boxy maszyn umieszczane we wpisach prowadzą do tej strony."
 
-#: src/Settings/SettingsPage.php:159
+#: src/Settings/SettingsPage.php:163
 msgid "There you can customize plugin appearance on yout blog."
 msgstr "Tutaj możesz zmienić wygląd pluginu na Twoim blogu."
 
-#: src/Settings/SettingsPage.php:160
+#: src/Settings/SettingsPage.php:164
 msgid "For less server-to-server bandwith usage you can enable cache of your data. Activating cache will make your blog loading faster."
 msgstr "W celu zmniejszenia zużycia transferu na serwerze, możesz włączyć pamięć podręczną danych. Aktywowanie tej opcji spowoduje szybsze ładowanie się bloga."
 
-#: src/Settings/SettingsPage.php:230
+#: src/Settings/SettingsPage.php:240
 msgid "The saved token cannot be decrypted, probably because the site's security keys changed. Enter it again."
 msgstr "Nie można odszyfrować zapisanego tokenu, prawdopodobnie z powodu zmiany kluczy bezpieczeństwa witryny. Wprowadź go ponownie."
 
-#: src/Settings/SettingsPage.php:241
+#: src/Settings/SettingsPage.php:251
 msgid "A token is saved. Leave the field empty to keep it."
 msgstr "Token jest zapisany. Pozostaw pole puste, aby go zachować."
 
-#: src/Settings/SettingsPage.php:243
+#: src/Settings/SettingsPage.php:253
 msgid "Remove the saved token"
 msgstr "Usuń zapisany token"
 
-#: src/Settings/SettingsPage.php:256
+#: src/Settings/SettingsPage.php:266
 msgid "(catalogue shortcode)"
 msgstr "(shortcode katalogu)"
 
-#: src/Settings/SettingsPage.php:269 src/Settings/SettingsPage.php:277
+#: src/Settings/SettingsPage.php:279 src/Settings/SettingsPage.php:287
 msgid "Select a page"
 msgstr "Wybierz stronę"
 
 #. translators: %d: ID of the page that no longer exists.
-#: src/Settings/SettingsPage.php:282
+#: src/Settings/SettingsPage.php:292
 #, php-format
 msgid "Missing page #%d"
 msgstr "Brakująca strona #%d"
 
-#: src/Settings/SettingsPage.php:305
+#: src/Settings/SettingsPage.php:315
 msgid "Authorization"
 msgstr "Autoryzacja"
 
-#: src/Settings/SettingsPage.php:307
+#: src/Settings/SettingsPage.php:317
 msgid "API key"
 msgstr "ID klucza API"
 
-#: src/Settings/SettingsPage.php:308
+#: src/Settings/SettingsPage.php:318
 msgid "API token"
 msgstr "Token klucza API"
 
-#: src/Settings/SettingsPage.php:312 src/Settings/SettingsPage.php:314
+#: src/Settings/SettingsPage.php:319
+msgid "Connection"
+msgstr "Połączenie"
+
+#: src/Settings/SettingsPage.php:323 src/Settings/SettingsPage.php:325
 msgid "Catalog page"
 msgstr "Strona katalogu"
 
-#: src/Settings/SettingsPage.php:318
+#: src/Settings/SettingsPage.php:329
 msgid "Appearance"
 msgstr "Wygląd"
 
-#: src/Settings/SettingsPage.php:320
+#: src/Settings/SettingsPage.php:331
 msgid "Full-width boxes"
 msgstr "Pełna szerokość boxów"
 
-#: src/Settings/SettingsPage.php:321
+#: src/Settings/SettingsPage.php:332
 msgid "Entries per page"
 msgstr "Liczba wpisów na stronie"
 
-#: src/Settings/SettingsPage.php:325
+#: src/Settings/SettingsPage.php:336
 msgid "Data cache"
 msgstr "Pamięć podręczna danych"
 
-#: src/Settings/SettingsPage.php:327
+#: src/Settings/SettingsPage.php:338
 msgid "Enable cache auto-update"
 msgstr "Włącz automatyczne aktualizowanie pamięci podr."
 
-#: src/Settings/SettingsPage.php:328
+#: src/Settings/SettingsPage.php:339
 msgid "Update interval (seconds)"
 msgstr "Czas pomiędzy odświeżeniami (sek.)"
 

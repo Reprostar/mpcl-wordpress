@@ -23,12 +23,14 @@ final class SettingsPage
     private const FIELD_CHECKBOX = 'checkbox';
     private const FIELD_SECRET = 'secret';
     private const FIELD_PAGE = 'page';
+    private const FIELD_CONNECTION_TEST = 'connection_test';
     private const CLEAR_TOKEN_KEY = 'api_token_clear';
 
     private SettingsRepository $settings;
     private Secrets $secrets;
     private MachineRepository $machines;
     private SyncScheduler $scheduler;
+    private ConnectionTest $connectionTest;
     private string $templateDirectory;
 
     public function __construct(
@@ -36,12 +38,14 @@ final class SettingsPage
         Secrets $secrets,
         MachineRepository $machines,
         SyncScheduler $scheduler,
+        ConnectionTest $connectionTest,
         string $templateDirectory
     ) {
         $this->settings = $settings;
         $this->secrets = $secrets;
         $this->machines = $machines;
         $this->scheduler = $scheduler;
+        $this->connectionTest = $connectionTest;
         $this->templateDirectory = rtrim($templateDirectory, '/');
     }
 
@@ -177,6 +181,12 @@ final class SettingsPage
             return;
         }
 
+        if (self::FIELD_CONNECTION_TEST === $field['type']) {
+            $this->connectionTest->renderButton();
+
+            return;
+        }
+
         if (self::FIELD_PAGE === $field['type']) {
             $this->renderPageField($name, $id, $this->settings->load()->catalogPageId);
 
@@ -306,6 +316,7 @@ final class SettingsPage
                 'fields' => [
                     'api_key' => ['title' => __('API key', 'mpcl'), 'type' => self::FIELD_TEXT],
                     'api_token' => ['title' => __('API token', 'mpcl'), 'type' => self::FIELD_SECRET],
+                    'connection_test' => ['title' => __('Connection', 'mpcl'), 'type' => self::FIELD_CONNECTION_TEST],
                 ],
             ],
             'catalog' => [

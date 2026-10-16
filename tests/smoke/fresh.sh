@@ -108,6 +108,25 @@ $W option patch update mpcl-options catalog_page_id 99999 >/dev/null
 expect "a missing page stays selected" "$($W --exec='define("WP_ADMIN", true);' eval "$RENDER_ONLY")" 'value="99999" selected="selected">Missing page #99999<'
 $W option patch update mpcl-options catalog_page_id "$PAGE" >/dev/null
 
+echo "== connection test"
+CT_ENQUEUE='do_action("admin_enqueue_scripts", get_plugin_page_hookname("mpcl-settings", "options-general.php")); echo wp_script_is("mpcl-admin-settings") ? "settings:yes" : "settings:no"; do_action("admin_enqueue_scripts", "index.php"); echo " ";'
+expect "the test script is loaded on the settings page" "$($W --exec='define("WP_ADMIN", true);' eval "require_once ABSPATH . 'wp-admin/includes/plugin.php'; require_once ABSPATH . 'wp-admin/includes/class-wp-screen.php'; require_once ABSPATH . 'wp-admin/includes/screen.php'; wp_set_current_user(1); set_current_screen('settings_page_mpcl-settings'); $CT_ENQUEUE")" "settings:yes"
+expect "the settings page shows the button" "$SETTINGS" 'id="mpcl-field-connection-test"'
+CT_CALL='wp_set_current_user((int) getenv("MPCL_USER")); $_POST = json_decode(getenv("MPCL_POST"), true); $_POST["nonce"] = "bad" === getenv("MPCL_NONCE") ? "bad" : wp_create_nonce("mpcl_test_connection"); $_REQUEST = $_POST; do_action("wp_ajax_mpcl_test_connection");'
+ct() { MPCL_USER=${3:-1} MPCL_NONCE=${2:-good} MPCL_POST="$1" $W --exec='define("WP_ADMIN", true);' eval "$CT_CALL" 2>/dev/null; }
+api_mode ok
+expect "valid credentials report the collection size" "$(ct '{"api_key":"k","api_token":"t"}')" '"success":true.*has 120 machines'
+expect "an empty token field uses the saved token" "$(ct '{"api_key":"k","api_token":""}')" '"success":true'
+expect "the token is not echoed back" "$(ct '{"api_key":"k","api_token":"t"}' | grep -c '"t"')" "^0$"
+expect "wrong credentials report the API error" "$(ct '{"api_key":"wrong","api_token":"t"}')" '"success":false.*API key not authorized'
+expect "missing credentials are reported" "$(ct '{"api_key":"","api_token":""}')" '"success":false.*Enter the API key'
+expect "a bad nonce is rejected" "$(ct '{"api_key":"k","api_token":"t"}' bad)" '"success":false.*not allowed'
+SUBSCRIBER=$($W user create viewer viewer@example.com --role=subscriber --porcelain)
+expect "users without manage_options are rejected" "$(ct '{"api_key":"k","api_token":"t"}' good "$SUBSCRIBER")" '"success":false.*not allowed'
+api_mode html
+expect "a broken API response is reported" "$(ct '{"api_key":"k","api_token":"t"}')" '"success":false.*Invalid response format'
+api_mode ok
+
 echo "== translations"
 mkdir -p wp-content/languages && cp wp-content/plugins/mpcl/languages/mpcl-pl_PL.mo wp-content/languages/pl_PL.mo
 $W option update WPLANG pl_PL >/dev/null
