@@ -16,7 +16,7 @@ expect_not() { if printf '%s' "$2" | grep -Eq -- "$3"; then fail "$1" "$2"; else
 
 finish() {
     local log
-    log=$(sed 's/^\[[^]]*\] //' /var/www/html/wp-content/debug.log 2>/dev/null | grep -iv 'mpcl: machine import failed\|mpcl: could not save' || true)
+    log=$(sed 's/^\[[^]]*\] //' /var/www/html/wp-content/debug.log 2>/dev/null | grep -iv 'mpcl: machine import failed\|mpcl: could not save' | grep -v 'wp_update_plugins()\|wp_update_themes()\|wp_version_check()' || true)
     expect_not "debug.log has no PHP errors, warnings or deprecations" "$log" "PHP (Fatal|Warning|Notice|Deprecated)|_load_textdomain_just_in_time"
     if [ 0 -eq "$FAILURES" ]; then echo "PASSED"; exit 0; fi
     echo "FAILED: $FAILURES check(s)"; exit 1
@@ -31,6 +31,8 @@ define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);
 define('WP_DEBUG_DISPLAY', false);
 define('MPCL_API_URL', 'http://127.0.0.1:8099/');
+define('WP_HTTP_BLOCK_EXTERNAL', true);
+define('WP_ACCESSIBLE_HOSTS', '127.0.0.1');
 PHP
 (php -S 127.0.0.1:8099 /smoke/fake-api.php >/dev/null 2>&1 &)
 $W core install --url=http://127.0.0.1:8080 --title=t --admin_user=a --admin_password=a --admin_email=a@example.com --skip-email --quiet

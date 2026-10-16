@@ -17,6 +17,12 @@ final class Machine
     public ?string $slug = null;
     public bool $isVisible = false;
     public ?string $description = null;
+
+    /** Format of $description on mypclist.net (bbcode, markdown, plain, html); null from older servers. */
+    public ?string $descriptionFormat = null;
+
+    /** The description rendered and purified by mypclist.net; null from older servers. */
+    public ?string $descriptionHtml = null;
     public ?int $physicalState = null;
     public ?string $customName = null;
     public ?string $name = null;
@@ -82,6 +88,8 @@ final class Machine
             'slug' => $this->slug,
             'is_visible' => (int) $this->isVisible,
             'description' => $this->description,
+            'description_format' => $this->descriptionFormat,
+            'description_html' => $this->descriptionHtml,
             'physical_state' => $this->physicalState,
             'custom_name' => $this->customName,
             'name' => $this->name,
@@ -121,6 +129,8 @@ final class Machine
         $machine->slug = Cast::nullableString($data['slug'] ?? null);
         $machine->isVisible = Cast::bool($data['is_visible'] ?? null);
         $machine->description = Cast::nullableString($data['description'] ?? null);
+        $machine->descriptionFormat = Cast::nullableString($data['description_format'] ?? null);
+        $machine->descriptionHtml = Cast::nullableString($data['description_html'] ?? null);
         $machine->physicalState = Cast::nullableInt($data['physical_state'] ?? null);
         $machine->customName = Cast::nullableString($data['custom_name'] ?? null);
         $machine->name = Cast::nullableString($data['name'] ?? null);

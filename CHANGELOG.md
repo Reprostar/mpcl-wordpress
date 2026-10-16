@@ -38,6 +38,10 @@ all settings and the synced machines; no reactivation is needed.
   editors instead of nothing; visitors still see nothing.
 - Deleting the plugin removes its tables, options (including the API
   credentials) and scheduled event. Deactivating keeps everything.
+- Markdown, plain-text and HTML descriptions are shown as mypclist.net renders
+  them (new `description_html` API field, filtered through `wp_kses_post`).
+  BBCode descriptions keep the plugin's own rendering; servers without the new
+  field fall back to it too.
 - No PHP deprecation notices on PHP 8.x.
 
 After updating, the `templates_c/` and `cache/` directories that 1.x left in the

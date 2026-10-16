@@ -24,5 +24,18 @@ for ($id = $total - $offset; $id > max(0, $total - $offset - $limit); $id--) {
         'price' => null, 'photos' => array(array('id' => $id, 'slug' => "p$id", 'orig_name' => 'a.jpg', 'extension' => 'jpg',
         'orig_uri' => "https://img.example/$id.jpg", 'thumbnails' => array(100 => "https://img.example/$id-100.jpg", 300 => "https://img.example/$id-300.jpg"))),
         'is_extension' => false, 'is_standalone' => false, 'type_name' => 'Computer', 'is_forsale' => false);
+    // Even ids: Markdown with server-rendered HTML; odd ids: BBCode, whose HTML the plugin must ignore.
+    // Mode "legacy" mimics a server without these fields.
+    if ('legacy' !== $mode) {
+        $last = count($items) - 1;
+        if (0 === $id % 2) {
+            $items[$last]['description'] = "**Markdown {$id}**\n\n- item";
+            $items[$last]['description_format'] = 'markdown';
+            $items[$last]['description_html'] = "<p><strong>Markdown {$id}</strong></p><ul><li>item</li></ul><script>alert(1)</script>";
+        } else {
+            $items[$last]['description_format'] = 'bbcode';
+            $items[$last]['description_html'] = '<p>SERVER-RENDERED</p>';
+        }
+    }
 }
 echo json_encode(array('status' => 'success', 'time' => time(), 'response' => array('total' => $total, 'length' => count($items), 'items' => $items), 'params' => null));

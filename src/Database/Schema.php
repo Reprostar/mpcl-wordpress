@@ -10,12 +10,13 @@ defined('ABSPATH') || exit;
 
 /**
  * Creates and migrates the plugin's tables. Version 1 is everything 1.x created
- * (no version option was stored then); the migration keeps the machines table
+ * (no version option was stored then); version 3 adds the server-rendered
+ * description columns. Every migration keeps the machines table
  * and its rows.
  */
 final class Schema
 {
-    public const VERSION = 2;
+    public const VERSION = 3;
     private const VERSION_OPTION = 'mpcl_db_version';
 
     private \wpdb $wpdb;
@@ -61,6 +62,8 @@ final class Schema
   slug tinytext,
   is_visible tinyint(1) NOT NULL DEFAULT '0',
   description text,
+  description_format varchar(16) DEFAULT NULL,
+  description_html mediumtext,
   physical_state int(11) DEFAULT NULL,
   custom_name tinytext,
   name tinytext,

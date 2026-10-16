@@ -15,6 +15,7 @@ final class MachinePresenter
 {
     private const THUMBNAIL_SIZE = 300;
     private const GALLERY_SIZE = 100;
+    private const FORMAT_BBCODE = 'bbcode';
 
     private BbCode $bbCode;
     private string $placeholderUrl;
@@ -42,7 +43,7 @@ final class MachinePresenter
         $view->typeName = $this->optional($machine->typeName);
         $view->customName = $this->optional($machine->customName);
         $view->physicalState = $this->physicalState($machine->physicalState);
-        $view->descriptionHtml = $this->description((string) $machine->description);
+        $view->descriptionHtml = $this->description($machine);
 
         foreach ($machine->photos as $photo) {
             $view->photos[] = new PhotoView(
@@ -105,8 +106,19 @@ final class MachinePresenter
         }
     }
 
-    private function description(string $source): string
+    /**
+     * Uses the HTML rendered by mypclist.net when the server sends it, except for
+     * BBCode, which keeps the plugin's own rendering so existing descriptions look
+     * as before. Older servers send no HTML; then the source is treated as BBCode.
+     */
+    private function description(Machine $machine): string
     {
+        if (null !== $machine->descriptionHtml && self::FORMAT_BBCODE !== $machine->descriptionFormat) {
+            return wp_kses_post($machine->descriptionHtml);
+        }
+
+        $source = (string) $machine->description;
+
         $html = str_replace(
             ['\r\n', "\n", "\t", '  '],
             ['<br />', '<br />', '&#160; &#160; ', '&#160; '],

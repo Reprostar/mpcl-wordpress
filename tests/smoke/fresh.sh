@@ -5,7 +5,7 @@ echo "== activation"
 mkdir -p wp-content/plugins/mpcl && cp -r /plugin-src/. wp-content/plugins/mpcl/
 $W plugin activate mpcl --quiet
 expect "plugin is active" "$($W plugin list --name=mpcl --fields=status --format=csv)" "active"
-expect "schema version stored" "$($W option get mpcl_db_version)" "^2$"
+expect "schema version stored" "$($W option get mpcl_db_version)" "^3$"
 expect "machines table is utf8mb4" "$($W db query "SELECT TABLE_COLLATION FROM information_schema.TABLES WHERE TABLE_NAME='wp_mpcl_machines'" --skip-column-names)" "^utf8mb4_"
 expect_empty "no legacy options table" "$($W db query "SHOW TABLES LIKE 'wp_mpcl_options'" --skip-column-names)"
 expect "recurring sync event scheduled" "$($W cron event list --hook=mpcl_sync --fields=recurrence --format=csv)" "5 minutes"
@@ -44,7 +44,16 @@ $W option patch update mpcl-options entries_per_page 7 >/dev/null
 expect "entries_per_page limits the list" "$(render "echo do_shortcode('[mpcl]');" | grep -o 'class="mpcl-entry"' | wc -l | tr -d ' ')" "^7$"
 SINGLE=$(render "set_query_var('machine_id', 120); echo do_shortcode('[mpcl]');")
 expect "single view shows the name" "$SINGLE" "<h2>Machine 120 💾</h2>"
-expect "single view renders BBCode" "$SINGLE" "<strong>Machine 120</strong>"
+expect "Markdown descriptions use the server-rendered HTML" "$SINGLE" "<strong>Markdown 120</strong>.*<li>item</li>"
+expect_not "server HTML is filtered through kses" "$SINGLE" "<script"
+ODD=$(render "set_query_var('machine_id', 119); echo do_shortcode('[mpcl]');")
+expect "BBCode descriptions keep the plugin's rendering" "$ODD" "<strong>Machine 119</strong>"
+expect_not "server HTML is ignored for BBCode" "$ODD" "SERVER-RENDERED"
+api_mode legacy
+$W eval 'do_action("mpcl_sync", true);'
+expect "without the new fields (older server) descriptions fall back to BBCode" "$(render "set_query_var('machine_id', 120); echo do_shortcode('[mpcl]');")" "<strong>Machine 120</strong>"
+api_mode ok
+$W eval 'do_action("mpcl_sync", true);'
 expect "single view lists the gallery" "$SINGLE" 'href="https://img.example/120.jpg"'
 expect "missing machine message" "$(render "set_query_var('machine_id', 99999); echo do_shortcode('[mpcl]');")" "cannot be found"
 BOX=$(render "echo do_shortcode('[mpcl id=120]');")
