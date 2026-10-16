@@ -15,8 +15,9 @@ class CatalogListController extends Controller
     {
         $params = $tagHandler->getTagAttributes();
 
-        $columnsWidth = ( (string) (100 / $params['columns']) ) . "%";
-        $columnsAmount = $params['columns'];
+        $columns = max(1, (int) ($params['columns'] ?? 4));
+        $columnsWidth = ( (string) (100 / $columns) ) . "%";
+        $columnsAmount = $columns;
 
         $limit = 20;
         $offset = 0;
