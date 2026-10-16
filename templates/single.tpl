@@ -5,7 +5,7 @@
         <table style="width: 100%">
             <tr class="head">
                 <td style="width: 33.333%">
-                    <img class="thumbnail" src="{$machine['thumbnail_uri']}"/>
+                    <img class="thumbnail" src="{esc_url($machine['thumbnail_uri'])}"/>
                 </td>
                 <td style="width: 66.666%">
                     <h2>{esc_html($machine['name'])}</h2>

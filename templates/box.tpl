@@ -2,7 +2,7 @@
     <div class="mpcl-embed">
         <div class="mpcl-box{if $embedSettings['full_width']} full-width{/if}">
             <div class="mpcl-box-thumbnail">
-                <img src="{$machine['thumbnail_uri']}"/>
+                <img src="{esc_url($machine['thumbnail_uri'])}"/>
             </div>
 
             <div class="mpcl-box-contents">

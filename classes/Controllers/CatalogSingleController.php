@@ -34,14 +34,14 @@ class CatalogSingleController extends Controller
 
             $parser = new Parser();
             $parser->addCodeDefinitionSet(new DefaultCodeDefinitionSet());
-            $parser->parse($machine['description']);
+            $parser->parse(esc_html((string) $machine['description']));
 
             $html = $parser->getAsHtml();
             $pattern = array("\\r\\n", "\n", "\t", '  ', '  ');
             $replace = array('<br />', '<br />', '&#160; &#160; ', '&#160; ', ' &#160;');
             $html = str_replace($pattern, $replace, $html);
 
-            $machine['description'] = $html;
+            $machine['description'] = wp_kses_post($html);
             $machine['physical_state'] = Utils::getStateString($machine['physical_state']);
         }
 
