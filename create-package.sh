@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
+# Builds mpcl-wordpress-<version>.zip with a top-level mpcl/ directory.
+set -euo pipefail
 
-TMP_DIR=mpcl
+cd "$(dirname "$0")"
+
+VERSION=$(sed -n 's/^Version: *//p' mpcl.php)
+CONSTANT=$(sed -n "s/^const MPCL_VERSION = '\(.*\)';/\1/p" mpcl.php)
+if [ -z "$VERSION" ] || [ "$VERSION" != "$CONSTANT" ]; then
+    echo "Version header ($VERSION) and MPCL_VERSION ($CONSTANT) differ" >&2
+    exit 1
+fi
+
 SOURCES=(src css img js languages licenses templates mpcl.php LICENSE README.md)
+BUILD_DIR=$(mktemp -d)
+trap 'rm -rf "$BUILD_DIR"' EXIT
 
-rm -rf $TMP_DIR/
-mkdir $TMP_DIR/
+mkdir "$BUILD_DIR/mpcl"
+cp -R "${SOURCES[@]}" "$BUILD_DIR/mpcl/"
+find "$BUILD_DIR/mpcl" -name '.DS_Store' -delete
 
-# Copy sources
-for item in ${SOURCES[*]}
-do
-    cp -rv $item $TMP_DIR/
-done
-
-# Remove all git repo data
-for item in `find $TMP_DIR | grep -i "/\.git/"`
-do
-    rm -rf $item
-done
-
-# Create a package
-zip mpcl-wordpress-1.2.2.zip `find $TMP_DIR`
+PACKAGE="$PWD/mpcl-wordpress-$VERSION.zip"
+rm -f "$PACKAGE"
+(cd "$BUILD_DIR" && zip -qr "$PACKAGE" mpcl)
+echo "$PACKAGE"
