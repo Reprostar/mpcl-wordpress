@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.1
+
+- The plugin is now called "MyPCList for WordPress" in the plugins list. Nothing
+  else changes; the plugin directory and settings stay the same.
+
 ## 2.0.0 (unreleased)
 
 Requires WordPress 6.9+ and PHP 7.4+. Updating from 1.x keeps the API credentials,
