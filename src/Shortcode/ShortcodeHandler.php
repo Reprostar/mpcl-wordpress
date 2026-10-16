@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Reprostar\MpclWordpress\Shortcode;
 
+use Reprostar\MpclWordpress\Assets;
 use Reprostar\MpclWordpress\Machine\MachineRepository;
 use Reprostar\MpclWordpress\Machine\Synchronizer;
 use Reprostar\MpclWordpress\Settings\Settings;
@@ -24,26 +25,28 @@ final class ShortcodeHandler
     public const QUERY_VAR = 'machine_id';
 
     private const DEFAULT_COLUMNS = 4;
-    private const LISTING_LIMIT = 20;
 
     private SettingsRepository $settings;
     private MachineRepository $machines;
     private Synchronizer $synchronizer;
     private MachinePresenter $presenter;
     private Renderer $renderer;
+    private Assets $assets;
 
     public function __construct(
         SettingsRepository $settings,
         MachineRepository $machines,
         Synchronizer $synchronizer,
         MachinePresenter $presenter,
-        Renderer $renderer
+        Renderer $renderer,
+        Assets $assets
     ) {
         $this->settings = $settings;
         $this->machines = $machines;
         $this->synchronizer = $synchronizer;
         $this->presenter = $presenter;
         $this->renderer = $renderer;
+        $this->assets = $assets;
     }
 
     public function register(): void
@@ -71,6 +74,8 @@ final class ShortcodeHandler
      */
     public function handle($attributes): string
     {
+        $this->assets->enqueue();
+
         $attributes = is_array($attributes) ? $attributes : [];
         $settings = $this->settings->load();
 
@@ -97,7 +102,7 @@ final class ShortcodeHandler
         }
 
         $rows = [];
-        foreach ($this->machines->findAll('id', 'DESC', self::LISTING_LIMIT, 0) as $index => $machine) {
+        foreach ($this->machines->findAll('id', 'DESC', $settings->getListingLimit(), 0) as $index => $machine) {
             $rows[intdiv($index, $columns)][] = $this->presenter->forListing($machine);
         }
 

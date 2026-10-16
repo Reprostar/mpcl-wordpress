@@ -12,6 +12,8 @@ Domain Path: /languages
 License: MIT
 */
 
+const MPCL_VERSION = '1.2.2';
+
 require_once __DIR__ . '/src/autoload.php';
 
 register_activation_hook(__FILE__, static function (): void {

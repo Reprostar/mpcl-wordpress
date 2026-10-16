@@ -106,9 +106,6 @@ final class SettingsPage
         if (array_key_exists('box_full_width', $input)) {
             $settings->boxFullWidth = (bool) $input['box_full_width'];
         }
-        if (array_key_exists('cache_images', $input)) {
-            $settings->cacheImages = (bool) $input['cache_images'];
-        }
         if (array_key_exists('cache_autoupdate_enabled', $input)) {
             $settings->cacheAutoupdateEnabled = (bool) $input['cache_autoupdate_enabled'];
         }
@@ -187,7 +184,6 @@ final class SettingsPage
             'cache' => [
                 'title' => __('Data cache', 'mpcl'),
                 'fields' => [
-                    'cache_images' => ['title' => __('Enable image cache', 'mpcl'), 'type' => self::FIELD_CHECKBOX],
                     'cache_autoupdate_enabled' => ['title' => __('Enable cache auto-update', 'mpcl'), 'type' => self::FIELD_CHECKBOX],
                     'cache_autoupdate_interval' => ['title' => __('Update interval (seconds)', 'mpcl'), 'type' => self::FIELD_TEXT],
                 ],

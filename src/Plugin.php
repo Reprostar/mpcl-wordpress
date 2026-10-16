@@ -45,13 +45,15 @@ final class Plugin
 
         load_plugin_textdomain('mpcl', false, dirname(plugin_basename($this->file)) . '/languages/');
 
-        (new Assets($baseUrl))->register();
+        $assets = new Assets($baseUrl, MPCL_VERSION);
+        $assets->register();
         (new ShortcodeHandler(
             $settingsRepository,
             $machines,
             $synchronizer,
             $presenter,
-            new Renderer($directory . 'templates')
+            new Renderer($directory . 'templates'),
+            $assets
         ))->register();
 
         if (is_admin()) {
