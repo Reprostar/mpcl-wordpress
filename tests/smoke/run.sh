@@ -26,7 +26,7 @@ fi
 
 PLUGIN_DIR="$CACHE/plugin-$$/mpcl"
 mkdir -p "$PLUGIN_DIR"
-cp -R "$ROOT"/{src,css,img,js,languages,licenses,templates,mpcl.php} "$PLUGIN_DIR/"
+cp -R "$ROOT"/{src,css,img,js,languages,licenses,templates,mpcl.php,uninstall.php} "$PLUGIN_DIR/"
 
 LEGACY_MOUNT=()
 DB_ARGS=()

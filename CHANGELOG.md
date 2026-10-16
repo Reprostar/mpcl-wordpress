@@ -36,6 +36,8 @@ all settings and the synced machines; no reactivation is needed.
   (typed or saved) without saving, and reports the collection size or the error.
 - An embedded box for a machine that is not synced yet shows a short notice to
   editors instead of nothing; visitors still see nothing.
+- Deleting the plugin removes its tables, options (including the API
+  credentials) and scheduled event. Deactivating keeps everything.
 - No PHP deprecation notices on PHP 8.x.
 
 After updating, the `templates_c/` and `cache/` directories that 1.x left in the

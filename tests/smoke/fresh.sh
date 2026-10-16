@@ -145,4 +145,13 @@ expect "catalogue page renders the list" "$CATALOG" 'class="mpcl-entry"'
 expect_not "pages without the shortcode load no plugin assets" "$(fetch "http://127.0.0.1:8080/?page_id=2")" "plugins/mpcl/"
 expect_not "no Smarty directories in the WordPress root" "$(ls -d /var/www/html/templates_c /var/www/html/cache 2>/dev/null)" "."
 
+echo "== uninstall"
+$W plugin deactivate mpcl --quiet
+expect "deactivation keeps the data" "$(rows)" "^120$"
+$W plugin uninstall mpcl --quiet
+expect_empty "uninstall drops the plugin tables" "$($W db query "SHOW TABLES LIKE '%mpcl%'" --skip-column-names)"
+expect_empty "uninstall deletes the plugin options" "$($W db query "SELECT option_name FROM wp_options WHERE option_name IN ('mpcl-options', 'mpcl_db_version', 'mpcl_sync_attempted_at')" --skip-column-names)"
+expect "uninstall clears the sync event" "$($W cron event list --hook=mpcl_sync --format=count)" "^0$"
+expect_empty "uninstall removes the plugin files" "$(ls -d wp-content/plugins/mpcl 2>/dev/null)"
+
 finish

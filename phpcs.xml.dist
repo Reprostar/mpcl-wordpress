@@ -3,6 +3,7 @@
     <description>PHP 7.4+ compatibility for the shipped plugin.</description>
 
     <file>mpcl.php</file>
+    <file>uninstall.php</file>
     <file>src</file>
     <file>templates</file>
 

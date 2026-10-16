@@ -6,6 +6,7 @@ parameters:
     phpVersion: 70400
     paths:
         - mpcl.php
+        - uninstall.php
         - src
         - templates
     bootstrapFiles:
