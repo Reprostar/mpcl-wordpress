@@ -7,7 +7,7 @@ shortcodes. The API server lives in the separate MyPCList repository
 
 ## Tracker
 
-Irminsul, workspace `MPC`, project `WPP` (task codes `WPP-123`). Read the whole task,
+The project's tracker, project `WPP` (task codes `WPP-123`). Read the whole task,
 comments included, before starting; decisions are recorded as comments.
 
 ## Git
