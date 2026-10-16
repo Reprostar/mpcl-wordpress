@@ -1,45 +1,61 @@
-# mypclist-wordpress
-WordPress plugin that downloads your machine collection from MyPClist and displays it on your blog subpage.
+# MyPCList for WordPress
 
-### Installation
-You can download prepared package file from releases in this repo then upload it to your WordPress instance 
-or extract it directly to the `/wp-contents/plugins` folder on target server. The zip file comes with all 
-dependencies bundled into, so the package is ready to go.
+Shows your [MyPCList](https://mypclist.net) machine collection on your WordPress site: a catalogue page
+with a view of every machine, and boxes that embed a single machine in any post or page.
 
-[Latest version (ZIP package)](https://github.com/Reprostar/mpcl-wordpress/releases)
- 
-### Installation (the hard way)
-Clone this repo into `/wp-content/plugins/mpcl`. The plugin has no runtime dependencies to install.
+## Requirements
 
-### Usage
-To display your collection, create a new WordPress page (not a post!), then paste the following shortcode:
-```
-[mpcl columns=4]
-```
+- WordPress 6.9 or newer, PHP 7.4 or newer.
+- An API key and token from [mypclist.net/settings/api](https://mypclist.net/settings/api).
 
-Of course, you can change the *columns* parameter to display different amount of columns in a grid.
-View of single machine is also displayed in the place of this shortcode (you don't need any other page for 
-the other views).
+Version 1.2.2 is the last release for older sites (declared for WordPress 4.4 on PHP 5.6).
 
-You can also display a box referencing specific machine by pasting shortcode on any post or page:
-```
-[mpcl id=15]
-```
+## Installation
 
-Where `15` should be replaced with target machine ID.
+Download `mpcl-wordpress-<version>.zip` from the
+[releases](https://github.com/Reprostar/mpcl-wordpress/releases) and upload it in
+Plugins → Add New → Upload Plugin, or extract it into `wp-content/plugins/`. The package has no external
+dependencies.
 
-### Dependencies
-This WordPress plugin bundles:
+To work on the plugin, clone this repository into `wp-content/plugins/mpcl`.
 
-* [baguetteBox.js lightbox](https://feimosi.github.io/baguetteBox.js/)
-* a BBCode converter adapted from [JBBCode](https://github.com/jbowens/jBBCode) (MIT, see `licenses/jbbcode.txt`)
+## Setup
 
-### Requirements
-Version 2.x requires **WordPress 6.9** or newer and **PHP 7.4** or newer. The collection is refreshed in the
-background by WP-Cron; sites with `DISABLE_WP_CRON` need a system cron calling `wp-cron.php`.
+In Settings → MyPCList Integration:
+
+1. Enter the API key and token, then use **Test connection** to check them.
+2. Choose the page that shows your catalogue.
+
+The collection is copied to your site and refreshed in the background by WP-Cron (every hour by default,
+configurable in the same settings). Sites with `DISABLE_WP_CRON` need a system cron calling `wp-cron.php`.
 
 The API token is stored encrypted with a key derived from the site's security salts. To use a dedicated
 key instead, define `MPCL_ENCRYPTION_KEY` in `wp-config.php` before entering the token. This protects the
 token in database dumps and backups, not on a compromised server.
 
-Version 1.2.2 is the last release for older sites (declared for WordPress 4.4 on PHP 5.6).
+## Usage
+
+Put the catalogue on a page:
+
+```
+[mpcl columns=4]
+```
+
+`columns` sets the number of grid columns (default 4). The view of a single machine opens on the same page.
+
+Embed one machine in any post or page:
+
+```
+[mpcl id=15]
+```
+
+where `15` is the machine's ID on MyPCList.
+
+## Bundled code
+
+- [baguetteBox.js](https://feimosi.github.io/baguetteBox.js/) lightbox
+- a BBCode converter adapted from [JBBCode](https://github.com/jbowens/jBBCode) (MIT, see `licenses/jbbcode.txt`)
+
+## License
+
+MIT, see `LICENSE`. Changes are listed in `CHANGELOG.md`.
