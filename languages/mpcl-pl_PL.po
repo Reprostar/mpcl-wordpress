@@ -92,7 +92,7 @@ msgstr "Pełna szerokość boxów"
 
 #: src/Settings/SettingsPage.php:198
 msgid "Entries per page"
-msgstr ""
+msgstr "Liczba wpisów na stronie"
 
 #: src/Settings/SettingsPage.php:202
 msgid "Data cache"
@@ -148,7 +148,7 @@ msgstr "Rodzaj"
 
 #: templates/box.php:30
 msgid "View machine &raquo;"
-msgstr ""
+msgstr "Zobacz maszynę &raquo;"
 
 #: templates/single.php:9
 msgid "&laquo; Back to the list"
