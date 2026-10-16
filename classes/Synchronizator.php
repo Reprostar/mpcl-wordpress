@@ -14,6 +14,7 @@ class Synchronizator
 {
     const USER_AGENT = "WordPress";
     const API_TIMEOUT = 20;
+    const API_URL = "https://mypclist.net/api/";
 
     /**
      * @var Synchronizator
@@ -60,7 +61,7 @@ class Synchronizator
     public function __construct($database, $apiKey, $apiToken)
     {
         $this->database = $database;
-        $this->connector = new MpclConnector($apiKey, $apiToken, self::USER_AGENT, self::API_TIMEOUT);
+        $this->connector = new MpclConnector($apiKey, $apiToken, self::USER_AGENT, self::API_TIMEOUT, self::API_URL);
     }
 
     /**
