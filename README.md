@@ -9,8 +9,7 @@ dependencies bundled into, so the package is ready to go.
 [Latest version (ZIP package)](https://github.com/Reprostar/mpcl-wordpress/releases)
  
 ### Installation (the hard way)
-Clone this repo to your `/wp-content/plugins` directory and run `composer update` within it. This method 
-is not really recommended unless you want to contribute to this repository.
+Clone this repo into `/wp-content/plugins/mpcl`. The plugin has no runtime dependencies to install.
 
 ### Usage
 To display your collection, create a new WordPress page (not a post!), then paste the following shortcode:
@@ -30,11 +29,9 @@ You can also display a box referencing specific machine by pasting shortcode on 
 Where `15` should be replaced with target machine ID.
 
 ### Dependencies
-This WordPress plugin is using the following packages/modules: 
+This WordPress plugin bundles:
 
-* [MyPClist PHP Connector](https://github.com/Reprostar/mpcl-connector-php)
-* [Smarty 3 templating engine](http://smarty.net)
-* [JBBCode parser](http://jbbcode.com/)
 * [baguetteBox.js lightbox](https://feimosi.github.io/baguetteBox.js/)
+* a BBCode converter adapted from [JBBCode](https://github.com/jbowens/jBBCode) (MIT, see `licenses/jbbcode.txt`)
 
 Module has been tested on **WordPress 4.4** running on **PHP 5.6**

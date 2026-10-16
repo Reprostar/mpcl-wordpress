@@ -12,6 +12,8 @@ Domain Path: /languages
 License: MIT
 */
 
-require_once __DIR__  . "/vendor/autoload.php";
+require_once __DIR__ . '/src/autoload.php';
 
-$mpcl = new \Reprostar\MpclWordpress\Plugin(plugin_dir_path(__FILE__), plugin_dir_url(__FILE__));
+add_action('plugins_loaded', static function (): void {
+    (new \Reprostar\MpclWordpress\Plugin(__FILE__, $GLOBALS['wpdb']))->boot();
+});

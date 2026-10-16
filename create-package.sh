@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 TMP_DIR=mpcl
-SOURCES=(classes css img js languages templates views vendor mpcl.php composer.json LICENSE README.md)
+SOURCES=(src css img js languages licenses templates mpcl.php LICENSE README.md)
 
 rm -rf $TMP_DIR/
 mkdir $TMP_DIR/
@@ -11,9 +11,6 @@ for item in ${SOURCES[*]}
 do
     cp -rv $item $TMP_DIR/
 done
-
-# Remove demos for Smarty sources
-rm -rf $TMP_DIR/vendor/smarty/smarty/demo
 
 # Remove all git repo data
 for item in `find $TMP_DIR | grep -i "/\.git/"`
