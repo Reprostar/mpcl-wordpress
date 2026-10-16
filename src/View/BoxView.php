@@ -11,9 +11,13 @@ final class BoxView
     public ?MachineView $machine;
     public bool $fullWidth;
 
-    public function __construct(?MachineView $machine, bool $fullWidth)
+    /** ID to report to editors when the machine is not in the local copy; null for visitors. */
+    public ?int $missingMachineId;
+
+    public function __construct(?MachineView $machine, bool $fullWidth, ?int $missingMachineId = null)
     {
         $this->machine = $machine;
         $this->fullWidth = $fullWidth;
+        $this->missingMachineId = $missingMachineId;
     }
 }

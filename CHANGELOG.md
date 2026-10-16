@@ -34,6 +34,8 @@ all settings and the synced machines; no reactivation is needed.
   pages that use the shortcode are marked.
 - A "Test connection" button on the settings page checks the API key and token
   (typed or saved) without saving, and reports the collection size or the error.
+- An embedded box for a machine that is not synced yet shows a short notice to
+  editors instead of nothing; visitors still see nothing.
 - No PHP deprecation notices on PHP 8.x.
 
 After updating, the `templates_c/` and `cache/` directories that 1.x left in the

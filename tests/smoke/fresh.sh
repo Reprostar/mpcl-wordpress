@@ -49,6 +49,8 @@ expect "single view lists the gallery" "$SINGLE" 'href="https://img.example/120.
 expect "missing machine message" "$(render "set_query_var('machine_id', 99999); echo do_shortcode('[mpcl]');")" "cannot be found"
 BOX=$(render "echo do_shortcode('[mpcl id=120]');")
 expect "box links to the catalogue page" "$BOX" "page_id=$PAGE&#038;machine_id=120"
+expect_empty "visitors see nothing for a machine that is not synced" "$(render "echo trim(do_shortcode('[mpcl id=99999]'));" | tr -d ' ')"
+expect "editors see a notice for a machine that is not synced" "$($W --user=1 eval "echo do_shortcode('[mpcl id=99999]');" | tr -s ' \n' ' ')" "mpcl-box-missing.*machine #99999 is not in the synced collection"
 
 echo "== escaping"
 $W eval 'global $wpdb; $wpdb->update($wpdb->prefix . "mpcl_machines", ["name" => "<i>Evil</i>", "description" => "<script>alert(1)</script> [url=javascript:alert(1)]j[/url]", "photos" => wp_json_encode([["orig_uri" => "javascript:alert(1)", "thumbnails" => ["100" => "\"><img src=x onerror=alert(1)>", "300" => "\"><img src=x onerror=alert(2)>"]]])], ["id" => 119]);'

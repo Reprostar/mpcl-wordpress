@@ -119,7 +119,9 @@ final class ShortcodeHandler
         $machine = $this->machines->find($machineId);
         $view = null !== $machine ? $this->presenter->forBox($machine, $this->catalogUrl($machineId, $settings)) : null;
 
-        return $this->renderer->render('box', new BoxView($view, $settings->boxFullWidth));
+        $missingMachineId = null === $machine && current_user_can('edit_posts') ? $machineId : null;
+
+        return $this->renderer->render('box', new BoxView($view, $settings->boxFullWidth, $missingMachineId));
     }
 
     private function catalogUrl(int $machineId, Settings $settings): ?string

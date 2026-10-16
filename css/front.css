@@ -276,3 +276,8 @@
 .mpcl-embed .mpcl-box .mpcl-box-contents .mpcl-box-cta a:hover {
   background: #f7f7f7;
 }
+
+.mpcl-embed .mpcl-box.mpcl-box-missing p {
+  font-size: 13px;
+  color: #555;
+}

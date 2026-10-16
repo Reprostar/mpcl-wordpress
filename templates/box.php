@@ -33,4 +33,15 @@ $machine = $view->machine;
             </div>
         </div>
     </div>
+<?php elseif (null !== $view->missingMachineId) : ?>
+    <div class="mpcl-embed">
+        <div class="mpcl-box mpcl-box-missing<?php echo $view->fullWidth ? ' full-width' : ''; ?>">
+            <p>
+                <?php
+                /* translators: %d: MyPCList machine ID used in the shortcode. */
+                echo esc_html(sprintf(__('MyPCList: machine #%d is not in the synced collection. If it exists in your collection, it will appear after the next sync. Only editors see this message.', 'mpcl'), $view->missingMachineId));
+                ?>
+            </p>
+        </div>
+    </div>
 <?php endif; ?>

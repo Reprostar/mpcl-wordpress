@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MyPClist WP\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/p\n"
-"POT-Creation-Date: 2026-10-16T20:15:10+00:00\n"
+"POT-Creation-Date: 2026-10-16T20:20:17+00:00\n"
 "PO-Revision-Date: 2016-12-04 23:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: MyPClist\n"
@@ -206,6 +206,12 @@ msgstr "Rodzaj"
 #: templates/box.php:30
 msgid "View machine &raquo;"
 msgstr "Zobacz maszynę &raquo;"
+
+#. translators: %d: MyPCList machine ID used in the shortcode.
+#: templates/box.php:42
+#, php-format
+msgid "MyPCList: machine #%d is not in the synced collection. If it exists in your collection, it will appear after the next sync. Only editors see this message."
+msgstr "MyPCList: maszyna #%d nie znajduje się w zsynchronizowanej kolekcji. Jeśli istnieje w Twojej kolekcji, pojawi się po następnej synchronizacji. Ten komunikat widzą tylko redaktorzy."
 
 #: templates/single.php:9
 msgid "&laquo; Back to the list"
