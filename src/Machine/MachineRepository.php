@@ -23,13 +23,19 @@ final class MachineRepository
         $row = $machine->toRow();
         $row['synchronized'] = $synchronizedAt;
 
-        return false !== $this->wpdb->replace($this->table, $row);
+        if (false === $this->wpdb->replace($this->table, $row)) {
+            error_log(sprintf('mpcl: could not save machine %d: %s', $machine->id, $this->wpdb->last_error));
+
+            return false;
+        }
+
+        return true;
     }
 
     public function find(int $id): ?Machine
     {
         $row = $this->wpdb->get_row(
-            "SELECT * FROM `" . $this->table . "` WHERE id='" . $this->wpdb->_real_escape((string) $id) . "' LIMIT 1",
+            $this->wpdb->prepare("SELECT * FROM `{$this->table}` WHERE id = %d LIMIT 1", $id),
             ARRAY_A
         );
 
@@ -41,15 +47,16 @@ final class MachineRepository
      */
     public function findAll(string $orderBy, string $orderDirection, int $limit, int $offset): array
     {
-        $query = "SELECT * FROM `" . $this->table . "`";
+        $query = "SELECT * FROM `{$this->table}`";
 
         if (in_array($orderBy, self::ORDER_COLUMNS, true) && in_array($orderDirection, self::ORDER_DIRECTIONS, true)) {
-            $query .= " ORDER BY " . $orderBy . " " . $orderDirection;
+            $query .= " ORDER BY {$orderBy} {$orderDirection}";
         }
 
-        $query .= " LIMIT " . $limit . " OFFSET " . $offset;
-
-        $rows = $this->wpdb->get_results($query, ARRAY_A);
+        $rows = $this->wpdb->get_results(
+            $this->wpdb->prepare($query . ' LIMIT %d OFFSET %d', $limit, $offset),
+            ARRAY_A
+        );
         if (!is_array($rows)) {
             return [];
         }
@@ -64,6 +71,6 @@ final class MachineRepository
 
     public function deleteAll(): void
     {
-        $this->wpdb->get_results("DELETE FROM `" . $this->table . "`", OBJECT);
+        $this->wpdb->query("DELETE FROM `{$this->table}`");
     }
 }

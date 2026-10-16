@@ -26,11 +26,12 @@ final class Synchronizer
      * The local table is purged only after the first page has been fetched, so a
      * failing API leaves the previous copy in place.
      *
-     * @return int|null number of machines received, null when the API failed
+     * @return int|null number of machines stored, null when the API failed
      */
     public function importAll(): ?int
     {
-        $imported = 0;
+        $received = 0;
+        $stored = 0;
         $page = 0;
         $maxPages = 1;
 
@@ -60,13 +61,15 @@ final class Synchronizer
 
             $now = time();
             foreach ($set->items as $machine) {
-                $this->machines->save($machine, $now);
+                if ($this->machines->save($machine, $now)) {
+                    ++$stored;
+                }
             }
 
-            $imported += count($set->items);
+            $received += count($set->items);
             ++$page;
-        } while ($set->total > $imported && $page < $maxPages);
+        } while ($set->total > $received && $page < $maxPages);
 
-        return $imported;
+        return $stored;
     }
 }
