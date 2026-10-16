@@ -11,7 +11,7 @@ if [ -z "$VERSION" ] || [ "$VERSION" != "$CONSTANT" ]; then
     exit 1
 fi
 
-SOURCES=(src css img js languages licenses templates mpcl.php LICENSE README.md)
+SOURCES=(src css img js languages licenses templates mpcl.php CHANGELOG.md LICENSE README.md)
 BUILD_DIR=$(mktemp -d)
 trap 'rm -rf "$BUILD_DIR"' EXIT
 

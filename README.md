@@ -34,4 +34,8 @@ This WordPress plugin bundles:
 * [baguetteBox.js lightbox](https://feimosi.github.io/baguetteBox.js/)
 * a BBCode converter adapted from [JBBCode](https://github.com/jbowens/jBBCode) (MIT, see `licenses/jbbcode.txt`)
 
-Module has been tested on **WordPress 4.4** running on **PHP 5.6**
+### Requirements
+Version 2.x requires **WordPress 6.9** or newer and **PHP 7.4** or newer. The collection is refreshed in the
+background by WP-Cron; sites with `DISABLE_WP_CRON` need a system cron calling `wp-cron.php`.
+
+Version 1.2.2 is the last release for older sites (declared for WordPress 4.4 on PHP 5.6).

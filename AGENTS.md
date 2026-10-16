@@ -46,6 +46,17 @@ comments included, before starting; decisions are recorded as comments.
   a Polish translation: leave it empty and report it.
 - No runtime Composer dependencies in the shipped plugin.
 
+## Checks
+
+`composer install` (dev tooling only), then `bin/check`: PHP 7.4 and latest-PHP
+syntax, PHPCS (PHPCompatibilityWP, `testVersion 7.4-`), PHPStan at max level, the
+BBCode differential test against JBBCode 1.3.0, and Docker smoke tests
+(`tests/smoke/run.sh <php> [wp] [fresh|upgrade]`) on WordPress 6.9 with PHP 7.4 and
+8.4. Set `LEGACY_PLUGIN=<unpacked 1.x plugin dir>` to add the 1.x → 2.x upgrade test.
+
+The smoke tests point the plugin at `tests/smoke/fake-api.php` through the
+`MPCL_API_URL` constant; never run them against the real mypclist.net.
+
 ## Packaging
 
 `create-package.sh` builds `mpcl-wordpress-<version>.zip` with a top-level `mpcl/`
