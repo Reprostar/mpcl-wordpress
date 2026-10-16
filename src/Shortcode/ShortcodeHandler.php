@@ -6,7 +6,6 @@ namespace Reprostar\MpclWordpress\Shortcode;
 
 use Reprostar\MpclWordpress\Assets;
 use Reprostar\MpclWordpress\Machine\MachineRepository;
-use Reprostar\MpclWordpress\Machine\Synchronizer;
 use Reprostar\MpclWordpress\Settings\Settings;
 use Reprostar\MpclWordpress\Settings\SettingsRepository;
 use Reprostar\MpclWordpress\View\BoxView;
@@ -28,7 +27,6 @@ final class ShortcodeHandler
 
     private SettingsRepository $settings;
     private MachineRepository $machines;
-    private Synchronizer $synchronizer;
     private MachinePresenter $presenter;
     private Renderer $renderer;
     private Assets $assets;
@@ -36,14 +34,12 @@ final class ShortcodeHandler
     public function __construct(
         SettingsRepository $settings,
         MachineRepository $machines,
-        Synchronizer $synchronizer,
         MachinePresenter $presenter,
         Renderer $renderer,
         Assets $assets
     ) {
         $this->settings = $settings;
         $this->machines = $machines;
-        $this->synchronizer = $synchronizer;
         $this->presenter = $presenter;
         $this->renderer = $renderer;
         $this->assets = $assets;
@@ -95,12 +91,6 @@ final class ShortcodeHandler
 
     private function renderListing(int $columns, Settings $settings): string
     {
-        if ($settings->cacheAutoupdateEnabled
-            && time() - $settings->lastListingCache >= $settings->cacheAutoupdateInterval
-        ) {
-            $this->synchronizer->importAll();
-        }
-
         $rows = [];
         foreach ($this->machines->findAll('id', 'DESC', $settings->getListingLimit(), 0) as $index => $machine) {
             $rows[intdiv($index, $columns)][] = $this->presenter->forListing($machine);

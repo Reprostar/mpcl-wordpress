@@ -8,6 +8,7 @@ use Reprostar\MpclWordpress\Api\ApiClient;
 use Reprostar\MpclWordpress\Database\Schema;
 use Reprostar\MpclWordpress\Formatting\BbCode;
 use Reprostar\MpclWordpress\Machine\MachineRepository;
+use Reprostar\MpclWordpress\Machine\SyncScheduler;
 use Reprostar\MpclWordpress\Machine\Synchronizer;
 use Reprostar\MpclWordpress\Settings\SettingsPage;
 use Reprostar\MpclWordpress\Settings\SettingsRepository;
@@ -37,27 +38,27 @@ final class Plugin
 
         $schema = new Schema($wpdb);
         $settingsRepository = new SettingsRepository();
-        $settings = $settingsRepository->load();
         $machines = new MachineRepository($wpdb, $schema->getMachinesTable());
-        $apiUrl = defined('MPCL_API_URL') ? (string) constant('MPCL_API_URL') : ApiClient::DEFAULT_URL;
-        $synchronizer = new Synchronizer(new ApiClient($apiUrl, $settings->apiKey, $settings->apiToken), $machines);
+        $scheduler = $this->createScheduler($settingsRepository, $machines);
         $presenter = new MachinePresenter(new BbCode(), $baseUrl . 'img/sample_machine.png');
 
         load_plugin_textdomain('mpcl', false, dirname(plugin_basename($this->file)) . '/languages/');
 
         $assets = new Assets($baseUrl, MPCL_VERSION);
         $assets->register();
+        $scheduler->register();
+        $scheduler->ensureScheduled();
+
         (new ShortcodeHandler(
             $settingsRepository,
             $machines,
-            $synchronizer,
             $presenter,
             new Renderer($directory . 'templates'),
             $assets
         ))->register();
 
         if (is_admin()) {
-            (new SettingsPage($settingsRepository, $machines, $directory . 'templates'))->register();
+            (new SettingsPage($settingsRepository, $machines, $scheduler, $directory . 'templates'))->register();
         }
 
         if (!$schema->isCurrent()) {
@@ -67,7 +68,30 @@ final class Plugin
 
     public function activate(): void
     {
-        (new Schema($this->wpdb))->migrate();
-        (new SettingsRepository())->load();
+        $schema = new Schema($this->wpdb);
+        $schema->migrate();
+
+        $settingsRepository = new SettingsRepository();
+        $settingsRepository->load();
+
+        $scheduler = $this->createScheduler($settingsRepository, new MachineRepository($this->wpdb, $schema->getMachinesTable()));
+        $scheduler->register();
+        $scheduler->ensureScheduled();
+    }
+
+    public function deactivate(): void
+    {
+        $schema = new Schema($this->wpdb);
+        $this->createScheduler(new SettingsRepository(), new MachineRepository($this->wpdb, $schema->getMachinesTable()))
+            ->unschedule();
+    }
+
+    private function createScheduler(SettingsRepository $settingsRepository, MachineRepository $machines): SyncScheduler
+    {
+        $settings = $settingsRepository->load();
+        $apiUrl = defined('MPCL_API_URL') ? (string) constant('MPCL_API_URL') : ApiClient::DEFAULT_URL;
+        $client = new ApiClient($apiUrl, $settings->apiKey, $settings->apiToken);
+
+        return new SyncScheduler(new Synchronizer($client, $machines), $settingsRepository);
     }
 }

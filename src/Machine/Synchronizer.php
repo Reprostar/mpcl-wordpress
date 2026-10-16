@@ -23,15 +23,28 @@ final class Synchronizer
     }
 
     /**
-     * The local table is purged only after the first page has been fetched, so a
-     * failing API leaves the previous copy in place.
+     * Fetches the whole collection first and only then replaces the local copy
+     * in one transaction, so a failing API keeps the previous copy and visitors
+     * never see a half-imported catalogue.
      *
      * @return int|null number of machines stored, null when the API failed
      */
     public function importAll(): ?int
     {
-        $received = 0;
-        $stored = 0;
+        $machines = $this->fetchAll();
+        if (null === $machines) {
+            return null;
+        }
+
+        return $this->machines->replaceAll($machines, time());
+    }
+
+    /**
+     * @return list<Machine>|null
+     */
+    private function fetchAll(): ?array
+    {
+        $machines = [];
         $page = 0;
         $maxPages = 1;
 
@@ -51,7 +64,6 @@ final class Synchronizer
                     return null;
                 }
 
-                $this->machines->deleteAll();
                 $maxPages = (int) ceil($set->total / self::PAGE_SIZE) + 1;
             }
 
@@ -59,17 +71,13 @@ final class Synchronizer
                 break;
             }
 
-            $now = time();
             foreach ($set->items as $machine) {
-                if ($this->machines->save($machine, $now)) {
-                    ++$stored;
-                }
+                $machines[] = $machine;
             }
 
-            $received += count($set->items);
             ++$page;
-        } while ($set->total > $received && $page < $maxPages);
+        } while ($set->total > count($machines) && $page < $maxPages);
 
-        return $stored;
+        return $machines;
     }
 }

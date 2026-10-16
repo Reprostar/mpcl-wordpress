@@ -18,6 +18,30 @@ final class MachineRepository
         $this->table = $table;
     }
 
+    /**
+     * Replaces every stored machine inside one transaction (the table is InnoDB
+     * on any current MySQL/MariaDB), so readers see either the old or the new set.
+     *
+     * @param list<Machine> $machines
+     * @return int number of machines stored
+     */
+    public function replaceAll(array $machines, int $synchronizedAt): int
+    {
+        $this->wpdb->query('START TRANSACTION');
+        $this->deleteAll();
+
+        $stored = 0;
+        foreach ($machines as $machine) {
+            if ($this->save($machine, $synchronizedAt)) {
+                ++$stored;
+            }
+        }
+
+        $this->wpdb->query('COMMIT');
+
+        return $stored;
+    }
+
     public function save(Machine $machine, int $synchronizedAt): bool
     {
         $row = $machine->toRow();

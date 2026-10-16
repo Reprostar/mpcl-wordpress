@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Reprostar\MpclWordpress\Settings;
 
 use Reprostar\MpclWordpress\Machine\MachineRepository;
+use Reprostar\MpclWordpress\Machine\SyncScheduler;
 
 /**
  * Settings → MyPCList Integration.
@@ -18,12 +19,19 @@ final class SettingsPage
 
     private SettingsRepository $settings;
     private MachineRepository $machines;
+    private SyncScheduler $scheduler;
     private string $templateDirectory;
 
-    public function __construct(SettingsRepository $settings, MachineRepository $machines, string $templateDirectory)
+    public function __construct(
+        SettingsRepository $settings,
+        MachineRepository $machines,
+        SyncScheduler $scheduler,
+        string $templateDirectory
+    )
     {
         $this->settings = $settings;
         $this->machines = $machines;
+        $this->scheduler = $scheduler;
         $this->templateDirectory = rtrim($templateDirectory, '/');
     }
 
@@ -79,11 +87,14 @@ final class SettingsPage
         if (isset($_POST['reset'])) {
             add_settings_error('settingName', 'SettingSlug', __('Cache has been cleared.', 'mpcl'), 'updated');
             $this->machines->deleteAll();
+            $this->scheduler->requestImmediate();
         }
 
         $input = is_array($input) ? $input : [];
         $current = get_option(SettingsRepository::OPTION);
         $settings = Settings::fromArray(is_array($current) ? $current : []);
+        $previousKey = $settings->apiKey;
+        $previousToken = $settings->apiToken;
 
         if (array_key_exists('api_key', $input)) {
             $settings->apiKey = sanitize_text_field((string) $input['api_key']);
@@ -108,6 +119,10 @@ final class SettingsPage
         }
         if (array_key_exists('cache_autoupdate_enabled', $input)) {
             $settings->cacheAutoupdateEnabled = (bool) $input['cache_autoupdate_enabled'];
+        }
+
+        if ($settings->apiKey !== $previousKey || $settings->apiToken !== $previousToken) {
+            $this->scheduler->requestImmediate();
         }
 
         return $settings->toArray();

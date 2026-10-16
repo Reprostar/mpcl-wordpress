@@ -20,6 +20,10 @@ register_activation_hook(__FILE__, static function (): void {
     (new \Reprostar\MpclWordpress\Plugin(__FILE__, $GLOBALS['wpdb']))->activate();
 });
 
+register_deactivation_hook(__FILE__, static function (): void {
+    (new \Reprostar\MpclWordpress\Plugin(__FILE__, $GLOBALS['wpdb']))->deactivate();
+});
+
 add_action('plugins_loaded', static function (): void {
     (new \Reprostar\MpclWordpress\Plugin(__FILE__, $GLOBALS['wpdb']))->boot();
 });
