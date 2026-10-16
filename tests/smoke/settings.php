@@ -2,8 +2,11 @@
 // Renders the settings page through the real admin hooks; run with WP_ADMIN defined.
 require_once ABSPATH . 'wp-admin/includes/template.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
+require_once ABSPATH . 'wp-admin/includes/class-wp-screen.php';
+require_once ABSPATH . 'wp-admin/includes/screen.php';
 
 wp_set_current_user(1);
+set_current_screen('settings_page_mpcl-settings');
 do_action('admin_menu');
 do_action('admin_init');
 

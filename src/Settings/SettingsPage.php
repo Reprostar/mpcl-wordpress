@@ -7,6 +7,7 @@ namespace Reprostar\MpclWordpress\Settings;
 use Reprostar\MpclWordpress\Machine\MachineRepository;
 use Reprostar\MpclWordpress\Machine\SyncScheduler;
 use Reprostar\MpclWordpress\Security\Secrets;
+use Reprostar\MpclWordpress\Shortcode\ShortcodeHandler;
 use Reprostar\MpclWordpress\Support\Cast;
 
 defined('ABSPATH') || exit;
@@ -21,6 +22,7 @@ final class SettingsPage
     private const FIELD_TEXT = 'text';
     private const FIELD_CHECKBOX = 'checkbox';
     private const FIELD_SECRET = 'secret';
+    private const FIELD_PAGE = 'page';
     private const CLEAR_TOKEN_KEY = 'api_token_clear';
 
     private SettingsRepository $settings;
@@ -153,7 +155,7 @@ final class SettingsPage
         $key = substr($section['id'], strlen(self::SECTION_PREFIX));
         $descriptions = [
             'auth' => __('Enter your API authorization codes, which can be generated <a target="_blank" href="https://mypclist.net/settings/api">here</a>. They\'re required to connect with MyPCList server.', 'mpcl'),
-            'catalog' => __('Please enter ID of the page that is used as a Catalog template. This reference is required to display links in embedded machine boxes in posts.', 'mpcl'),
+            'catalog' => __('Select the page that shows your catalogue (the one with the [mpcl] shortcode). Machine boxes embedded in posts link to it.', 'mpcl'),
             'appearance' => __('There you can customize plugin appearance on yout blog.', 'mpcl'),
             'cache' => __('For less server-to-server bandwith usage you can enable cache of your data. Activating cache will make your blog loading faster.', 'mpcl'),
         ];
@@ -171,6 +173,12 @@ final class SettingsPage
 
         if (self::FIELD_SECRET === $field['type']) {
             $this->renderSecretField($name, $id);
+
+            return;
+        }
+
+        if (self::FIELD_PAGE === $field['type']) {
+            $this->renderPageField($name, $id, $this->settings->load()->catalogPageId);
 
             return;
         }
@@ -235,6 +243,53 @@ final class SettingsPage
             . esc_html__('Remove the saved token', 'mpcl') . '</label></p>';
     }
 
+    /**
+     * Published, private and draft pages; pages using the shortcode are marked,
+     * and a stored page that no longer exists stays selected so saving the form
+     * does not reset it.
+     */
+    private function renderPageField(string $name, string $id, int $selected): void
+    {
+        $markCatalogPages = static function (string $title, \WP_Post $page): string {
+            foreach (ShortcodeHandler::TAGS as $tag) {
+                if (has_shortcode($page->post_content, $tag)) {
+                    return $title . ' ' . __('(catalogue shortcode)', 'mpcl');
+                }
+            }
+
+            return $title;
+        };
+
+        add_filter('list_pages', $markCatalogPages, 10, 2);
+        $dropdown = (string) wp_dropdown_pages([
+            'echo' => 0,
+            'name' => $name,
+            'id' => $id,
+            'selected' => $selected,
+            'show_option_none' => __('Select a page', 'mpcl'),
+            'option_none_value' => '0',
+            'post_status' => ['publish', 'private', 'draft'],
+        ]);
+        remove_filter('list_pages', $markCatalogPages, 10);
+
+        if ('' === $dropdown) {
+            $dropdown = '<select name="' . esc_attr($name) . '" id="' . esc_attr($id) . '">'
+                . '<option value="0">' . esc_html__('Select a page', 'mpcl') . '</option></select>';
+        }
+
+        if (0 < $selected && false === strpos($dropdown, 'value="' . $selected . '"')) {
+            /* translators: %d: ID of the page that no longer exists. */
+            $label = sprintf(__('Missing page #%d', 'mpcl'), $selected);
+            $dropdown = str_replace(
+                '</select>',
+                '<option value="' . $selected . '" selected="selected">' . esc_html($label) . '</option></select>',
+                $dropdown
+            );
+        }
+
+        echo $dropdown;
+    }
+
     private function fieldId(string $key): string
     {
         return 'mpcl-field-' . str_replace('_', '-', $key);
@@ -256,7 +311,7 @@ final class SettingsPage
             'catalog' => [
                 'title' => __('Catalog page', 'mpcl'),
                 'fields' => [
-                    'catalog_page_id' => ['title' => __('Catalog page ID', 'mpcl'), 'type' => self::FIELD_TEXT],
+                    'catalog_page_id' => ['title' => __('Catalog page', 'mpcl'), 'type' => self::FIELD_PAGE],
                 ],
             ],
             'appearance' => [

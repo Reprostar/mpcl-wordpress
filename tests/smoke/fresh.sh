@@ -92,12 +92,21 @@ MPCL_INPUT='{"api_key":"k","api_token":"t"}' $W --exec='define("WP_ADMIN", true)
 api_mode ok
 $W eval 'do_action("mpcl_sync", true);'
 expect "a token saved through the form authenticates the sync" "$(api_calls)" "^3$"
-RENDER_ONLY='wp_set_current_user(1); require_once ABSPATH . "wp-admin/includes/template.php"; do_action("admin_menu"); do_action("admin_init"); do_action(get_plugin_page_hookname("mpcl-settings", "options-general.php"));'
+RENDER_ONLY='wp_set_current_user(1); require_once ABSPATH . "wp-admin/includes/template.php"; require_once ABSPATH . "wp-admin/includes/class-wp-screen.php"; require_once ABSPATH . "wp-admin/includes/screen.php"; set_current_screen("settings_page_mpcl-settings"); do_action("admin_menu"); do_action("admin_init"); do_action(get_plugin_page_hookname("mpcl-settings", "options-general.php"));'
 expect "a token encrypted with another key is reported" "$($W --exec='define("WP_ADMIN", true); define("MPCL_ENCRYPTION_KEY", "another key");' eval "$RENDER_ONLY")" "cannot be decrypted"
 MPCL_INPUT='{"api_token_clear":"1"}' $W --exec='define("WP_ADMIN", true);' eval "$ADMIN_SAVE"
 expect_empty "removing the token empties it" "$($W option pluck mpcl-options api_token)"
 MPCL_INPUT='{"api_token":"t"}' $W --exec='define("WP_ADMIN", true);' eval "$ADMIN_SAVE"
 expect_not "no image cache field" "$SETTINGS" "cache_images"
+expect "the catalogue page is a dropdown" "$SETTINGS" "<select name='mpcl-options\\[catalog_page_id\\]' id='mpcl-field-catalog-page-id'>"
+expect "the catalogue page is selected and marked" "$SETTINGS" "value=\"$PAGE\" selected=\"selected\">Catalog \\(catalogue shortcode\\)"
+expect "other pages are listed" "$SETTINGS" 'value="2">Sample Page<'
+MPCL_INPUT='{"catalog_page_id":"2"}' $W --exec='define("WP_ADMIN", true);' eval "$ADMIN_SAVE"
+expect "choosing another page stores its ID" "$($W option pluck mpcl-options catalog_page_id)" "^2$"
+expect "boxes link to the newly chosen page" "$(render "echo do_shortcode('[mpcl id=120]');")" "page_id=2&#038;machine_id=120"
+$W option patch update mpcl-options catalog_page_id 99999 >/dev/null
+expect "a missing page stays selected" "$($W --exec='define("WP_ADMIN", true);' eval "$RENDER_ONLY")" 'value="99999" selected="selected">Missing page #99999<'
+$W option patch update mpcl-options catalog_page_id "$PAGE" >/dev/null
 
 echo "== translations"
 mkdir -p wp-content/languages && cp wp-content/plugins/mpcl/languages/mpcl-pl_PL.mo wp-content/languages/pl_PL.mo

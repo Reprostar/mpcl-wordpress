@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MyPClist WP\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/p\n"
-"POT-Creation-Date: 2026-10-16T20:06:21+00:00\n"
+"POT-Creation-Date: 2026-10-16T20:09:40+00:00\n"
 "PO-Revision-Date: 2016-12-04 23:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: MyPClist\n"
@@ -42,79 +42,89 @@ msgstr ""
 msgid "https://mypclist.net"
 msgstr ""
 
-#: src/Settings/SettingsPage.php:97
+#: src/Settings/SettingsPage.php:99
 msgid "Cache has been cleared."
 msgstr "Pamięć podręczna została wyczyszczona."
 
-#: src/Settings/SettingsPage.php:155
+#: src/Settings/SettingsPage.php:157
 msgid "Enter your API authorization codes, which can be generated <a target=\"_blank\" href=\"https://mypclist.net/settings/api\">here</a>. They're required to connect with MyPCList server."
 msgstr "Wprowadź dane autoryzacyjne API, które mogą być wygenerowane <a target=\"_blank\" href=\"https://mypclist.net/settings/api\">tutaj</a>. Dane te są niezbędne do połączenia z serwerem MyPClist."
 
-#: src/Settings/SettingsPage.php:156
-msgid "Please enter ID of the page that is used as a Catalog template. This reference is required to display links in embedded machine boxes in posts."
-msgstr "Wprowadź ID strony, która jest używana do wyświetlenia katalogu maszyn MyPClist. Odniesienie do tej strony jest niezbędne do poprawnego wyświetlenia linków w boxach umieszczanych na innych postach."
+#: src/Settings/SettingsPage.php:158
+msgid "Select the page that shows your catalogue (the one with the [mpcl] shortcode). Machine boxes embedded in posts link to it."
+msgstr "Wybierz stronę, na której wyświetlany jest katalog (tę z shortcode'em [mpcl]). Boxy maszyn umieszczane we wpisach prowadzą do tej strony."
 
-#: src/Settings/SettingsPage.php:157
+#: src/Settings/SettingsPage.php:159
 msgid "There you can customize plugin appearance on yout blog."
 msgstr "Tutaj możesz zmienić wygląd pluginu na Twoim blogu."
 
-#: src/Settings/SettingsPage.php:158
+#: src/Settings/SettingsPage.php:160
 msgid "For less server-to-server bandwith usage you can enable cache of your data. Activating cache will make your blog loading faster."
 msgstr "W celu zmniejszenia zużycia transferu na serwerze, możesz włączyć pamięć podręczną danych. Aktywowanie tej opcji spowoduje szybsze ładowanie się bloga."
 
-#: src/Settings/SettingsPage.php:222
+#: src/Settings/SettingsPage.php:230
 msgid "The saved token cannot be decrypted, probably because the site's security keys changed. Enter it again."
 msgstr "Nie można odszyfrować zapisanego tokenu, prawdopodobnie z powodu zmiany kluczy bezpieczeństwa witryny. Wprowadź go ponownie."
 
-#: src/Settings/SettingsPage.php:233
+#: src/Settings/SettingsPage.php:241
 msgid "A token is saved. Leave the field empty to keep it."
 msgstr "Token jest zapisany. Pozostaw pole puste, aby go zachować."
 
-#: src/Settings/SettingsPage.php:235
+#: src/Settings/SettingsPage.php:243
 msgid "Remove the saved token"
 msgstr "Usuń zapisany token"
 
-#: src/Settings/SettingsPage.php:250
+#: src/Settings/SettingsPage.php:256
+msgid "(catalogue shortcode)"
+msgstr "(shortcode katalogu)"
+
+#: src/Settings/SettingsPage.php:269 src/Settings/SettingsPage.php:277
+msgid "Select a page"
+msgstr "Wybierz stronę"
+
+#. translators: %d: ID of the page that no longer exists.
+#: src/Settings/SettingsPage.php:282
+#, php-format
+msgid "Missing page #%d"
+msgstr "Brakująca strona #%d"
+
+#: src/Settings/SettingsPage.php:305
 msgid "Authorization"
 msgstr "Autoryzacja"
 
-#: src/Settings/SettingsPage.php:252
+#: src/Settings/SettingsPage.php:307
 msgid "API key"
 msgstr "ID klucza API"
 
-#: src/Settings/SettingsPage.php:253
+#: src/Settings/SettingsPage.php:308
 msgid "API token"
 msgstr "Token klucza API"
 
-#: src/Settings/SettingsPage.php:257
+#: src/Settings/SettingsPage.php:312 src/Settings/SettingsPage.php:314
 msgid "Catalog page"
 msgstr "Strona katalogu"
 
-#: src/Settings/SettingsPage.php:259
-msgid "Catalog page ID"
-msgstr "ID strony katalogu"
-
-#: src/Settings/SettingsPage.php:263
+#: src/Settings/SettingsPage.php:318
 msgid "Appearance"
 msgstr "Wygląd"
 
-#: src/Settings/SettingsPage.php:265
+#: src/Settings/SettingsPage.php:320
 msgid "Full-width boxes"
 msgstr "Pełna szerokość boxów"
 
-#: src/Settings/SettingsPage.php:266
+#: src/Settings/SettingsPage.php:321
 msgid "Entries per page"
 msgstr "Liczba wpisów na stronie"
 
-#: src/Settings/SettingsPage.php:270
+#: src/Settings/SettingsPage.php:325
 msgid "Data cache"
 msgstr "Pamięć podręczna danych"
 
-#: src/Settings/SettingsPage.php:272
+#: src/Settings/SettingsPage.php:327
 msgid "Enable cache auto-update"
 msgstr "Włącz automatyczne aktualizowanie pamięci podr."
 
-#: src/Settings/SettingsPage.php:273
+#: src/Settings/SettingsPage.php:328
 msgid "Update interval (seconds)"
 msgstr "Czas pomiędzy odświeżeniami (sek.)"
 
