@@ -6,6 +6,8 @@ namespace Reprostar\MpclWordpress\Machine;
 
 use Reprostar\MpclWordpress\Support\Cast;
 
+defined('ABSPATH') || exit;
+
 final class Photo
 {
     public ?int $id = null;

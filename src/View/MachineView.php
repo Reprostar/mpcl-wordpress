@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reprostar\MpclWordpress\View;
 
+defined('ABSPATH') || exit;
+
 /**
  * A machine prepared for a template. Optional text fields are null when the
  * template should leave their row out.

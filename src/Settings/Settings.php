@@ -6,6 +6,8 @@ namespace Reprostar\MpclWordpress\Settings;
 
 use Reprostar\MpclWordpress\Support\Cast;
 
+defined('ABSPATH') || exit;
+
 /**
  * The `mpcl-options` option. Keys this class does not know are carried through
  * untouched so that a save never drops data written by another plugin version.

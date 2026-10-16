@@ -9,6 +9,8 @@ use Reprostar\MpclWordpress\Machine\Machine;
 use Reprostar\MpclWordpress\Machine\Photo;
 use Reprostar\MpclWordpress\Support\Cast;
 
+defined('ABSPATH') || exit;
+
 final class MachinePresenter
 {
     private const THUMBNAIL_SIZE = 300;

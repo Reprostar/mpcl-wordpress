@@ -16,6 +16,8 @@ use Reprostar\MpclWordpress\Shortcode\ShortcodeHandler;
 use Reprostar\MpclWordpress\View\MachinePresenter;
 use Reprostar\MpclWordpress\View\Renderer;
 
+defined('ABSPATH') || exit;
+
 /**
  * Composition root: builds the services once and hooks them into WordPress.
  */

@@ -6,6 +6,8 @@ namespace Reprostar\MpclWordpress\Machine;
 
 use Reprostar\MpclWordpress\Api\ApiClient;
 
+defined('ABSPATH') || exit;
+
 /**
  * Replaces the local copy of the collection with the one on mypclist.net.
  */

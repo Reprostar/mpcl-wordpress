@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reprostar\MpclWordpress\Formatting;
 
+defined('ABSPATH') || exit;
+
 /**
  * Converts machine descriptions from BBCode to HTML.
  *

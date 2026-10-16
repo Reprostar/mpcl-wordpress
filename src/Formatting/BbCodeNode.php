@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reprostar\MpclWordpress\Formatting;
 
+defined('ABSPATH') || exit;
+
 /**
  * Element of the BBCode parse tree. An element without a tag name is the
  * document root; an element with a null tag name and a text value is a text run.

@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /** @var \Reprostar\MpclWordpress\View\SingleView $view */
 $machine = $view->machine;
 ?>

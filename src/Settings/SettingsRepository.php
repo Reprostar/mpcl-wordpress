@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reprostar\MpclWordpress\Settings;
 
+defined('ABSPATH') || exit;
+
 final class SettingsRepository
 {
     public const OPTION = 'mpcl-options';

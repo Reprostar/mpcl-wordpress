@@ -1,3 +1,5 @@
+<?php defined('ABSPATH') || exit;
+?>
 <div class="wrap">
     <h2>MyPCList integration</h2>
 

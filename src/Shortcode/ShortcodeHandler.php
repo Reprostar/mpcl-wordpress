@@ -14,6 +14,8 @@ use Reprostar\MpclWordpress\View\MachinePresenter;
 use Reprostar\MpclWordpress\View\Renderer;
 use Reprostar\MpclWordpress\View\SingleView;
 
+defined('ABSPATH') || exit;
+
 /**
  * Renders [mpcl], [mypclist] and [mpcl-catalog]: an embedded box for `id=…`,
  * otherwise the catalogue list, or a single machine when `?machine_id=` is set.

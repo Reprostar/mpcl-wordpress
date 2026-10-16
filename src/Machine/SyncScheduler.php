@@ -7,6 +7,8 @@ namespace Reprostar\MpclWordpress\Machine;
 use Reprostar\MpclWordpress\Settings\Settings;
 use Reprostar\MpclWordpress\Settings\SettingsRepository;
 
+defined('ABSPATH') || exit;
+
 /**
  * Runs the import from WP-Cron instead of inside visitors' requests.
  *

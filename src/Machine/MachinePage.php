@@ -6,6 +6,8 @@ namespace Reprostar\MpclWordpress\Machine;
 
 use Reprostar\MpclWordpress\Support\Cast;
 
+defined('ABSPATH') || exit;
+
 /**
  * One page of the API v1 `GetMachinesList` response.
  */

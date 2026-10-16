@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reprostar\MpclWordpress\Database;
 
+defined('ABSPATH') || exit;
+
 /**
  * Creates and migrates the plugin's tables. Version 1 is everything 1.x created
  * (no version option was stored then); the migration keeps the machines table

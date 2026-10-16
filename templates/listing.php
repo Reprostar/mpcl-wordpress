@@ -1,4 +1,5 @@
 <?php
+defined('ABSPATH') || exit;
 /** @var \Reprostar\MpclWordpress\View\ListingView $view */
 ?>
 <div class="mpcl-listing mpcl-listing-grid">

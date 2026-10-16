@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reprostar\MpclWordpress\Support;
 
+defined('ABSPATH') || exit;
+
 /**
  * Converts loosely typed values coming from the API, the database and WordPress
  * options into the types the DTOs declare.

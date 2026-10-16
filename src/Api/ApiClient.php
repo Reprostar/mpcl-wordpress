@@ -6,6 +6,8 @@ namespace Reprostar\MpclWordpress\Api;
 
 use Reprostar\MpclWordpress\Machine\MachinePage;
 
+defined('ABSPATH') || exit;
+
 /**
  * Client for the mypclist.net API v1: a single endpoint taking a form-encoded
  * POST with `action`, `api_key`, `api_token` and `params`, answering with

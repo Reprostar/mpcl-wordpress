@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reprostar\MpclWordpress\View;
 
+defined('ABSPATH') || exit;
+
 final class Renderer
 {
     private string $templateDirectory;

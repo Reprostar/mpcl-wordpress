@@ -6,6 +6,8 @@ namespace Reprostar\MpclWordpress;
 
 use Reprostar\MpclWordpress\Shortcode\ShortcodeHandler;
 
+defined('ABSPATH') || exit;
+
 /**
  * Front-end styles and scripts, loaded only on pages that use the shortcode.
  */

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Reprostar\MpclWordpress\Machine;
 
+defined('ABSPATH') || exit;
+
 final class MachineRepository
 {
     private const ORDER_COLUMNS = ['id', 'name', 'created'];

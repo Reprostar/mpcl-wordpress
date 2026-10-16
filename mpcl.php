@@ -12,6 +12,8 @@ Domain Path: /languages
 License: MIT
 */
 
+defined('ABSPATH') || exit;
+
 const MPCL_VERSION = '1.2.2';
 
 require_once __DIR__ . '/src/autoload.php';

@@ -7,6 +7,8 @@ namespace Reprostar\MpclWordpress\Settings;
 use Reprostar\MpclWordpress\Machine\MachineRepository;
 use Reprostar\MpclWordpress\Machine\SyncScheduler;
 
+defined('ABSPATH') || exit;
+
 /**
  * Settings → MyPCList Integration.
  */
