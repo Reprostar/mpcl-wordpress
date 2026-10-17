@@ -137,4 +137,26 @@ expect "the forced sync event exists" "$($W cron event list --hook=mpcl_sync --f
 expect "connect --skip-check saves rejected credentials" "$(printf %s wrong | out $W mpcl connect --key=k --skip-check)" "saved.*exit=0"
 printf %s t | $W mpcl connect --key=k >/dev/null 2>&1
 
+echo "== status"
+ST=$($W mpcl status --format=json)
+expect "status reports the version and schema" "$ST" '"plugin_version":"[0-9.]+","schema_version":3,"schema_current":true'
+expect "status reports the credentials" "$ST" '"api_key":"set","api_token":"set"'
+expect "status counts the machines" "$ST" '"machines":120'
+expect "status shows the last sync" "$ST" '"last_sync":"20[0-9-]+T[0-9:]+Z \(.* ago\)"'
+expect "status shows the next scheduled check" "$ST" '"next_check":"20[0-9-]+T'
+expect "status reports a missing catalogue page as not set" "$ST" '"catalog_page_id":0,"catalog_page":"not set"'
+expect_not "status never shows the token" "$ST" "mpcl:v1:"
+CAT=$($W post create --post_type=page --post_status=publish --post_title=Katalog --porcelain)
+$W mpcl config set catalog_page_id "$CAT" >/dev/null
+expect "status shows the catalogue page" "$($W mpcl status --format=json)" "\"catalog_page_id\":$CAT,\"catalog_page\":\"Katalog\",\"catalog_url\":\"http"
+$W post delete "$CAT" --force >/dev/null
+expect "status reports a deleted catalogue page as missing" "$($W mpcl status --format=json)" '"catalog_page":"missing"'
+$W mpcl config set catalog_page_id 0 >/dev/null 2>&1 || $W option patch update mpcl-options catalog_page_id 0 >/dev/null
+api_mode error; $W mpcl sync >/dev/null 2>&1; api_mode ok
+expect "status flags a failed last attempt" "$($W mpcl status --format=json)" '"last_attempt_failed":true'
+expect "status prints a table by default" "$($W mpcl status)" "machines[[:space:]]+120"
+$W option update mpcl-options '{}' --format=json >/dev/null
+expect "status exits 0 when nothing is configured" "$(out $W mpcl status --format=json)" '"api_key":"empty","api_token":"empty".*exit=0'
+printf %s t | $W mpcl connect --key=k --sync >/dev/null 2>&1
+
 finish

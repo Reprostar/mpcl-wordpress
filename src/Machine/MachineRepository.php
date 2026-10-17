@@ -93,6 +93,11 @@ final class MachineRepository
         return $machines;
     }
 
+    public function count(): int
+    {
+        return (int) $this->wpdb->get_var("SELECT COUNT(*) FROM `{$this->table}`");
+    }
+
     public function deleteAll(): void
     {
         $this->wpdb->query("DELETE FROM `{$this->table}`");

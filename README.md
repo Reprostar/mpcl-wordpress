@@ -58,6 +58,16 @@ where `15` is the machine's ID on MyPCList.
 
 Every command has `wp help mpcl <command>`. No command prints the API token or key material.
 
+### Status
+
+```
+wp mpcl status [--format=json]
+```
+
+Version and schema, whether the key and token are set (or the token is unreadable), the number of machines,
+the last synchronisation and attempt, auto-update and the next scheduled check, and the catalogue page. It
+does not call the API. `wp mpcl secrets status` shows which encryption key is in use.
+
 ### Connection
 
 ```

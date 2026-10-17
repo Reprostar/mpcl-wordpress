@@ -37,7 +37,12 @@ final class Schema
 
     public function isCurrent(): bool
     {
-        return self::VERSION <= Cast::int(get_option(self::VERSION_OPTION, 0));
+        return self::VERSION <= $this->storedVersion();
+    }
+
+    public function storedVersion(): int
+    {
+        return Cast::int(get_option(self::VERSION_OPTION, 0));
     }
 
     public function migrate(): void
