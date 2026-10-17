@@ -6,6 +6,7 @@ namespace Reprostar\MpclWordpress\Shortcode;
 
 use Reprostar\MpclWordpress\Assets;
 use Reprostar\MpclWordpress\Machine\MachineRepository;
+use Reprostar\MpclWordpress\Settings\CatalogPages;
 use Reprostar\MpclWordpress\Settings\Settings;
 use Reprostar\MpclWordpress\Settings\SettingsRepository;
 use Reprostar\MpclWordpress\Support\Cast;
@@ -33,19 +34,22 @@ final class ShortcodeHandler
     private MachinePresenter $presenter;
     private Renderer $renderer;
     private Assets $assets;
+    private CatalogPages $catalogPages;
 
     public function __construct(
         SettingsRepository $settings,
         MachineRepository $machines,
         MachinePresenter $presenter,
         Renderer $renderer,
-        Assets $assets
+        Assets $assets,
+        CatalogPages $catalogPages
     ) {
         $this->settings = $settings;
         $this->machines = $machines;
         $this->presenter = $presenter;
         $this->renderer = $renderer;
         $this->assets = $assets;
+        $this->catalogPages = $catalogPages;
     }
 
     public function register(): void
@@ -117,24 +121,12 @@ final class ShortcodeHandler
     private function renderBox(int $machineId, Settings $settings): string
     {
         $machine = $this->machines->find($machineId);
-        $view = null !== $machine ? $this->presenter->forBox($machine, $this->catalogUrl($machineId, $settings)) : null;
+        $view = null !== $machine
+            ? $this->presenter->forBox($machine, $this->catalogPages->machineUrl($settings->catalogPageId, $machineId))
+            : null;
 
         $missingMachineId = null === $machine && current_user_can('edit_posts') ? $machineId : null;
 
         return $this->renderer->render('box', new BoxView($view, $settings->boxFullWidth, $missingMachineId));
-    }
-
-    private function catalogUrl(int $machineId, Settings $settings): ?string
-    {
-        if (0 === $settings->catalogPageId) {
-            return null;
-        }
-
-        $permalink = get_permalink($settings->catalogPageId);
-        if (!is_string($permalink) || '' === $permalink) {
-            return null;
-        }
-
-        return add_query_arg([self::QUERY_VAR => $machineId], $permalink);
     }
 }

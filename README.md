@@ -93,6 +93,15 @@ wp mpcl sync --reset  # empty the local copy first, like "Clear cache"
 On sites with `DISABLE_WP_CRON`, a system cron entry running `wp mpcl sync --quiet` can replace
 `wp-cron.php` for this plugin. A failing API keeps the current copy (except after `--reset`).
 
+### Machines
+
+```
+wp mpcl machines list [--orderby=name] [--order=asc] [--limit=20] [--fields=id,name] [--format=json|csv|count]
+wp mpcl machines get 15 [--field=catalog_url] [--format=json]
+```
+
+`get` adds the description, the photo URLs and the machine's address on the catalogue page.
+
 ### Settings
 
 ```

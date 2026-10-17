@@ -25,6 +25,23 @@ final class CatalogPages
         return $page;
     }
 
+    /**
+     * The machine's view on the catalogue page, or null without a catalogue page.
+     */
+    public function machineUrl(int $catalogPageId, int $machineId): ?string
+    {
+        if (0 === $catalogPageId) {
+            return null;
+        }
+
+        $permalink = get_permalink($catalogPageId);
+        if (!is_string($permalink) || '' === $permalink) {
+            return null;
+        }
+
+        return add_query_arg([ShortcodeHandler::QUERY_VAR => $machineId], $permalink);
+    }
+
     public function hasCatalogShortcode(\WP_Post $page): bool
     {
         foreach (ShortcodeHandler::TAGS as $tag) {

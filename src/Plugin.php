@@ -8,6 +8,7 @@ use Reprostar\MpclWordpress\Api\ApiClientFactory;
 use Reprostar\MpclWordpress\Cli\CommandRegistrar;
 use Reprostar\MpclWordpress\Cli\ConfigCommand;
 use Reprostar\MpclWordpress\Cli\ConnectCommand;
+use Reprostar\MpclWordpress\Cli\MachinesCommand;
 use Reprostar\MpclWordpress\Cli\Console;
 use Reprostar\MpclWordpress\Cli\SecretsCommand;
 use Reprostar\MpclWordpress\Cli\StatusCommand;
@@ -69,6 +70,7 @@ final class Plugin
         $secrets = new Secrets($keys);
         $settingsRepository = new SettingsRepository($secrets);
         $settingsInput = new SettingsInput();
+        $catalogPages = new CatalogPages();
         $machines = new MachineRepository($wpdb, $schema->getMachinesTable());
         $scheduler = $this->createScheduler($settingsRepository, $machines);
         $presenter = new MachinePresenter(new BbCode(), $baseUrl . 'img/sample_machine.png');
@@ -88,7 +90,8 @@ final class Plugin
             $machines,
             $presenter,
             new Renderer($directory . 'templates'),
-            $assets
+            $assets,
+            $catalogPages
         ))->register();
 
         $connectionChecker = new ConnectionChecker(ApiClientFactory::fromEnvironment());
@@ -106,7 +109,6 @@ final class Plugin
         if (defined('WP_CLI') && WP_CLI) {
             $console = new Console();
             $syncCommand = new SyncCommand($scheduler, $machines, $console);
-            $catalogPages = new CatalogPages();
             (new CommandRegistrar([
                 'secrets' => new SecretsCommand($settingsRepository, $secrets, $keys, $console),
                 'config' => new ConfigCommand($settingsRepository, $settingsInput, $catalogPages, $scheduler, $console),
@@ -116,6 +118,7 @@ final class Plugin
                     new StatusReporter($settingsRepository, $machines, $schema, $catalogPages, MPCL_VERSION),
                     $console
                 ),
+                'machines' => new MachinesCommand($machines, $settingsRepository, $catalogPages, $console),
                 'connect' => new ConnectCommand($settingsRepository, $settingsInput, $connectionChecker, $scheduler, $syncCommand, $console),
             ]))->register();
         }

@@ -159,4 +159,22 @@ $W option update mpcl-options '{}' --format=json >/dev/null
 expect "status exits 0 when nothing is configured" "$(out $W mpcl status --format=json)" '"api_key":"empty","api_token":"empty".*exit=0'
 printf %s t | $W mpcl connect --key=k --sync >/dev/null 2>&1
 
+echo "== machines"
+expect "machines list counts the collection" "$($W mpcl machines list --format=count)" "^120$"
+expect "machines list sorts and limits" "$($W mpcl machines list --orderby=id --order=asc --limit=2 --fields=id,name --format=csv)" "^id,name"
+expect "machines list returns the first ids in ascending order" "$($W mpcl machines list --orderby=id --order=asc --limit=2 --fields=id --format=csv | tail -n +2 | tr '\n' ' ')" "^1 2 $"
+expect "machines list --offset skips" "$($W mpcl machines list --order=desc --limit=1 --offset=1 --fields=id --format=csv | tail -1)" "^119$"
+expect "machines list rejects unknown fields" "$(out $W mpcl machines list --fields=id,nope)" "Unknown fields: nope.*exit=1"
+expect "machines list rejects a bad limit" "$(out $W mpcl machines list --limit=x)" "whole number.*exit=1"
+GET=$($W mpcl machines get 120 --format=json)
+expect "machines get shows the machine" "$GET" '"id":120,"name":"Machine 120 '
+expect "machines get lists photo URLs" "$GET" '"photo_urls":"https:\\/\\/img.example\\/120.jpg"'
+expect "machines get --field prints one value" "$($W mpcl machines get 120 --field=description_format)" "^markdown$"
+CAT=$($W post create --post_type=page --post_status=publish --post_title=Machines --porcelain)
+$W mpcl config set catalog_page_id "$CAT" >/dev/null
+expect "machines get links to the catalogue page" "$($W mpcl machines get 120 --field=catalog_url)" "page_id=$CAT&machine_id=120$"
+$W mpcl config set catalog_page_id 0 >/dev/null
+expect_empty "machines get without a catalogue page has no URL" "$($W mpcl machines get 120 --field=catalog_url)"
+expect "machines get for an unknown id exits non-zero" "$(out $W mpcl machines get 999999)" "not in the synchronised collection.*exit=1"
+
 finish

@@ -10,6 +10,7 @@
   validation as the settings page; the token is never printed.
 - `wp mpcl status` shows the connection, synchronisation and catalogue state
   without calling the API.
+- `wp mpcl machines list|get` shows the synchronised machines.
 - `wp mpcl connect --key=<key> [--sync]` saves the API credentials from the
   command line; the token is read from STDIN and checked before saving.
 - `wp mpcl test-connection` checks the saved credentials and exits non-zero on
