@@ -58,25 +58,6 @@ where `15` is the machine's ID on MyPCList.
 
 Every command has `wp help mpcl <command>`. No command prints the API token or key material.
 
-### Disconnecting
-
-```
-wp mpcl disconnect [--yes]          # remove the key and token; the catalogue keeps the last copy
-wp mpcl disconnect --purge [--yes]  # also remove the synchronised machines
-```
-
-Tables and options are removed only when the plugin is deleted.
-
-### Status
-
-```
-wp mpcl status [--format=json]
-```
-
-Version and schema, whether the key and token are set (or the token is unreadable), the number of machines,
-the last synchronisation and attempt, auto-update and the next scheduled check, and the catalogue page. It
-does not call the API. `wp mpcl secrets status` shows which encryption key is in use.
-
 ### Connection
 
 ```
@@ -88,8 +69,8 @@ wp mpcl test-connection
 checks the credentials (`--skip-check` to save anyway) and stores the token encrypted. `--sync` imports the
 collection right away; otherwise a synchronisation is scheduled.
 
-Checks the saved key and token against mypclist.net and exits with status 1 when the plugin is not
-configured, the token cannot be decrypted, or the API rejects the credentials or cannot be reached, so it
+`test-connection` checks the saved key and token against mypclist.net and exits with status 1 when the
+plugin is not configured, the token cannot be decrypted, or the API rejects the credentials or cannot be reached, so it
 can run from monitoring.
 
 ### Synchronisation
@@ -97,9 +78,6 @@ can run from monitoring.
 ```
 wp mpcl sync          # import now, whatever the interval; non-zero exit on failure
 wp mpcl sync --reset  # empty the local copy first, like "Clear cache"
-```
-
-```
 wp mpcl schedule enable --interval=1h   # seconds, or s/m/h/d; at least 5 minutes
 wp mpcl schedule disable
 wp mpcl schedule status
@@ -107,6 +85,16 @@ wp mpcl schedule status
 
 On sites with `DISABLE_WP_CRON`, a system cron entry running `wp mpcl sync --quiet` can replace
 `wp-cron.php` for this plugin. A failing API keeps the current copy (except after `--reset`).
+
+### Status
+
+```
+wp mpcl status [--format=json]
+```
+
+Version and schema, whether the key and token are set (or the token is unreadable), the number of machines,
+the last synchronisation and attempt, auto-update and the next scheduled check, and the catalogue page. It
+does not call the API. `wp mpcl secrets status` shows which encryption key is in use.
 
 ### Catalogue page
 
@@ -156,6 +144,15 @@ A token saved before `MPCL_ENCRYPTION_KEY` was added keeps working: it is read w
 `rekey` moves it. The last line recovers a token after `wp config shuffle-salts` on a site without the
 constant; the old material is `AUTH_KEY` followed by `AUTH_SALT` as they were before the shuffle, and is
 read from STDIN only.
+
+### Disconnecting
+
+```
+wp mpcl disconnect [--yes]          # remove the key and token; the catalogue keeps the last copy
+wp mpcl disconnect --purge [--yes]  # also remove the synchronised machines
+```
+
+Tables and options are removed only when the plugin is deleted.
 
 ## Bundled code
 
