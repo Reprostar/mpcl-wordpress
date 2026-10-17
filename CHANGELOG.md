@@ -16,6 +16,8 @@
 - `wp mpcl machines list|get` shows the synchronised machines.
 - `wp mpcl connect --key=<key> [--sync]` saves the API credentials from the
   command line; the token is read from STDIN and checked before saving.
+- `wp mpcl disconnect [--purge]` removes the API credentials, and with
+  `--purge` the synchronised machines.
 - `wp mpcl test-connection` checks the saved credentials and exits non-zero on
   failure, for use in monitoring.
 - `wp mpcl sync [--reset]` synchronises right away and reports the number of

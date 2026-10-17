@@ -223,4 +223,23 @@ expect "set-page warns about a page without the shortcode" "$(out $W mpcl catalo
 expect "set-page rejects a missing page" "$(out $W mpcl catalog set-page 99999)" "no published, private or draft page.*exit=1"
 expect "set-page without a warning for a catalogue page" "$(out $W mpcl catalog set-page "$NEW")" "^Success: Page $NEW is now the catalogue page\. exit=0"
 
+echo "== disconnect"
+$W mpcl config set entries_per_page 7 >/dev/null
+$W eval 'wp_schedule_single_event(time() + 600, "mpcl_sync", [true]);'
+expect "a forced sync is pending before disconnecting" "$($W cron event list --hook=mpcl_sync --fields=args --format=csv)" "true"
+expect "disconnect asks for confirmation" "$(printf 'n\n' | out $W mpcl disconnect)" "Remove the API credentials\?.*exit=0"
+expect "declining keeps the credentials" "$($W mpcl config get api_token)" "^set$"
+expect "disconnect --yes removes the credentials" "$(out $W mpcl disconnect --yes)" "Removed the API key and token.*Success: Disconnected.*exit=0"
+expect "the token is empty" "$($W mpcl config get api_token)" "^empty$"
+expect_empty "the key is empty" "$($W mpcl config get api_key)"
+expect "the machines stay" "$(rows)" "^120$"
+expect "other settings stay" "$($W mpcl config get entries_per_page)" "^7$"
+expect_not "the pending forced sync is removed" "$($W cron event list --hook=mpcl_sync --fields=args --format=csv)" "true"
+expect "sync then fails as not configured" "$(out $W mpcl sync)" "Not configured.*exit=1"
+printf %s t | $W mpcl connect --key=k --sync >/dev/null 2>&1
+expect "disconnect --purge also removes the machines" "$(out $W mpcl disconnect --purge --yes)" "Removed 120 synchronised machines.*exit=0"
+expect "the table is empty" "$(rows)" "^0$"
+expect "the sync times are reset" "$($W mpcl config get last_listing_cache),$($W option get mpcl_sync_attempted_at 2>/dev/null || echo none)" "^0,none$"
+expect "--purge keeps the other settings" "$($W mpcl config get entries_per_page)" "^7$"
+
 finish

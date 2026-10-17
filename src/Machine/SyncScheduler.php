@@ -66,6 +66,11 @@ final class SyncScheduler
         wp_clear_scheduled_hook(self::HOOK, [true]);
     }
 
+    public function cancelImmediate(): void
+    {
+        wp_clear_scheduled_hook(self::HOOK, [true]);
+    }
+
     public function requestImmediate(): void
     {
         if (false === wp_next_scheduled(self::HOOK, [true])) {

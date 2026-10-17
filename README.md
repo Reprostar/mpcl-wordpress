@@ -58,6 +58,15 @@ where `15` is the machine's ID on MyPCList.
 
 Every command has `wp help mpcl <command>`. No command prints the API token or key material.
 
+### Disconnecting
+
+```
+wp mpcl disconnect [--yes]          # remove the key and token; the catalogue keeps the last copy
+wp mpcl disconnect --purge [--yes]  # also remove the synchronised machines
+```
+
+Tables and options are removed only when the plugin is deleted.
+
 ### Status
 
 ```

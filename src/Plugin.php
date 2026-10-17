@@ -11,6 +11,7 @@ use Reprostar\MpclWordpress\Cli\ConfigCommand;
 use Reprostar\MpclWordpress\Cli\ConnectCommand;
 use Reprostar\MpclWordpress\Cli\MachinesCommand;
 use Reprostar\MpclWordpress\Cli\Console;
+use Reprostar\MpclWordpress\Cli\DisconnectCommand;
 use Reprostar\MpclWordpress\Cli\ScheduleCommand;
 use Reprostar\MpclWordpress\Cli\SecretsCommand;
 use Reprostar\MpclWordpress\Cli\StatusCommand;
@@ -121,6 +122,7 @@ final class Plugin
                 'schedule' => new ScheduleCommand($settingsRepository, $settingsInput, $scheduler, $statusReporter, $console),
                 'catalog' => new CatalogCommand($settingsRepository, $settingsInput, $catalogPages, $console),
                 'machines' => new MachinesCommand($machines, $settingsRepository, $catalogPages, $console),
+                'disconnect' => new DisconnectCommand($settingsRepository, $machines, $scheduler, $console),
                 'connect' => new ConnectCommand($settingsRepository, $settingsInput, $connectionChecker, $scheduler, $syncCommand, $console),
             ]))->register();
         }
