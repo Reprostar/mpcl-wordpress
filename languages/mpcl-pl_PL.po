@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: MyPClist WP\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/p\n"
-"POT-Creation-Date: 2026-10-16T20:20:17+00:00\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/mpcl\n"
+"POT-Creation-Date: 2026-10-17T14:12:13+00:00\n"
 "PO-Revision-Date: 2016-12-04 23:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: MyPClist\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #. Plugin Name of the plugin
 #: mpcl.php
-msgid "MyPCList"
+msgid "MyPCList for WordPress"
 msgstr ""
 
 #. Plugin URI of the plugin
@@ -42,30 +42,280 @@ msgstr ""
 msgid "https://mypclist.net"
 msgstr ""
 
-#: src/Settings/ConnectionTest.php:52
-msgid "Testing..."
-msgstr "Testowanie..."
+#. translators: 1: page ID, 2: page title.
+#: src/Cli/CatalogCommand.php:80
+#, php-format
+msgid "The catalogue page is already set to page %1$d (\"%2$s\"). Pass --force to create a new one."
+msgstr ""
 
-#: src/Settings/ConnectionTest.php:58
-msgid "Test connection"
-msgstr "Testuj połączenie"
+#: src/Cli/CatalogCommand.php:91
+msgid "Collection"
+msgstr ""
 
-#: src/Settings/ConnectionTest.php:65
-msgid "You are not allowed to do this."
-msgstr "Nie masz uprawnień do wykonania tej operacji."
+#. translators: %s: error message from WordPress.
+#: src/Cli/CatalogCommand.php:101
+#, php-format
+msgid "Could not create the page: %s"
+msgstr ""
 
-#: src/Settings/ConnectionTest.php:75
-msgid "Enter the API key and token first."
-msgstr "Najpierw wprowadź klucz i token API."
+#. translators: 1: page ID, 2: page address.
+#: src/Cli/CatalogCommand.php:115
+#, php-format
+msgid "Created page %1$d and made it the catalogue page: %2$s"
+msgstr ""
+
+#. translators: %d: page ID given on the command line.
+#: src/Cli/CatalogCommand.php:143 src/Cli/ConfigCommand.php:203
+#, php-format
+msgid "There is no published, private or draft page with ID %d."
+msgstr ""
+
+#: src/Cli/CatalogCommand.php:147
+msgid "The page has no catalogue shortcode yet. Add [mpcl] to it."
+msgstr ""
+
+#. translators: %d: page ID.
+#: src/Cli/CatalogCommand.php:155
+#, php-format
+msgid "Page %d is now the catalogue page."
+msgstr ""
+
+#: src/Cli/CatalogCommand.php:169
+msgid "--columns takes a whole number of 1 or more."
+msgstr ""
+
+#. translators: %s: setting name given on the command line.
+#: src/Cli/ConfigCommand.php:109
+#, php-format
+msgid "Unknown setting \"%s\"."
+msgstr ""
+
+#: src/Cli/ConfigCommand.php:145
+msgid "The API token is not set here. Use \"wp mpcl connect\", which reads it from STDIN so that it never lands in the shell history."
+msgstr ""
+
+#. translators: %s: setting name given on the command line.
+#: src/Cli/ConfigCommand.php:149
+#, php-format
+msgid "\"%s\" is not a setting that can be changed."
+msgstr ""
+
+#. translators: 1: setting name, 2: its new value.
+#: src/Cli/ConfigCommand.php:162
+#, php-format
+msgid "%1$s is now %2$s."
+msgstr ""
+
+#. translators: %s: setting name.
+#: src/Cli/ConfigCommand.php:193
+#, php-format
+msgid "%s takes 1/0, true/false, yes/no or on/off."
+msgstr ""
+
+#. translators: %s: setting name.
+#: src/Cli/ConfigCommand.php:199
+#, php-format
+msgid "%s takes a whole number of 0 or more."
+msgstr ""
+
+#: src/Cli/ConnectCommand.php:69
+msgid "Pass the API key with --key."
+msgstr ""
+
+#: src/Cli/ConnectCommand.php:73
+#, php-format
+msgid "Pipe the API token to STDIN, e.g. printf %s \"$MPCL_TOKEN\" | wp mpcl connect --key=<key>"
+msgstr ""
+
+#: src/Cli/ConnectCommand.php:77
+msgid "No API token was given on STDIN."
+msgstr ""
 
 #. translators: %s: error reported by the API or the HTTP client.
-#: src/Settings/ConnectionTest.php:82
+#: src/Cli/ConnectCommand.php:84
+#, php-format
+msgid "Connection failed: %s. Nothing was saved."
+msgstr ""
+
+#: src/Cli/ConnectCommand.php:92
+msgid "The API key and token were saved."
+msgstr ""
+
+#: src/Cli/ConnectCommand.php:101
+msgid "A synchronisation has been scheduled. Run \"wp mpcl sync\" to do it now."
+msgstr ""
+
+#: src/Cli/DisconnectCommand.php:56
+msgid "Remove the API credentials and all synchronised machines?"
+msgstr ""
+
+#: src/Cli/DisconnectCommand.php:57
+msgid "Remove the API credentials?"
+msgstr ""
+
+#: src/Cli/DisconnectCommand.php:69
+msgid "Removed the API key and token."
+msgstr ""
+
+#. translators: %d: number of machines.
+#: src/Cli/DisconnectCommand.php:76
+#, php-format
+msgid "Removed %d synchronised machine."
+msgid_plural "Removed %d synchronised machines."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: src/Cli/DisconnectCommand.php:79
+msgid "Disconnected from mypclist.net."
+msgstr ""
+
+#. translators: %s: comma-separated field names.
+#: src/Cli/MachinesCommand.php:115
+#, php-format
+msgid "Unknown fields: %s"
+msgstr ""
+
+#. translators: %d: machine ID.
+#: src/Cli/MachinesCommand.php:152
+#, php-format
+msgid "Machine %d is not in the synchronised collection."
+msgstr ""
+
+#. translators: %s: field name.
+#: src/Cli/MachinesCommand.php:168
+#, php-format
+msgid "Unknown field: %s"
+msgstr ""
+
+#. translators: %s: option name.
+#: src/Cli/MachinesCommand.php:210
+#, php-format
+msgid "--%s takes a whole number of 0 or more."
+msgstr ""
+
+#. translators: %d: interval in seconds.
+#: src/Cli/ScheduleCommand.php:74
+#, php-format
+msgid "Automatic synchronisation is on, every %d seconds."
+msgstr ""
+
+#: src/Cli/ScheduleCommand.php:94
+msgid "Automatic synchronisation is off."
+msgstr ""
+
+#: src/Cli/ScheduleCommand.php:135
+msgid "--interval takes seconds, or a number followed by s, m, h or d, e.g. 30m."
+msgstr ""
+
+#: src/Cli/ScheduleCommand.php:140
+msgid "--interval must be at least 5 minutes: WP-Cron checks every five minutes."
+msgstr ""
+
+#: src/Cli/SecretsCommand.php:72
+msgid "MPCL_ENCRYPTION_KEY is already defined. Use \"wp mpcl secrets rekey\" to switch between keys."
+msgstr ""
+
+#: src/Cli/SecretsCommand.php:78
+msgid "Could not write MPCL_ENCRYPTION_KEY into wp-config.php. Nothing was changed."
+msgstr ""
+
+#: src/Cli/SecretsCommand.php:85
+msgid "MPCL_ENCRYPTION_KEY was written into wp-config.php and the API token is encrypted with it."
+msgstr ""
+
+#: src/Cli/SecretsCommand.php:139
+msgid "Pass --from=<salt|constant> or --from-stdin."
+msgstr ""
+
+#: src/Cli/SecretsCommand.php:142
+msgid "--from and --to are the same key."
+msgstr ""
+
+#: src/Cli/SecretsCommand.php:147
+msgid "MPCL_ENCRYPTION_KEY is not defined. Add it to wp-config.php first, or use \"wp mpcl secrets generate-key --write\"."
+msgstr ""
+
+#: src/Cli/SecretsCommand.php:152
+msgid "MPCL_ENCRYPTION_KEY is not defined, so the token cannot be encrypted with it."
+msgstr ""
+
+#: src/Cli/SecretsCommand.php:157
+msgid "No API token is stored; nothing to re-encrypt."
+msgstr ""
+
+#: src/Cli/SecretsCommand.php:165
+msgid "The re-encrypted token could not be read back."
+msgstr ""
+
+#: src/Cli/SecretsCommand.php:168
+msgid "The API token was re-encrypted."
+msgstr ""
+
+#: src/Cli/SecretsCommand.php:170
+msgid "You can now remove MPCL_ENCRYPTION_KEY from wp-config.php."
+msgstr ""
+
+#: src/Cli/SecretsCommand.php:239
+msgid "The stored API token cannot be decrypted with this key. Nothing was changed."
+msgstr ""
+
+#: src/Cli/SecretsCommand.php:255
+#, php-format
+msgid "Pipe the old key material to STDIN, e.g. printf %s \"$OLD_SALT\" | wp mpcl secrets rekey --from-stdin --to=salt"
+msgstr ""
+
+#: src/Cli/SecretsCommand.php:260
+msgid "STDIN is empty."
+msgstr ""
+
+#. translators: %s: human-readable time difference, e.g. "5 mins".
+#: src/Cli/StatusCommand.php:80
+#, php-format
+msgid "%s ago"
+msgstr ""
+
+#. translators: %s: human-readable time difference, e.g. "5 mins".
+#: src/Cli/StatusCommand.php:82
+#, php-format
+msgid "in %s"
+msgstr ""
+
+#: src/Cli/SyncCommand.php:50
+msgid "The local copy was emptied."
+msgstr ""
+
+#: src/Cli/SyncCommand.php:57 src/Cli/TestConnectionCommand.php:44
+msgid "The saved API token cannot be decrypted with the current key. See \"wp mpcl secrets status\"."
+msgstr ""
+
+#: src/Cli/SyncCommand.php:60 src/Cli/TestConnectionCommand.php:47
+msgid "Not configured: the API key or token is missing. Use \"wp mpcl connect\"."
+msgstr ""
+
+#. translators: %s: error reported by the API or the HTTP client.
+#: src/Cli/SyncCommand.php:64
+#, php-format
+msgid "Synchronisation failed: %s"
+msgstr ""
+
+#. translators: 1: number of machines, 2: duration in seconds.
+#: src/Cli/SyncCommand.php:69
+#, php-format
+msgid "Synchronised %1$d machine in %2$s s."
+msgid_plural "Synchronised %1$d machines in %2$s s."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#. translators: %s: error reported by the API or the HTTP client.
+#: src/Cli/TestConnectionCommand.php:53 src/Settings/ConnectionTest.php:79
 #, php-format
 msgid "Connection failed: %s"
 msgstr "Połączenie nieudane: %s"
 
 #. translators: %d: number of machines in the MyPCList collection.
-#: src/Settings/ConnectionTest.php:87
+#: src/Cli/TestConnectionCommand.php:58 src/Settings/ConnectionTest.php:84
 #, php-format
 msgid "Connection works. Your collection has %d machine."
 msgid_plural "Connection works. Your collection has %d machines."
@@ -73,121 +323,137 @@ msgstr[0] "Połączenie działa. Twoja kolekcja ma %d maszynę."
 msgstr[1] "Połączenie działa. Twoja kolekcja ma %d maszyny."
 msgstr[2] "Połączenie działa. Twoja kolekcja ma %d maszyn."
 
-#: src/Settings/SettingsPage.php:103
+#: src/Settings/ConnectionTest.php:50
+msgid "Testing..."
+msgstr "Testowanie..."
+
+#: src/Settings/ConnectionTest.php:56
+msgid "Test connection"
+msgstr "Testuj połączenie"
+
+#: src/Settings/ConnectionTest.php:63
+msgid "You are not allowed to do this."
+msgstr "Nie masz uprawnień do wykonania tej operacji."
+
+#: src/Settings/ConnectionTest.php:73
+msgid "Enter the API key and token first."
+msgstr "Najpierw wprowadź klucz i token API."
+
+#: src/Settings/SettingsPage.php:106
 msgid "Cache has been cleared."
 msgstr "Pamięć podręczna została wyczyszczona."
 
-#: src/Settings/SettingsPage.php:161
+#: src/Settings/SettingsPage.php:144
 msgid "Enter your API authorization codes, which can be generated <a target=\"_blank\" href=\"https://mypclist.net/settings/api\">here</a>. They're required to connect with MyPCList server."
 msgstr "Wprowadź dane autoryzacyjne API, które mogą być wygenerowane <a target=\"_blank\" href=\"https://mypclist.net/settings/api\">tutaj</a>. Dane te są niezbędne do połączenia z serwerem MyPClist."
 
-#: src/Settings/SettingsPage.php:162
+#: src/Settings/SettingsPage.php:145
 msgid "Select the page that shows your catalogue (the one with the [mpcl] shortcode). Machine boxes embedded in posts link to it."
 msgstr "Wybierz stronę, na której wyświetlany jest katalog (tę z shortcode'em [mpcl]). Boxy maszyn umieszczane we wpisach prowadzą do tej strony."
 
-#: src/Settings/SettingsPage.php:163
+#: src/Settings/SettingsPage.php:146
 msgid "There you can customize plugin appearance on yout blog."
 msgstr "Tutaj możesz zmienić wygląd pluginu na Twoim blogu."
 
-#: src/Settings/SettingsPage.php:164
+#: src/Settings/SettingsPage.php:147
 msgid "For less server-to-server bandwith usage you can enable cache of your data. Activating cache will make your blog loading faster."
 msgstr "W celu zmniejszenia zużycia transferu na serwerze, możesz włączyć pamięć podręczną danych. Aktywowanie tej opcji spowoduje szybsze ładowanie się bloga."
 
-#: src/Settings/SettingsPage.php:240
+#: src/Settings/SettingsPage.php:223
 msgid "The saved token cannot be decrypted, probably because the site's security keys changed. Enter it again."
 msgstr "Nie można odszyfrować zapisanego tokenu, prawdopodobnie z powodu zmiany kluczy bezpieczeństwa witryny. Wprowadź go ponownie."
 
-#: src/Settings/SettingsPage.php:251
+#: src/Settings/SettingsPage.php:234
 msgid "A token is saved. Leave the field empty to keep it."
 msgstr "Token jest zapisany. Pozostaw pole puste, aby go zachować."
 
-#: src/Settings/SettingsPage.php:253
+#: src/Settings/SettingsPage.php:236
 msgid "Remove the saved token"
 msgstr "Usuń zapisany token"
 
-#: src/Settings/SettingsPage.php:266
+#: src/Settings/SettingsPage.php:249
 msgid "(catalogue shortcode)"
 msgstr "(shortcode katalogu)"
 
-#: src/Settings/SettingsPage.php:279 src/Settings/SettingsPage.php:287
+#: src/Settings/SettingsPage.php:262 src/Settings/SettingsPage.php:270
 msgid "Select a page"
 msgstr "Wybierz stronę"
 
 #. translators: %d: ID of the page that no longer exists.
-#: src/Settings/SettingsPage.php:292
+#: src/Settings/SettingsPage.php:275
 #, php-format
 msgid "Missing page #%d"
 msgstr "Brakująca strona #%d"
 
-#: src/Settings/SettingsPage.php:315
+#: src/Settings/SettingsPage.php:298
 msgid "Authorization"
 msgstr "Autoryzacja"
 
-#: src/Settings/SettingsPage.php:317
+#: src/Settings/SettingsPage.php:300
 msgid "API key"
 msgstr "ID klucza API"
 
-#: src/Settings/SettingsPage.php:318
+#: src/Settings/SettingsPage.php:301
 msgid "API token"
 msgstr "Token klucza API"
 
-#: src/Settings/SettingsPage.php:319
+#: src/Settings/SettingsPage.php:302
 msgid "Connection"
 msgstr "Połączenie"
 
-#: src/Settings/SettingsPage.php:323 src/Settings/SettingsPage.php:325
+#: src/Settings/SettingsPage.php:306 src/Settings/SettingsPage.php:308
 msgid "Catalog page"
 msgstr "Strona katalogu"
 
-#: src/Settings/SettingsPage.php:329
+#: src/Settings/SettingsPage.php:312
 msgid "Appearance"
 msgstr "Wygląd"
 
-#: src/Settings/SettingsPage.php:331
+#: src/Settings/SettingsPage.php:314
 msgid "Full-width boxes"
 msgstr "Pełna szerokość boxów"
 
-#: src/Settings/SettingsPage.php:332
+#: src/Settings/SettingsPage.php:315
 msgid "Entries per page"
 msgstr "Liczba wpisów na stronie"
 
-#: src/Settings/SettingsPage.php:336
+#: src/Settings/SettingsPage.php:319
 msgid "Data cache"
 msgstr "Pamięć podręczna danych"
 
-#: src/Settings/SettingsPage.php:338
+#: src/Settings/SettingsPage.php:321
 msgid "Enable cache auto-update"
 msgstr "Włącz automatyczne aktualizowanie pamięci podr."
 
-#: src/Settings/SettingsPage.php:339
+#: src/Settings/SettingsPage.php:322
 msgid "Update interval (seconds)"
 msgstr "Czas pomiędzy odświeżeniami (sek.)"
 
-#: src/View/MachinePresenter.php:70
+#: src/View/MachinePresenter.php:71
 msgid "Unnamed"
 msgstr "Bez nazwy"
 
-#: src/View/MachinePresenter.php:94
+#: src/View/MachinePresenter.php:95
 msgid "Broken"
 msgstr "Zniszczony"
 
-#: src/View/MachinePresenter.php:96
+#: src/View/MachinePresenter.php:97
 msgid "Needs repair"
 msgstr "Wymaga naprawy"
 
-#: src/View/MachinePresenter.php:98
+#: src/View/MachinePresenter.php:99
 msgid "Partially broken"
 msgstr "Częściowo uszkodzony"
 
-#: src/View/MachinePresenter.php:100
+#: src/View/MachinePresenter.php:101
 msgid "Good"
 msgstr "Dobry"
 
-#: src/View/MachinePresenter.php:102
+#: src/View/MachinePresenter.php:103
 msgid "Very good"
 msgstr "Bardzo dobry"
 
-#: src/View/MachinePresenter.php:104
+#: src/View/MachinePresenter.php:105
 msgid "Unknown"
 msgstr "Nieznany"
 
