@@ -56,6 +56,19 @@ where `15` is the machine's ID on MyPCList.
 
 Every command has `wp help mpcl <command>`. No command prints the API token or key material.
 
+### Settings
+
+```
+wp mpcl config list [--format=json]
+wp mpcl config get entries_per_page
+wp mpcl config set entries_per_page 24
+wp mpcl config set cache_autoupdate_enabled off
+```
+
+`set` applies the same validation as the settings page; `catalog_page_id` must be an existing page (or 0).
+The token shows as `set`, `empty` or `unreadable` and is set with `wp mpcl connect`. Use these commands
+rather than `wp option patch`, which skips validation and would store the token unencrypted.
+
 ### Encryption key
 
 ```

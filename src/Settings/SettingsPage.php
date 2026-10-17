@@ -27,6 +27,7 @@ final class SettingsPage
     private const CLEAR_TOKEN_KEY = 'api_token_clear';
 
     private SettingsRepository $settings;
+    private SettingsInput $input;
     private Secrets $secrets;
     private MachineRepository $machines;
     private SyncScheduler $scheduler;
@@ -35,6 +36,7 @@ final class SettingsPage
 
     public function __construct(
         SettingsRepository $settings,
+        SettingsInput $input,
         Secrets $secrets,
         MachineRepository $machines,
         SyncScheduler $scheduler,
@@ -42,6 +44,7 @@ final class SettingsPage
         string $templateDirectory
     ) {
         $this->settings = $settings;
+        $this->input = $input;
         $this->secrets = $secrets;
         $this->machines = $machines;
         $this->scheduler = $scheduler;
@@ -111,32 +114,12 @@ final class SettingsPage
         $previousKey = $settings->apiKey;
         $previousToken = $settings->apiToken;
 
-        if (array_key_exists('api_key', $input)) {
-            $settings->apiKey = sanitize_text_field(Cast::string($input['api_key']));
-        }
+        $this->input->apply($settings, $input);
         if (array_key_exists('api_token', $input)) {
             $this->applyToken($settings, Cast::string($input['api_token']));
         }
         if (Cast::bool($input[self::CLEAR_TOKEN_KEY] ?? null)) {
             $settings->clearApiToken();
-        }
-        if (array_key_exists('catalog_page_id', $input)) {
-            $settings->catalogPageId = absint(Cast::string($input['catalog_page_id']));
-        }
-        if (array_key_exists('entries_per_page', $input)) {
-            $settings->entriesPerPage = absint(Cast::string($input['entries_per_page']));
-        }
-        if (array_key_exists('cache_autoupdate_interval', $input)) {
-            $settings->cacheAutoupdateInterval = absint(Cast::string($input['cache_autoupdate_interval']));
-        }
-        if (array_key_exists('last_listing_cache', $input)) {
-            $settings->lastListingCache = absint(Cast::string($input['last_listing_cache']));
-        }
-        if (array_key_exists('box_full_width', $input)) {
-            $settings->boxFullWidth = (bool) $input['box_full_width'];
-        }
-        if (array_key_exists('cache_autoupdate_enabled', $input)) {
-            $settings->cacheAutoupdateEnabled = (bool) $input['cache_autoupdate_enabled'];
         }
 
         if ($settings->apiKey !== $previousKey || $settings->apiToken !== $previousToken) {

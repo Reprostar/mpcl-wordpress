@@ -57,4 +57,29 @@ expect "the recovered token reads" "$(status_of)" '"key_source":"salt","token":"
 api_mode ok; sync
 expect "the recovered token authenticates the sync" "$(api_calls)" "^3$"
 
+echo "== config"
+expect "config set stores a number" "$($W mpcl config set entries_per_page 10 2>&1)" "Success: entries_per_page is now 10"
+expect "config get prints it" "$($W mpcl config get entries_per_page)" "^10$"
+expect "config set rejects a non-number" "$(out $W mpcl config set entries_per_page abc)" "whole number.*exit=1"
+expect "config get leaves it unchanged" "$($W mpcl config get entries_per_page)" "^10$"
+$W mpcl config set cache_autoupdate_enabled off >/dev/null
+expect "config set parses booleans" "$($W mpcl config get cache_autoupdate_enabled)" "^0$"
+$W mpcl config set cache_autoupdate_enabled yes >/dev/null
+expect "config set rejects a bad boolean" "$(out $W mpcl config set box_full_width maybe)" "takes 1/0.*exit=1"
+expect "config set refuses the token" "$(out $W mpcl config set api_token x)" "wp mpcl connect.*exit=1"
+expect "config set refuses read-only keys" "$(out $W mpcl config set last_listing_cache 5)" "not a setting that can be changed.*exit=1"
+expect "config get refuses unknown keys" "$(out $W mpcl config get nope)" "Unknown setting.*exit=1"
+expect "config set refuses a missing page" "$(out $W mpcl config set catalog_page_id 99999)" "no published, private or draft page.*exit=1"
+CFG_PAGE=$($W post create --post_type=page --post_status=publish --post_title=Config --porcelain)
+expect "config set accepts an existing page" "$(out $W mpcl config set catalog_page_id "$CFG_PAGE")" "Success.*exit=0"
+expect "config set accepts 0 to unset the page" "$(out $W mpcl config set catalog_page_id 0)" "Success.*exit=0"
+LIST=$($W mpcl config list --format=json)
+expect "config list shows the token state" "$LIST" '"api_token":"set"'
+expect_not "config list never shows the token" "$LIST" "mpcl:v1:"
+$W cron event delete mpcl_sync --quiet >/dev/null 2>&1 || true
+$W mpcl config set api_key k2 >/dev/null
+expect "changing the API key schedules a sync" "$($W cron event list --hook=mpcl_sync --fields=args --format=csv)" "true"
+$W mpcl config set api_key k >/dev/null
+expect "the token survives other settings changes" "$(status_of)" '"token":"ok"'
+
 finish

@@ -6,6 +6,7 @@ namespace Reprostar\MpclWordpress;
 
 use Reprostar\MpclWordpress\Api\ApiClientFactory;
 use Reprostar\MpclWordpress\Cli\CommandRegistrar;
+use Reprostar\MpclWordpress\Cli\ConfigCommand;
 use Reprostar\MpclWordpress\Cli\Console;
 use Reprostar\MpclWordpress\Cli\SecretsCommand;
 use Reprostar\MpclWordpress\Database\Schema;
@@ -17,6 +18,8 @@ use Reprostar\MpclWordpress\Settings\SettingsPage;
 use Reprostar\MpclWordpress\Security\KeyMaterial;
 use Reprostar\MpclWordpress\Security\Secrets;
 use Reprostar\MpclWordpress\Settings\ConnectionTest;
+use Reprostar\MpclWordpress\Settings\CatalogPages;
+use Reprostar\MpclWordpress\Settings\SettingsInput;
 use Reprostar\MpclWordpress\Settings\SettingsRepository;
 use Reprostar\MpclWordpress\Shortcode\ShortcodeHandler;
 use Reprostar\MpclWordpress\View\MachinePresenter;
@@ -59,6 +62,7 @@ final class Plugin
         $keys = new KeyMaterial();
         $secrets = new Secrets($keys);
         $settingsRepository = new SettingsRepository($secrets);
+        $settingsInput = new SettingsInput();
         $machines = new MachineRepository($wpdb, $schema->getMachinesTable());
         $scheduler = $this->createScheduler($settingsRepository, $machines);
         $presenter = new MachinePresenter(new BbCode(), $baseUrl . 'img/sample_machine.png');
@@ -84,7 +88,7 @@ final class Plugin
         if (is_admin()) {
             $connectionTest = new ConnectionTest($settingsRepository, ApiClientFactory::fromEnvironment(), $baseUrl, MPCL_VERSION);
             $connectionTest->register();
-            (new SettingsPage($settingsRepository, $secrets, $machines, $scheduler, $connectionTest, $directory . 'templates'))->register();
+            (new SettingsPage($settingsRepository, $settingsInput, $secrets, $machines, $scheduler, $connectionTest, $directory . 'templates'))->register();
         }
 
         if (!$schema->isCurrent()) {
@@ -95,6 +99,7 @@ final class Plugin
             $console = new Console();
             (new CommandRegistrar([
                 'secrets' => new SecretsCommand($settingsRepository, $secrets, $keys, $console),
+                'config' => new ConfigCommand($settingsRepository, $settingsInput, new CatalogPages(), $scheduler, $console),
             ]))->register();
         }
     }
