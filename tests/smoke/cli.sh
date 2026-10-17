@@ -177,4 +177,24 @@ $W mpcl config set catalog_page_id 0 >/dev/null
 expect_empty "machines get without a catalogue page has no URL" "$($W mpcl machines get 120 --field=catalog_url)"
 expect "machines get for an unknown id exits non-zero" "$(out $W mpcl machines get 999999)" "not in the synchronised collection.*exit=1"
 
+echo "== schedule"
+expect "schedule disable turns auto-update off" "$(out $W mpcl schedule disable)" "Success.*off.*exit=0"
+expect "the setting is off" "$($W mpcl config get cache_autoupdate_enabled)" "^0$"
+$W option update mpcl_sync_attempted_at 0 >/dev/null
+$W option patch update mpcl-options last_listing_cache 0 >/dev/null
+api_mode ok
+$W eval 'do_action("mpcl_sync", false);'
+expect "a scheduled check does not sync while disabled" "$(api_calls)" "^0$"
+expect "schedule enable --interval=1h" "$(out $W mpcl schedule enable --interval=1h)" "every 3600 seconds.*exit=0"
+expect "the interval is stored" "$($W mpcl config get cache_autoupdate_interval)" "^3600$"
+expect "the setting is on" "$($W mpcl config get cache_autoupdate_enabled)" "^1$"
+api_mode ok
+$W eval 'do_action("mpcl_sync", false);'
+expect "a scheduled check syncs once enabled and due" "$(api_calls)" "^3$"
+expect "schedule enable rejects less than five minutes" "$(out $W mpcl schedule enable --interval=60)" "at least 5 minutes.*exit=1"
+expect "schedule enable rejects a bad interval" "$(out $W mpcl schedule enable --interval=soon)" "takes seconds.*exit=1"
+expect "schedule enable accepts minutes" "$(out $W mpcl schedule enable --interval=30m)" "every 1800 seconds"
+expect "schedule status reports the state" "$($W mpcl schedule status --format=json)" '"auto_update":true,"auto_update_interval":1800,"next_check":"20'
+$W mpcl schedule enable --interval=1h >/dev/null
+
 finish

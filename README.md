@@ -90,6 +90,12 @@ wp mpcl sync          # import now, whatever the interval; non-zero exit on fail
 wp mpcl sync --reset  # empty the local copy first, like "Clear cache"
 ```
 
+```
+wp mpcl schedule enable --interval=1h   # seconds, or s/m/h/d; at least 5 minutes
+wp mpcl schedule disable
+wp mpcl schedule status
+```
+
 On sites with `DISABLE_WP_CRON`, a system cron entry running `wp mpcl sync --quiet` can replace
 `wp-cron.php` for this plugin. A failing API keeps the current copy (except after `--reset`).
 

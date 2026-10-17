@@ -10,6 +10,7 @@ use Reprostar\MpclWordpress\Cli\ConfigCommand;
 use Reprostar\MpclWordpress\Cli\ConnectCommand;
 use Reprostar\MpclWordpress\Cli\MachinesCommand;
 use Reprostar\MpclWordpress\Cli\Console;
+use Reprostar\MpclWordpress\Cli\ScheduleCommand;
 use Reprostar\MpclWordpress\Cli\SecretsCommand;
 use Reprostar\MpclWordpress\Cli\StatusCommand;
 use Reprostar\MpclWordpress\Cli\SyncCommand;
@@ -109,15 +110,14 @@ final class Plugin
         if (defined('WP_CLI') && WP_CLI) {
             $console = new Console();
             $syncCommand = new SyncCommand($scheduler, $machines, $console);
+            $statusReporter = new StatusReporter($settingsRepository, $machines, $schema, $catalogPages, MPCL_VERSION);
             (new CommandRegistrar([
                 'secrets' => new SecretsCommand($settingsRepository, $secrets, $keys, $console),
                 'config' => new ConfigCommand($settingsRepository, $settingsInput, $catalogPages, $scheduler, $console),
                 'test-connection' => new TestConnectionCommand($settingsRepository, $connectionChecker, $console),
                 'sync' => $syncCommand,
-                'status' => new StatusCommand(
-                    new StatusReporter($settingsRepository, $machines, $schema, $catalogPages, MPCL_VERSION),
-                    $console
-                ),
+                'status' => new StatusCommand($statusReporter, $console),
+                'schedule' => new ScheduleCommand($settingsRepository, $settingsInput, $scheduler, $statusReporter, $console),
                 'machines' => new MachinesCommand($machines, $settingsRepository, $catalogPages, $console),
                 'connect' => new ConnectCommand($settingsRepository, $settingsInput, $connectionChecker, $scheduler, $syncCommand, $console),
             ]))->register();

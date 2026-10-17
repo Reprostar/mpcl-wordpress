@@ -8,6 +8,8 @@
   were shuffled (old salt read from STDIN).
 - `wp mpcl config list|get|set` reads and changes the settings with the same
   validation as the settings page; the token is never printed.
+- `wp mpcl schedule enable [--interval=1h]|disable|status` controls the
+  automatic synchronisation.
 - `wp mpcl status` shows the connection, synchronisation and catalogue state
   without calling the API.
 - `wp mpcl machines list|get` shows the synchronised machines.
