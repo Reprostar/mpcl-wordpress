@@ -9,6 +9,7 @@ use Reprostar\MpclWordpress\Cli\CommandRegistrar;
 use Reprostar\MpclWordpress\Cli\ConfigCommand;
 use Reprostar\MpclWordpress\Cli\Console;
 use Reprostar\MpclWordpress\Cli\SecretsCommand;
+use Reprostar\MpclWordpress\Cli\TestConnectionCommand;
 use Reprostar\MpclWordpress\Database\Schema;
 use Reprostar\MpclWordpress\Formatting\BbCode;
 use Reprostar\MpclWordpress\Machine\MachineRepository;
@@ -17,6 +18,7 @@ use Reprostar\MpclWordpress\Machine\Synchronizer;
 use Reprostar\MpclWordpress\Settings\SettingsPage;
 use Reprostar\MpclWordpress\Security\KeyMaterial;
 use Reprostar\MpclWordpress\Security\Secrets;
+use Reprostar\MpclWordpress\Settings\ConnectionChecker;
 use Reprostar\MpclWordpress\Settings\ConnectionTest;
 use Reprostar\MpclWordpress\Settings\CatalogPages;
 use Reprostar\MpclWordpress\Settings\SettingsInput;
@@ -85,8 +87,10 @@ final class Plugin
             $assets
         ))->register();
 
+        $connectionChecker = new ConnectionChecker(ApiClientFactory::fromEnvironment());
+
         if (is_admin()) {
-            $connectionTest = new ConnectionTest($settingsRepository, ApiClientFactory::fromEnvironment(), $baseUrl, MPCL_VERSION);
+            $connectionTest = new ConnectionTest($settingsRepository, $connectionChecker, $baseUrl, MPCL_VERSION);
             $connectionTest->register();
             (new SettingsPage($settingsRepository, $settingsInput, $secrets, $machines, $scheduler, $connectionTest, $directory . 'templates'))->register();
         }
@@ -100,6 +104,7 @@ final class Plugin
             (new CommandRegistrar([
                 'secrets' => new SecretsCommand($settingsRepository, $secrets, $keys, $console),
                 'config' => new ConfigCommand($settingsRepository, $settingsInput, new CatalogPages(), $scheduler, $console),
+                'test-connection' => new TestConnectionCommand($settingsRepository, $connectionChecker, $console),
             ]))->register();
         }
     }

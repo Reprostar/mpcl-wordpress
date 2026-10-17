@@ -8,6 +8,8 @@
   were shuffled (old salt read from STDIN).
 - `wp mpcl config list|get|set` reads and changes the settings with the same
   validation as the settings page; the token is never printed.
+- `wp mpcl test-connection` checks the saved credentials and exits non-zero on
+  failure, for use in monitoring.
 - A token encrypted with the salt still reads after `MPCL_ENCRYPTION_KEY` is
   added. Saving the settings no longer re-encrypts an unchanged token, and keeps
   a token that cannot be decrypted so that it can still be recovered.

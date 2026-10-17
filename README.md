@@ -56,6 +56,16 @@ where `15` is the machine's ID on MyPCList.
 
 Every command has `wp help mpcl <command>`. No command prints the API token or key material.
 
+### Connection
+
+```
+wp mpcl test-connection
+```
+
+Checks the saved key and token against mypclist.net and exits with status 1 when the plugin is not
+configured, the token cannot be decrypted, or the API rejects the credentials or cannot be reached, so it
+can run from monitoring.
+
 ### Settings
 
 ```

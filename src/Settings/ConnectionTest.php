@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Reprostar\MpclWordpress\Settings;
 
-use Reprostar\MpclWordpress\Api\ApiClientFactory;
-use Reprostar\MpclWordpress\Api\ApiException;
 use Reprostar\MpclWordpress\Support\Cast;
 
 defined('ABSPATH') || exit;
@@ -20,14 +18,14 @@ final class ConnectionTest
     private const SCRIPT = 'mpcl-admin-settings';
 
     private SettingsRepository $settings;
-    private ApiClientFactory $clients;
+    private ConnectionChecker $checker;
     private string $baseUrl;
     private string $version;
 
-    public function __construct(SettingsRepository $settings, ApiClientFactory $clients, string $baseUrl, string $version)
+    public function __construct(SettingsRepository $settings, ConnectionChecker $checker, string $baseUrl, string $version)
     {
         $this->settings = $settings;
-        $this->clients = $clients;
+        $this->checker = $checker;
         $this->baseUrl = rtrim($baseUrl, '/');
         $this->version = $version;
     }
@@ -75,17 +73,16 @@ final class ConnectionTest
             wp_send_json_error(['message' => __('Enter the API key and token first.', 'mpcl')]);
         }
 
-        try {
-            $total = $this->clients->create($apiKey, $apiToken)->getMachinesPage(1, 0)->total;
-        } catch (ApiException $e) {
+        $result = $this->checker->check($apiKey, $apiToken);
+        if (!$result->ok) {
             /* translators: %s: error reported by the API or the HTTP client. */
-            wp_send_json_error(['message' => sprintf(__('Connection failed: %s', 'mpcl'), $e->getMessage())]);
+            wp_send_json_error(['message' => sprintf(__('Connection failed: %s', 'mpcl'), $result->error)]);
         }
 
         wp_send_json_success(['message' => sprintf(
             /* translators: %d: number of machines in the MyPCList collection. */
-            _n('Connection works. Your collection has %d machine.', 'Connection works. Your collection has %d machines.', $total, 'mpcl'),
-            $total
+            _n('Connection works. Your collection has %d machine.', 'Connection works. Your collection has %d machines.', $result->machineCount, 'mpcl'),
+            $result->machineCount
         )]);
     }
 }

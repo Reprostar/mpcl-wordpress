@@ -82,4 +82,20 @@ expect "changing the API key schedules a sync" "$($W cron event list --hook=mpcl
 $W mpcl config set api_key k >/dev/null
 expect "the token survives other settings changes" "$(status_of)" '"token":"ok"'
 
+echo "== test-connection"
+api_mode ok
+expect "valid credentials report the collection size" "$(out $W mpcl test-connection)" "Success: Connection works. Your collection has 120 machines. exit=0"
+api_mode error
+expect "an API error exits non-zero" "$(out $W mpcl test-connection)" "Connection failed: API error: API key not authorized exit=1"
+api_mode html
+expect "a broken response exits non-zero" "$(out $W mpcl test-connection)" "Invalid response format exit=1"
+api_mode ok
+SAVED_TOKEN=$($W option pluck mpcl-options api_token)
+$W option patch update mpcl-options api_token "$($W eval 'echo (new Reprostar\MpclWordpress\Security\Secrets(new Reprostar\MpclWordpress\Security\KeyMaterial(), "another key"))->encrypt("t");')" >/dev/null
+expect "an unreadable token is reported" "$(out $W mpcl test-connection)" "cannot be decrypted.*exit=1"
+$W option patch update mpcl-options api_token "$SAVED_TOKEN" >/dev/null
+$W option patch update mpcl-options api_key "" >/dev/null
+expect "missing credentials are reported" "$(out $W mpcl test-connection)" "Not configured.*exit=1"
+$W option patch update mpcl-options api_key k >/dev/null
+
 finish
