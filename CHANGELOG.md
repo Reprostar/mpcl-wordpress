@@ -12,6 +12,7 @@
   automatic synchronisation.
 - `wp mpcl status` shows the connection, synchronisation and catalogue state
   without calling the API.
+- `wp mpcl catalog create-page|set-page` creates or chooses the catalogue page.
 - `wp mpcl machines list|get` shows the synchronised machines.
 - `wp mpcl connect --key=<key> [--sync]` saves the API credentials from the
   command line; the token is read from STDIN and checked before saving.

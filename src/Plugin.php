@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Reprostar\MpclWordpress;
 
 use Reprostar\MpclWordpress\Api\ApiClientFactory;
+use Reprostar\MpclWordpress\Cli\CatalogCommand;
 use Reprostar\MpclWordpress\Cli\CommandRegistrar;
 use Reprostar\MpclWordpress\Cli\ConfigCommand;
 use Reprostar\MpclWordpress\Cli\ConnectCommand;
@@ -118,6 +119,7 @@ final class Plugin
                 'sync' => $syncCommand,
                 'status' => new StatusCommand($statusReporter, $console),
                 'schedule' => new ScheduleCommand($settingsRepository, $settingsInput, $scheduler, $statusReporter, $console),
+                'catalog' => new CatalogCommand($settingsRepository, $settingsInput, $catalogPages, $console),
                 'machines' => new MachinesCommand($machines, $settingsRepository, $catalogPages, $console),
                 'connect' => new ConnectCommand($settingsRepository, $settingsInput, $connectionChecker, $scheduler, $syncCommand, $console),
             ]))->register();

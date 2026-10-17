@@ -25,7 +25,7 @@ In Settings → MyPCList Integration:
 
 1. Enter the API key and token, then use **Test connection** to check them (or use `wp mpcl connect`,
    see below).
-2. Choose the page that shows your catalogue.
+2. Choose the page that shows your catalogue (or create one with `wp mpcl catalog create-page`).
 
 The collection is copied to your site and refreshed in the background by WP-Cron (every hour by default,
 configurable in the same settings). Sites with `DISABLE_WP_CRON` need a system cron calling `wp-cron.php`
@@ -98,6 +98,17 @@ wp mpcl schedule status
 
 On sites with `DISABLE_WP_CRON`, a system cron entry running `wp mpcl sync --quiet` can replace
 `wp-cron.php` for this plugin. A failing API keeps the current copy (except after `--reset`).
+
+### Catalogue page
+
+```
+wp mpcl catalog create-page [--title="My computers"] [--columns=3] [--status=draft] [--porcelain]
+wp mpcl catalog set-page 42
+```
+
+`create-page` creates a page with the `[mpcl-catalog]` shortcode and makes it the catalogue page; it refuses
+to replace a catalogue page that is already set unless `--force` is given. `set-page` warns when the page has
+no catalogue shortcode.
 
 ### Machines
 

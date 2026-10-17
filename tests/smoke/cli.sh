@@ -197,4 +197,30 @@ expect "schedule enable accepts minutes" "$(out $W mpcl schedule enable --interv
 expect "schedule status reports the state" "$($W mpcl schedule status --format=json)" '"auto_update":true,"auto_update_interval":1800,"next_check":"20'
 $W mpcl schedule enable --interval=1h >/dev/null
 
+echo "== catalog"
+$W mpcl config set catalog_page_id 0 >/dev/null
+NEW=$($W mpcl catalog create-page --title=Kolekcja --columns=3 --porcelain)
+expect "create-page --porcelain prints the ID" "$NEW" "^[0-9]+$"
+expect "the new page is the catalogue page" "$($W mpcl config get catalog_page_id)" "^$NEW$"
+expect "the page holds the shortcode in a shortcode block" "$($W post get "$NEW" --field=post_content)" "wp:shortcode"
+expect "the shortcode has the columns" "$($W post get "$NEW" --field=post_content)" "\[mpcl-catalog columns=3\]"
+expect "the page is published" "$($W post get "$NEW" --field=post_status)" "^publish$"
+expect "create-page refuses to replace a set page" "$(out $W mpcl catalog create-page)" "already set to page $NEW.*--force.*exit=1"
+expect "create-page rejects bad columns" "$(out $W mpcl catalog create-page --force --columns=0)" "columns takes.*exit=1"
+NEWER=$($W mpcl catalog create-page --force --status=draft --slug=maszyny --porcelain)
+expect "--force creates another page" "$($W mpcl config get catalog_page_id)" "^$NEWER$"
+expect "the old page is left alone" "$($W post get "$NEW" --field=post_status)" "^publish$"
+expect "--slug and --status are applied" "$($W post get "$NEWER" --field=post_name),$($W post get "$NEWER" --field=post_status)" "^maszyny,draft$"
+$W mpcl config set catalog_page_id "$NEW" >/dev/null
+(php -S 127.0.0.1:8080 -t /var/www/html >/dev/null 2>&1 &)
+sleep 1
+PAGE_HTML=$(php -r 'echo @file_get_contents($argv[1]);' "http://127.0.0.1:8080/?page_id=$NEW")
+expect "the created page renders the catalogue" "$PAGE_HTML" 'class="mpcl-entry" style="width: calc\(33\.333333333333% - 10px\);"'
+expect "the created page links to the single view" "$PAGE_HTML" 'machine_id=120'
+expect "the single view renders on the created page" "$(php -r 'echo @file_get_contents($argv[1]);' "http://127.0.0.1:8080/?page_id=$NEW&machine_id=120")" "<h2>Machine 120"
+PLAIN=$($W post create --post_type=page --post_status=publish --post_title=Plain --porcelain)
+expect "set-page warns about a page without the shortcode" "$(out $W mpcl catalog set-page "$PLAIN")" "Warning: The page has no catalogue shortcode.*Success.*exit=0"
+expect "set-page rejects a missing page" "$(out $W mpcl catalog set-page 99999)" "no published, private or draft page.*exit=1"
+expect "set-page without a warning for a catalogue page" "$(out $W mpcl catalog set-page "$NEW")" "^Success: Page $NEW is now the catalogue page\. exit=0"
+
 finish
