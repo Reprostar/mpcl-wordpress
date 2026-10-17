@@ -15,6 +15,9 @@ defined('ABSPATH') || exit;
 final class Settings
 {
     public const DEFAULT_ENTRIES_PER_PAGE = 100;
+    public const TOKEN_EMPTY = 'empty';
+    public const TOKEN_SET = 'set';
+    public const TOKEN_UNREADABLE = 'unreadable';
 
     public string $apiKey = '';
     /** Plain text in memory; SettingsRepository encrypts it for storage. */
@@ -22,6 +25,10 @@ final class Settings
 
     /** The stored token exists but cannot be decrypted with the current key. */
     public bool $apiTokenUnreadable = false;
+    /** The encrypted token as stored; saved back unchanged while $apiToken stays $loadedApiToken. */
+    public string $storedApiToken = '';
+    /** $apiToken as decrypted on load ('' when unreadable). */
+    public string $loadedApiToken = '';
 
     public int $catalogPageId = 0;
     public bool $boxFullWidth = false;
@@ -67,6 +74,23 @@ final class Settings
         }
 
         return $settings;
+    }
+
+    public function getApiTokenState(): string
+    {
+        if ('' !== $this->apiToken) {
+            return self::TOKEN_SET;
+        }
+
+        return $this->apiTokenUnreadable ? self::TOKEN_UNREADABLE : self::TOKEN_EMPTY;
+    }
+
+    public function clearApiToken(): void
+    {
+        $this->apiToken = '';
+        $this->apiTokenUnreadable = false;
+        $this->storedApiToken = '';
+        $this->loadedApiToken = '';
     }
 
     public function getListingLimit(): int

@@ -18,6 +18,38 @@ final class Secrets
 {
     private const PREFIX = 'mpcl:v1:';
 
+    private KeyMaterial $keys;
+    private ?string $material;
+
+    /**
+     * @param string|null $material fixed key material; null follows KeyMaterial::active()
+     */
+    public function __construct(KeyMaterial $keys, ?string $material = null)
+    {
+        $this->keys = $keys;
+        $this->material = $material;
+    }
+
+    public function withMaterial(string $material): self
+    {
+        return new self($this->keys, $material);
+    }
+
+    /**
+     * Secrets saved before MPCL_ENCRYPTION_KEY was added are still encrypted with
+     * the salt; reading falls back to it so adding the constant needs no migration.
+     *
+     * @return self|null the salt-keyed instance, or null when there is nothing to fall back to
+     */
+    public function fallback(): ?self
+    {
+        if (null !== $this->material || KeyMaterial::SOURCE_CONSTANT !== $this->keys->activeSource()) {
+            return null;
+        }
+
+        return $this->withMaterial($this->keys->salt());
+    }
+
     public function isEncrypted(string $value): bool
     {
         return 0 === strncmp($value, self::PREFIX, strlen(self::PREFIX));
@@ -55,9 +87,10 @@ final class Secrets
 
     private function key(): string
     {
-        $configured = defined('MPCL_ENCRYPTION_KEY') ? constant('MPCL_ENCRYPTION_KEY') : null;
-        $material = is_string($configured) && '' !== $configured ? $configured : wp_salt('auth');
-
-        return sodium_crypto_generichash('mpcl-secrets|' . $material, '', SODIUM_CRYPTO_SECRETBOX_KEYBYTES);
+        return sodium_crypto_generichash(
+            'mpcl-secrets|' . ($this->material ?? $this->keys->active()),
+            '',
+            SODIUM_CRYPTO_SECRETBOX_KEYBYTES
+        );
     }
 }

@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.1.0 (unreleased)
+
+- WP-CLI commands for the encryption key: `wp mpcl secrets status`,
+  `generate-key [--write]` and `rekey`, to add or remove `MPCL_ENCRYPTION_KEY`
+  without re-entering the API token, and to recover the token after the salts
+  were shuffled (old salt read from STDIN).
+- A token encrypted with the salt still reads after `MPCL_ENCRYPTION_KEY` is
+  added. Saving the settings no longer re-encrypts an unchanged token, and keeps
+  a token that cannot be decrypted so that it can still be recovered.
+
 ## 2.0.1
 
 - The plugin is now called "MyPCList for WordPress" in the plugins list. Nothing

@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace Reprostar\MpclWordpress;
 
 use Reprostar\MpclWordpress\Api\ApiClientFactory;
+use Reprostar\MpclWordpress\Cli\CommandRegistrar;
+use Reprostar\MpclWordpress\Cli\Console;
+use Reprostar\MpclWordpress\Cli\SecretsCommand;
 use Reprostar\MpclWordpress\Database\Schema;
 use Reprostar\MpclWordpress\Formatting\BbCode;
 use Reprostar\MpclWordpress\Machine\MachineRepository;
 use Reprostar\MpclWordpress\Machine\SyncScheduler;
 use Reprostar\MpclWordpress\Machine\Synchronizer;
 use Reprostar\MpclWordpress\Settings\SettingsPage;
+use Reprostar\MpclWordpress\Security\KeyMaterial;
 use Reprostar\MpclWordpress\Security\Secrets;
 use Reprostar\MpclWordpress\Settings\ConnectionTest;
 use Reprostar\MpclWordpress\Settings\SettingsRepository;
@@ -52,7 +56,8 @@ final class Plugin
         $baseUrl = plugin_dir_url($this->file);
 
         $schema = new Schema($wpdb);
-        $secrets = new Secrets();
+        $keys = new KeyMaterial();
+        $secrets = new Secrets($keys);
         $settingsRepository = new SettingsRepository($secrets);
         $machines = new MachineRepository($wpdb, $schema->getMachinesTable());
         $scheduler = $this->createScheduler($settingsRepository, $machines);
@@ -85,6 +90,13 @@ final class Plugin
         if (!$schema->isCurrent()) {
             $schema->migrate();
         }
+
+        if (defined('WP_CLI') && WP_CLI) {
+            $console = new Console();
+            (new CommandRegistrar([
+                'secrets' => new SecretsCommand($settingsRepository, $secrets, $keys, $console),
+            ]))->register();
+        }
     }
 
     public function activate(): void
@@ -92,7 +104,7 @@ final class Plugin
         $schema = new Schema($this->wpdb);
         $schema->migrate();
 
-        $settingsRepository = new SettingsRepository(new Secrets());
+        $settingsRepository = new SettingsRepository(new Secrets(new KeyMaterial()));
         $settingsRepository->load();
 
         $scheduler = $this->createScheduler($settingsRepository, new MachineRepository($this->wpdb, $schema->getMachinesTable()));
@@ -103,7 +115,7 @@ final class Plugin
     public function deactivate(): void
     {
         $schema = new Schema($this->wpdb);
-        $this->createScheduler(new SettingsRepository(new Secrets()), new MachineRepository($this->wpdb, $schema->getMachinesTable()))
+        $this->createScheduler(new SettingsRepository(new Secrets(new KeyMaterial())), new MachineRepository($this->wpdb, $schema->getMachinesTable()))
             ->unschedule();
     }
 

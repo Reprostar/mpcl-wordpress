@@ -45,9 +45,22 @@ final class SettingsRepository
         return $settings;
     }
 
-    public function save(Settings $settings): void
+    /**
+     * @param Secrets|null $secrets encrypts the token with other key material (re-keying)
+     */
+    public function save(Settings $settings, ?Secrets $secrets = null): void
     {
-        update_option(self::OPTION, $this->toOption($settings));
+        update_option(self::OPTION, $this->toOption($settings, $secrets));
+    }
+
+    /**
+     * The raw stored token: ciphertext, plain text left by 1.x, or empty.
+     */
+    public function loadStoredToken(): string
+    {
+        $option = get_option(self::OPTION);
+
+        return is_array($option) && is_string($option['api_token'] ?? null) ? $option['api_token'] : '';
     }
 
     /**
@@ -58,21 +71,37 @@ final class SettingsRepository
         $settings = Settings::fromArray($option);
 
         if ($this->secrets->isEncrypted($settings->apiToken)) {
-            $token = $this->secrets->decrypt($settings->apiToken);
+            $stored = $settings->apiToken;
+            $token = $this->secrets->decrypt($stored);
+            $fallback = $this->secrets->fallback();
+            if (null === $token && null !== $fallback) {
+                $token = $fallback->decrypt($stored);
+            }
+
             $settings->apiToken = $token ?? '';
             $settings->apiTokenUnreadable = null === $token;
+            $settings->storedApiToken = $stored;
+            $settings->loadedApiToken = $settings->apiToken;
         }
 
         return $settings;
     }
 
     /**
+     * An unchanged token is written back as it was stored, so saving other
+     * settings never re-encrypts it: not with a key the owner is moving away
+     * from, and not over an unreadable token that a rekey could still recover.
+     *
      * @return array<string, mixed>
      */
-    public function toOption(Settings $settings): array
+    public function toOption(Settings $settings, ?Secrets $secrets = null): array
     {
         $option = $settings->toArray();
-        $option['api_token'] = '' === $settings->apiToken ? '' : $this->secrets->encrypt($settings->apiToken);
+        if (null === $secrets && '' !== $settings->storedApiToken && $settings->apiToken === $settings->loadedApiToken) {
+            $option['api_token'] = $settings->storedApiToken;
+        } else {
+            $option['api_token'] = '' === $settings->apiToken ? '' : ($secrets ?? $this->secrets)->encrypt($settings->apiToken);
+        }
 
         return $option;
     }

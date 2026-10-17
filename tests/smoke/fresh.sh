@@ -104,7 +104,11 @@ api_mode ok
 $W eval 'do_action("mpcl_sync", true);'
 expect "a token saved through the form authenticates the sync" "$(api_calls)" "^3$"
 RENDER_ONLY='wp_set_current_user(1); require_once ABSPATH . "wp-admin/includes/template.php"; require_once ABSPATH . "wp-admin/includes/class-wp-screen.php"; require_once ABSPATH . "wp-admin/includes/screen.php"; set_current_screen("settings_page_mpcl-settings"); do_action("admin_menu"); do_action("admin_init"); do_action(get_plugin_page_hookname("mpcl-settings", "options-general.php"));'
-expect "a token encrypted with another key is reported" "$($W --exec='define("WP_ADMIN", true); define("MPCL_ENCRYPTION_KEY", "another key");' eval "$RENDER_ONLY")" "cannot be decrypted"
+SAVED_TOKEN=$($W option pluck mpcl-options api_token)
+$W option patch update mpcl-options api_token "$($W eval 'echo (new Reprostar\MpclWordpress\Security\Secrets(new Reprostar\MpclWordpress\Security\KeyMaterial(), "another key"))->encrypt("t");')" >/dev/null
+expect "a token encrypted with another key is reported" "$($W --exec='define("WP_ADMIN", true);' eval "$RENDER_ONLY")" "cannot be decrypted"
+$W option patch update mpcl-options api_token "$SAVED_TOKEN" >/dev/null
+expect "a salt-encrypted token still reads after MPCL_ENCRYPTION_KEY is added" "$($W --exec='define("MPCL_ENCRYPTION_KEY", "another key");' eval 'echo (new Reprostar\MpclWordpress\Settings\SettingsRepository(new Reprostar\MpclWordpress\Security\Secrets(new Reprostar\MpclWordpress\Security\KeyMaterial())))->load()->apiToken;')" "^t$"
 MPCL_INPUT='{"api_token_clear":"1"}' $W --exec='define("WP_ADMIN", true);' eval "$ADMIN_SAVE"
 expect_empty "removing the token empties it" "$($W option pluck mpcl-options api_token)"
 MPCL_INPUT='{"api_token":"t"}' $W --exec='define("WP_ADMIN", true);' eval "$ADMIN_SAVE"

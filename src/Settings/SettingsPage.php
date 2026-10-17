@@ -118,7 +118,7 @@ final class SettingsPage
             $this->applyToken($settings, Cast::string($input['api_token']));
         }
         if (Cast::bool($input[self::CLEAR_TOKEN_KEY] ?? null)) {
-            $settings->apiToken = '';
+            $settings->clearApiToken();
         }
         if (array_key_exists('catalog_page_id', $input)) {
             $settings->catalogPageId = absint(Cast::string($input['catalog_page_id']));

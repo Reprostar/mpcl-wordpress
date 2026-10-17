@@ -30,8 +30,9 @@ The collection is copied to your site and refreshed in the background by WP-Cron
 configurable in the same settings). Sites with `DISABLE_WP_CRON` need a system cron calling `wp-cron.php`.
 
 The API token is stored encrypted with a key derived from the site's security salts. To use a dedicated
-key instead, define `MPCL_ENCRYPTION_KEY` in `wp-config.php` before entering the token. This protects the
-token in database dumps and backups, not on a compromised server.
+key instead, define `MPCL_ENCRYPTION_KEY` in `wp-config.php` (`wp mpcl secrets generate-key --write` does
+it and re-encrypts the stored token in one step). This protects the token in database dumps and backups, not
+on a compromised server. With the constant, `wp config shuffle-salts` no longer affects the token.
 
 ## Usage
 
@@ -50,6 +51,26 @@ Embed one machine in any post or page:
 ```
 
 where `15` is the machine's ID on MyPCList.
+
+## WP-CLI
+
+Every command has `wp help mpcl <command>`. No command prints the API token or key material.
+
+### Encryption key
+
+```
+wp mpcl secrets status                          # key in use and whether the token decrypts with it
+wp mpcl secrets generate-key                    # print a new key for MPCL_ENCRYPTION_KEY
+wp mpcl secrets generate-key --write            # write it into wp-config.php and re-encrypt the token
+wp mpcl secrets rekey --from=salt --to=constant # after adding MPCL_ENCRYPTION_KEY by hand
+wp mpcl secrets rekey --from=constant --to=salt # before removing it, then remove it
+printf %s "$OLD_AUTH_SALT" | wp mpcl secrets rekey --from-stdin --to=salt
+```
+
+A token saved before `MPCL_ENCRYPTION_KEY` was added keeps working: it is read with the salt until a
+`rekey` moves it. The last line recovers a token after `wp config shuffle-salts` on a site without the
+constant; the old material is `AUTH_KEY` followed by `AUTH_SALT` as they were before the shuffle, and is
+read from STDIN only.
 
 ## Bundled code
 

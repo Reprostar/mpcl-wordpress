@@ -2,7 +2,7 @@
 # Smoke test of the plugin on a throwaway WordPress in Docker.
 #
 # Usage: tests/smoke/run.sh <php version> [wordpress version] [scenario]
-#   scenario: fresh (default) or upgrade; upgrade needs LEGACY_PLUGIN=<path to an
+#   scenario: fresh (default), cli (the wp mpcl commands) or upgrade; upgrade needs LEGACY_PLUGIN=<path to an
 #   unpacked 1.x plugin directory> and installs it first, then replaces it with
 #   this checkout the way a WordPress update does.
 set -euo pipefail
