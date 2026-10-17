@@ -13,7 +13,9 @@ echo "== secrets"
 expect "the command group is registered" "$($W help mpcl)" "secrets"
 $W option patch update mpcl-options api_key k >/dev/null
 $W option patch update mpcl-options api_token t >/dev/null
-expect "a token saved by 1.x is encrypted with the salt on the first load" "$(status_of)" '"key_source":"salt","token":"ok"'
+expect "a token saved by 1.x is reported as plain text" "$(status_of)" '"key_source":"salt","token":"plaintext"'
+sync
+expect "after a load the token is encrypted with the salt" "$(status_of)" '"key_source":"salt","token":"ok"'
 expect "generate-key prints a 64-character hex key" "$($W mpcl secrets generate-key)" "^[0-9a-f]{64}$"
 expect_empty "generate-key without --write leaves wp-config.php alone" "$($W config has MPCL_ENCRYPTION_KEY 2>&1 && echo defined)"
 
@@ -96,6 +98,24 @@ expect "an unreadable token is reported" "$(out $W mpcl test-connection)" "canno
 $W option patch update mpcl-options api_token "$SAVED_TOKEN" >/dev/null
 $W option patch update mpcl-options api_key "" >/dev/null
 expect "missing credentials are reported" "$(out $W mpcl test-connection)" "Not configured.*exit=1"
+$W option patch update mpcl-options api_key k >/dev/null
+
+echo "== sync"
+$W db query "DELETE FROM wp_mpcl_machines"
+$W mpcl config set cache_autoupdate_enabled off >/dev/null
+api_mode ok
+expect "sync imports the collection regardless of the auto-update setting" "$(out $W mpcl sync)" "Success: Synchronised 120 machines in [0-9.,]+ s\. exit=0"
+expect "sync stores the machines" "$(rows)" "^120$"
+expect "sync records the success" "$($W eval 'echo time() - get_option("mpcl-options")["last_listing_cache"];')" "^[0-9]$|^[1-5][0-9]$"
+$W mpcl config set cache_autoupdate_enabled on >/dev/null
+api_mode error
+expect "a failing API exits non-zero with the reason" "$(out $W mpcl sync)" "Synchronisation failed: API error: API key not authorized exit=1"
+expect "a failing API keeps the machines" "$(rows)" "^120$"
+api_mode ok
+expect "sync --reset empties first and imports again" "$(out $W mpcl sync --reset)" "emptied.*Success: Synchronised 120 machines.*exit=0"
+expect "sync --reset leaves the full collection" "$(rows)" "^120$"
+$W option patch update mpcl-options api_key "" >/dev/null
+expect "sync without credentials is reported" "$(out $W mpcl sync)" "Not configured.*exit=1"
 $W option patch update mpcl-options api_key k >/dev/null
 
 finish

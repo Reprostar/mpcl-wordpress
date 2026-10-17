@@ -22,7 +22,7 @@ final class SyncScheduler
     public const HOOK = 'mpcl_sync';
     private const SCHEDULE = 'mpcl_every_five_minutes';
     private const CHECK_INTERVAL = 300;
-    private const ATTEMPT_OPTION = 'mpcl_sync_attempted_at';
+    public const ATTEMPT_OPTION = 'mpcl_sync_attempted_at';
 
     private Synchronizer $synchronizer;
     private SettingsRepository $settings;
@@ -78,20 +78,40 @@ final class SyncScheduler
      */
     public function run($force = false): void
     {
+        if ($this->isDue($this->settings->load(), (bool) $force)) {
+            $this->runNow();
+        }
+    }
+
+    /**
+     * Imports right away, whatever the interval, and records the attempt and a
+     * success the same way the scheduled run does.
+     */
+    public function runNow(): SyncResult
+    {
         $settings = $this->settings->load();
-        if (!$this->isDue($settings, (bool) $force)) {
-            return;
+        if (Settings::TOKEN_UNREADABLE === $settings->getApiTokenState()) {
+            return SyncResult::tokenUnreadable();
+        }
+        if ('' === $settings->apiKey || '' === $settings->apiToken) {
+            return SyncResult::notConfigured();
         }
 
         update_option(self::ATTEMPT_OPTION, time(), false);
 
-        if (null === $this->synchronizer->importAll()) {
-            return;
+        try {
+            $count = $this->synchronizer->import($settings->apiKey, $settings->apiToken);
+        } catch (\Throwable $e) {
+            error_log('mpcl: machine import failed: ' . $e->getMessage());
+
+            return SyncResult::failure($e->getMessage());
         }
 
         $settings = $this->settings->load();
         $settings->lastListingCache = time();
         $this->settings->save($settings);
+
+        return SyncResult::success($count);
     }
 
     private function isDue(Settings $settings, bool $force): bool

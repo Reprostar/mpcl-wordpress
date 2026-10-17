@@ -9,6 +9,7 @@ use Reprostar\MpclWordpress\Cli\CommandRegistrar;
 use Reprostar\MpclWordpress\Cli\ConfigCommand;
 use Reprostar\MpclWordpress\Cli\Console;
 use Reprostar\MpclWordpress\Cli\SecretsCommand;
+use Reprostar\MpclWordpress\Cli\SyncCommand;
 use Reprostar\MpclWordpress\Cli\TestConnectionCommand;
 use Reprostar\MpclWordpress\Database\Schema;
 use Reprostar\MpclWordpress\Formatting\BbCode;
@@ -105,6 +106,7 @@ final class Plugin
                 'secrets' => new SecretsCommand($settingsRepository, $secrets, $keys, $console),
                 'config' => new ConfigCommand($settingsRepository, $settingsInput, new CatalogPages(), $scheduler, $console),
                 'test-connection' => new TestConnectionCommand($settingsRepository, $connectionChecker, $console),
+                'sync' => new SyncCommand($scheduler, $machines, $console),
             ]))->register();
         }
     }
@@ -131,9 +133,6 @@ final class Plugin
 
     private function createScheduler(SettingsRepository $settingsRepository, MachineRepository $machines): SyncScheduler
     {
-        $settings = $settingsRepository->load();
-        $client = ApiClientFactory::fromEnvironment()->create($settings->apiKey, $settings->apiToken);
-
-        return new SyncScheduler(new Synchronizer($client, $machines), $settingsRepository);
+        return new SyncScheduler(new Synchronizer(ApiClientFactory::fromEnvironment(), $machines), $settingsRepository);
     }
 }

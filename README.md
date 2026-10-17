@@ -27,7 +27,8 @@ In Settings → MyPCList Integration:
 2. Choose the page that shows your catalogue.
 
 The collection is copied to your site and refreshed in the background by WP-Cron (every hour by default,
-configurable in the same settings). Sites with `DISABLE_WP_CRON` need a system cron calling `wp-cron.php`.
+configurable in the same settings). Sites with `DISABLE_WP_CRON` need a system cron calling `wp-cron.php`
+or `wp mpcl sync`.
 
 The API token is stored encrypted with a key derived from the site's security salts. To use a dedicated
 key instead, define `MPCL_ENCRYPTION_KEY` in `wp-config.php` (`wp mpcl secrets generate-key --write` does
@@ -65,6 +66,16 @@ wp mpcl test-connection
 Checks the saved key and token against mypclist.net and exits with status 1 when the plugin is not
 configured, the token cannot be decrypted, or the API rejects the credentials or cannot be reached, so it
 can run from monitoring.
+
+### Synchronisation
+
+```
+wp mpcl sync          # import now, whatever the interval; non-zero exit on failure
+wp mpcl sync --reset  # empty the local copy first, like "Clear cache"
+```
+
+On sites with `DISABLE_WP_CRON`, a system cron entry running `wp mpcl sync --quiet` can replace
+`wp-cron.php` for this plugin. A failing API keeps the current copy (except after `--reset`).
 
 ### Settings
 

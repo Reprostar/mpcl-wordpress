@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Reprostar\MpclWordpress\Machine;
 
 use Reprostar\MpclWordpress\Api\ApiClient;
+use Reprostar\MpclWordpress\Api\ApiClientFactory;
+use Reprostar\MpclWordpress\Api\ApiException;
 
 defined('ABSPATH') || exit;
 
@@ -15,12 +17,12 @@ final class Synchronizer
 {
     private const PAGE_SIZE = 50;
 
-    private ApiClient $client;
+    private ApiClientFactory $clients;
     private MachineRepository $machines;
 
-    public function __construct(ApiClient $client, MachineRepository $machines)
+    public function __construct(ApiClientFactory $clients, MachineRepository $machines)
     {
-        $this->client = $client;
+        $this->clients = $clients;
         $this->machines = $machines;
     }
 
@@ -29,43 +31,33 @@ final class Synchronizer
      * in one transaction, so a failing API keeps the previous copy and visitors
      * never see a half-imported catalogue.
      *
-     * @return int|null number of machines stored, null when the API failed
+     * @return int number of machines stored
+     * @throws ApiException
      */
-    public function importAll(): ?int
+    public function import(string $apiKey, string $apiToken): int
     {
-        $machines = $this->fetchAll();
-        if (null === $machines) {
-            return null;
-        }
+        $machines = $this->fetchAll($this->clients->create($apiKey, $apiToken));
 
         return $this->machines->replaceAll($machines, time());
     }
 
     /**
-     * @return list<Machine>|null
+     * @return list<Machine>
+     * @throws ApiException
      */
-    private function fetchAll(): ?array
+    private function fetchAll(ApiClient $client): array
     {
         $machines = [];
         $page = 0;
         $maxPages = 1;
 
         do {
-            try {
-                $set = $this->client->getMachinesPage(self::PAGE_SIZE, $page * self::PAGE_SIZE);
-            } catch (\Throwable $e) {
-                error_log('mpcl: machine import failed: ' . $e->getMessage());
-
-                return null;
-            }
+            $set = $client->getMachinesPage(self::PAGE_SIZE, $page * self::PAGE_SIZE);
 
             if (0 === $page) {
                 if ([] === $set->items && 0 < $set->total) {
-                    error_log('mpcl: machine import failed: the API reported machines but returned none');
-
-                    return null;
+                    throw new ApiException('the API reported machines but returned none');
                 }
-
                 $maxPages = (int) ceil($set->total / self::PAGE_SIZE) + 1;
             }
 
@@ -76,7 +68,6 @@ final class Synchronizer
             foreach ($set->items as $machine) {
                 $machines[] = $machine;
             }
-
             ++$page;
         } while ($set->total > count($machines) && $page < $maxPages);
 
