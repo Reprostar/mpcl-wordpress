@@ -1,27 +1,28 @@
 # Changelog
 
-## 2.1.0 (unreleased)
+## 2.1.0
 
-- WP-CLI commands for the encryption key: `wp mpcl secrets status`,
-  `generate-key [--write]` and `rekey`, to add or remove `MPCL_ENCRYPTION_KEY`
-  without re-entering the API token, and to recover the token after the salts
-  were shuffled (old salt read from STDIN).
-- `wp mpcl config list|get|set` reads and changes the settings with the same
-  validation as the settings page; the token is never printed.
-- `wp mpcl schedule enable [--interval=1h]|disable|status` controls the
-  automatic synchronisation.
-- `wp mpcl status` shows the connection, synchronisation and catalogue state
-  without calling the API.
-- `wp mpcl catalog create-page|set-page` creates or chooses the catalogue page.
-- `wp mpcl machines list|get` shows the synchronised machines.
-- `wp mpcl connect --key=<key> [--sync]` saves the API credentials from the
-  command line; the token is read from STDIN and checked before saving.
-- `wp mpcl disconnect [--purge]` removes the API credentials, and with
-  `--purge` the synchronised machines.
+WP-CLI commands to set up and run the plugin without wp-admin (`wp help mpcl`).
+No command prints the API token or key material.
+
+- `wp mpcl connect --key=<key> [--sync]` saves the API credentials; the token is
+  read from STDIN and checked before saving. `wp mpcl disconnect [--purge]`
+  removes them, and with `--purge` the synchronised machines.
 - `wp mpcl test-connection` checks the saved credentials and exits non-zero on
   failure, for use in monitoring.
 - `wp mpcl sync [--reset]` synchronises right away and reports the number of
   machines or the reason of a failure.
+- `wp mpcl schedule enable [--interval=1h]|disable|status` controls the
+  automatic synchronisation.
+- `wp mpcl status` shows the connection, synchronisation and catalogue state
+  without calling the API.
+- `wp mpcl config list|get|set` reads and changes the settings with the same
+  validation as the settings page.
+- `wp mpcl catalog create-page|set-page` creates or chooses the catalogue page.
+- `wp mpcl machines list|get` shows the synchronised machines.
+- `wp mpcl secrets status|generate-key [--write]|rekey` manage the encryption
+  key: add or remove `MPCL_ENCRYPTION_KEY` without re-entering the API token,
+  and recover the token after the salts were shuffled (old salt read from STDIN).
 - A token encrypted with the salt still reads after `MPCL_ENCRYPTION_KEY` is
   added. Saving the settings no longer re-encrypts an unchanged token, and keeps
   a token that cannot be decrypted so that it can still be recovered.
