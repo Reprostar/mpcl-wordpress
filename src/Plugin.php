@@ -7,6 +7,7 @@ namespace Reprostar\MpclWordpress;
 use Reprostar\MpclWordpress\Api\ApiClientFactory;
 use Reprostar\MpclWordpress\Cli\CommandRegistrar;
 use Reprostar\MpclWordpress\Cli\ConfigCommand;
+use Reprostar\MpclWordpress\Cli\ConnectCommand;
 use Reprostar\MpclWordpress\Cli\Console;
 use Reprostar\MpclWordpress\Cli\SecretsCommand;
 use Reprostar\MpclWordpress\Cli\SyncCommand;
@@ -102,11 +103,13 @@ final class Plugin
 
         if (defined('WP_CLI') && WP_CLI) {
             $console = new Console();
+            $syncCommand = new SyncCommand($scheduler, $machines, $console);
             (new CommandRegistrar([
                 'secrets' => new SecretsCommand($settingsRepository, $secrets, $keys, $console),
                 'config' => new ConfigCommand($settingsRepository, $settingsInput, new CatalogPages(), $scheduler, $console),
                 'test-connection' => new TestConnectionCommand($settingsRepository, $connectionChecker, $console),
-                'sync' => new SyncCommand($scheduler, $machines, $console),
+                'sync' => $syncCommand,
+                'connect' => new ConnectCommand($settingsRepository, $settingsInput, $connectionChecker, $scheduler, $syncCommand, $console),
             ]))->register();
         }
     }

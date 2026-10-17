@@ -8,6 +8,8 @@
   were shuffled (old salt read from STDIN).
 - `wp mpcl config list|get|set` reads and changes the settings with the same
   validation as the settings page; the token is never printed.
+- `wp mpcl connect --key=<key> [--sync]` saves the API credentials from the
+  command line; the token is read from STDIN and checked before saving.
 - `wp mpcl test-connection` checks the saved credentials and exits non-zero on
   failure, for use in monitoring.
 - `wp mpcl sync [--reset]` synchronises right away and reports the number of

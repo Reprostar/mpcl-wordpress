@@ -23,7 +23,8 @@ To work on the plugin, clone this repository into `wp-content/plugins/mpcl`.
 
 In Settings → MyPCList Integration:
 
-1. Enter the API key and token, then use **Test connection** to check them.
+1. Enter the API key and token, then use **Test connection** to check them (or use `wp mpcl connect`,
+   see below).
 2. Choose the page that shows your catalogue.
 
 The collection is copied to your site and refreshed in the background by WP-Cron (every hour by default,
@@ -60,8 +61,13 @@ Every command has `wp help mpcl <command>`. No command prints the API token or k
 ### Connection
 
 ```
+printf %s "$MPCL_TOKEN" | wp mpcl connect --key=<api key> --sync
 wp mpcl test-connection
 ```
+
+`connect` reads the token from STDIN only, so it never lands in the shell history or the process list,
+checks the credentials (`--skip-check` to save anyway) and stores the token encrypted. `--sync` imports the
+collection right away; otherwise a synchronisation is scheduled.
 
 Checks the saved key and token against mypclist.net and exits with status 1 when the plugin is not
 configured, the token cannot be decrypted, or the API rejects the credentials or cannot be reached, so it

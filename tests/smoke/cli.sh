@@ -118,4 +118,23 @@ $W option patch update mpcl-options api_key "" >/dev/null
 expect "sync without credentials is reported" "$(out $W mpcl sync)" "Not configured.*exit=1"
 $W option patch update mpcl-options api_key k >/dev/null
 
+echo "== connect"
+$W option update mpcl-options '{}' --format=json >/dev/null
+$W db query "DELETE FROM wp_mpcl_machines"
+api_mode ok
+expect "connect without a token on STDIN fails" "$(printf '' | out $W mpcl connect --key=k)" "No API token.*exit=1"
+expect "connect with a wrong token fails and saves nothing" "$(printf %s wrong | out $W mpcl connect --key=k)" "Connection failed: API error: API key not authorized\. Nothing was saved.*exit=1"
+expect_empty "nothing was saved" "$($W mpcl config get api_key)"
+OUT=$(printf %s t | out $W mpcl connect --key=k --sync)
+expect "connect --sync saves and synchronises" "$OUT" "saved.*Synchronised 120 machines.*exit=0"
+expect_not "connect never prints the token" "$OUT" "mpcl:v1:"
+expect "the machines are imported" "$(rows)" "^120$"
+expect "the token is stored encrypted" "$($W option pluck mpcl-options api_token)" "^mpcl:v1:"
+expect "the stored token works" "$(out $W mpcl test-connection)" "exit=0"
+$W cron event delete mpcl_sync --quiet >/dev/null 2>&1 || true
+expect "connect without --sync schedules a synchronisation" "$(printf %s t | out $W mpcl connect --key=k)" "scheduled.*exit=0"
+expect "the forced sync event exists" "$($W cron event list --hook=mpcl_sync --fields=args --format=csv)" "true"
+expect "connect --skip-check saves rejected credentials" "$(printf %s wrong | out $W mpcl connect --key=k --skip-check)" "saved.*exit=0"
+printf %s t | $W mpcl connect --key=k >/dev/null 2>&1
+
 finish
