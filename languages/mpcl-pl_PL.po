@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MyPClist WP\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/mpcl\n"
-"POT-Creation-Date: 2026-10-17T14:12:13+00:00\n"
+"POT-Creation-Date: 2026-10-18T12:09:54+00:00\n"
 "PO-Revision-Date: 2016-12-04 23:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: MyPClist\n"
@@ -24,7 +24,7 @@ msgstr ""
 
 #. Plugin URI of the plugin
 #: mpcl.php
-msgid "https://github.com/Reprostar/mpcl-wordpress"
+msgid "https://github.com/reprostar/mpcl-wordpress"
 msgstr ""
 
 #. Description of the plugin
@@ -34,7 +34,7 @@ msgstr ""
 
 #. Author of the plugin
 #: mpcl.php
-msgid "pfcode"
+msgid "Reprostar"
 msgstr ""
 
 #. Author URI of the plugin
@@ -212,60 +212,62 @@ msgstr ""
 msgid "--interval must be at least 5 minutes: WP-Cron checks every five minutes."
 msgstr ""
 
-#: src/Cli/SecretsCommand.php:72
+#: src/Cli/SecretsCommand.php:74
 msgid "MPCL_ENCRYPTION_KEY is already defined. Use \"wp mpcl secrets rekey\" to switch between keys."
 msgstr ""
 
-#: src/Cli/SecretsCommand.php:78
-msgid "Could not write MPCL_ENCRYPTION_KEY into wp-config.php. Nothing was changed."
+#. translators: %s: reason reported while changing wp-config.php.
+#: src/Cli/SecretsCommand.php:83
+#, php-format
+msgid "Could not write MPCL_ENCRYPTION_KEY into wp-config.php: %s. Nothing was changed."
 msgstr ""
 
-#: src/Cli/SecretsCommand.php:85
+#: src/Cli/SecretsCommand.php:90
 msgid "MPCL_ENCRYPTION_KEY was written into wp-config.php and the API token is encrypted with it."
 msgstr ""
 
-#: src/Cli/SecretsCommand.php:139
+#: src/Cli/SecretsCommand.php:144
 msgid "Pass --from=<salt|constant> or --from-stdin."
 msgstr ""
 
-#: src/Cli/SecretsCommand.php:142
+#: src/Cli/SecretsCommand.php:147
 msgid "--from and --to are the same key."
 msgstr ""
 
-#: src/Cli/SecretsCommand.php:147
+#: src/Cli/SecretsCommand.php:152
 msgid "MPCL_ENCRYPTION_KEY is not defined. Add it to wp-config.php first, or use \"wp mpcl secrets generate-key --write\"."
 msgstr ""
 
-#: src/Cli/SecretsCommand.php:152
+#: src/Cli/SecretsCommand.php:157
 msgid "MPCL_ENCRYPTION_KEY is not defined, so the token cannot be encrypted with it."
 msgstr ""
 
-#: src/Cli/SecretsCommand.php:157
+#: src/Cli/SecretsCommand.php:162
 msgid "No API token is stored; nothing to re-encrypt."
 msgstr ""
 
-#: src/Cli/SecretsCommand.php:165
+#: src/Cli/SecretsCommand.php:170
 msgid "The re-encrypted token could not be read back."
 msgstr ""
 
-#: src/Cli/SecretsCommand.php:168
+#: src/Cli/SecretsCommand.php:173
 msgid "The API token was re-encrypted."
 msgstr ""
 
-#: src/Cli/SecretsCommand.php:170
+#: src/Cli/SecretsCommand.php:175
 msgid "You can now remove MPCL_ENCRYPTION_KEY from wp-config.php."
 msgstr ""
 
-#: src/Cli/SecretsCommand.php:239
+#: src/Cli/SecretsCommand.php:244
 msgid "The stored API token cannot be decrypted with this key. Nothing was changed."
 msgstr ""
 
-#: src/Cli/SecretsCommand.php:255
+#: src/Cli/SecretsCommand.php:260
 #, php-format
 msgid "Pipe the old key material to STDIN, e.g. printf %s \"$OLD_SALT\" | wp mpcl secrets rekey --from-stdin --to=salt"
 msgstr ""
 
-#: src/Cli/SecretsCommand.php:260
+#: src/Cli/SecretsCommand.php:265
 msgid "STDIN is empty."
 msgstr ""
 
