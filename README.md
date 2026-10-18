@@ -13,7 +13,7 @@ Version 1.2.2 is the last release for older sites (declared for WordPress 4.4 on
 ## Installation
 
 Download `mpcl-wordpress-<version>.zip` from the
-[releases](https://github.com/Reprostar/mpcl-wordpress/releases) and upload it in
+[releases](https://github.com/reprostar/mpcl-wordpress/releases) and upload it in
 Plugins → Add New → Upload Plugin, or extract it into `wp-content/plugins/`. The package has no external
 dependencies.
 

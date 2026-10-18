@@ -2,12 +2,12 @@
 
 /*
 Plugin Name: MyPCList for WordPress
-Plugin URI: https://github.com/Reprostar/mpcl-wordpress
+Plugin URI: https://github.com/reprostar/mpcl-wordpress
 Description: Official MyPCList integration plugin. Show your machine collection on your own blog!
 Version: 2.1.0
 Requires at least: 6.9
 Requires PHP: 7.4
-Author: pfcode
+Author: Reprostar
 Author URI: https://mypclist.net
 Text Domain: mpcl
 Domain Path: /languages
