@@ -19,9 +19,12 @@ expect "after a load the token is encrypted with the salt" "$(status_of)" '"key_
 expect "generate-key prints a 64-character hex key" "$($W mpcl secrets generate-key)" "^[0-9a-f]{64}$"
 expect_empty "generate-key without --write leaves wp-config.php alone" "$($W config has MPCL_ENCRYPTION_KEY 2>&1 && echo defined)"
 
+sed -i "/That's all, stop editing/d" wp-config.php
+expect_empty "wp-config.php has no standard anchor (as in many Docker images)" "$(grep "That's all, stop editing" wp-config.php)"
 OUT=$($W mpcl secrets generate-key --write 2>&1)
 expect "generate-key --write succeeds" "$OUT" "Success:"
 KEY=$($W config get MPCL_ENCRYPTION_KEY)
+expect "the constant is placed before wp-settings.php is loaded" "$(grep -n "MPCL_ENCRYPTION_KEY\|wp-settings.php" wp-config.php | cut -d: -f1 | tr '\n' ' ')" "^([0-9]+) ([0-9]+) $"
 expect "the key is written into wp-config.php" "$KEY" "^[0-9a-f]{64}$"
 expect_not "generate-key --write does not print the key" "$OUT" "$KEY"
 expect "the token is encrypted with the new constant" "$(status_of)" '"key_source":"constant","token":"ok"'
@@ -37,7 +40,7 @@ expect "the fallback token authenticates the sync" "$(api_calls)" "^3$"
 $W config delete MPCL_ENCRYPTION_KEY --quiet
 expect "after removing the constant the salt is used" "$(status_of)" '"key_source":"salt","token":"ok"'
 
-$W config set MPCL_ENCRYPTION_KEY "manual key" --type=constant --quiet
+$W config set MPCL_ENCRYPTION_KEY "manual key" --type=constant --anchor="require_once ABSPATH . 'wp-settings.php';" --quiet
 expect "adding the constant by hand keeps the token readable" "$(status_of)" '"key_source":"constant","token":"ok-salt-fallback"'
 expect "rekey from the salt to the constant" "$($W mpcl secrets rekey --from=salt --to=constant 2>&1)" "Success:"
 expect "the token now uses the constant" "$(status_of)" '"token":"ok"'

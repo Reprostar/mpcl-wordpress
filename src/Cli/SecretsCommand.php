@@ -27,13 +27,15 @@ final class SecretsCommand
     private SettingsRepository $settings;
     private Secrets $secrets;
     private KeyMaterial $keys;
+    private WpConfigFile $wpConfig;
     private Console $console;
 
-    public function __construct(SettingsRepository $settings, Secrets $secrets, KeyMaterial $keys, Console $console)
+    public function __construct(SettingsRepository $settings, Secrets $secrets, KeyMaterial $keys, WpConfigFile $wpConfig, Console $console)
     {
         $this->settings = $settings;
         $this->secrets = $secrets;
         $this->keys = $keys;
+        $this->wpConfig = $wpConfig;
         $this->console = $console;
     }
 
@@ -74,8 +76,11 @@ final class SecretsCommand
 
         $token = $this->readStoredToken($this->secrets);
 
-        if (!$this->console->run('config set MPCL_ENCRYPTION_KEY ' . $key . ' --type=constant --quiet')) {
-            $this->console->fail(__('Could not write MPCL_ENCRYPTION_KEY into wp-config.php. Nothing was changed.', 'mpcl'));
+        try {
+            $this->wpConfig->defineConstant('MPCL_ENCRYPTION_KEY', $key);
+        } catch (\RuntimeException $e) {
+            /* translators: %s: reason reported while changing wp-config.php. */
+            $this->console->fail(sprintf(__('Could not write MPCL_ENCRYPTION_KEY into wp-config.php: %s. Nothing was changed.', 'mpcl'), $e->getMessage()));
         }
 
         if (null !== $token) {

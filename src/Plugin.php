@@ -17,6 +17,7 @@ use Reprostar\MpclWordpress\Cli\SecretsCommand;
 use Reprostar\MpclWordpress\Cli\StatusCommand;
 use Reprostar\MpclWordpress\Cli\SyncCommand;
 use Reprostar\MpclWordpress\Cli\TestConnectionCommand;
+use Reprostar\MpclWordpress\Cli\WpConfigFile;
 use Reprostar\MpclWordpress\Database\Schema;
 use Reprostar\MpclWordpress\Formatting\BbCode;
 use Reprostar\MpclWordpress\Machine\MachineRepository;
@@ -114,7 +115,7 @@ final class Plugin
             $syncCommand = new SyncCommand($scheduler, $machines, $console);
             $statusReporter = new StatusReporter($settingsRepository, $machines, $schema, $catalogPages, MPCL_VERSION);
             (new CommandRegistrar([
-                'secrets' => new SecretsCommand($settingsRepository, $secrets, $keys, $console),
+                'secrets' => new SecretsCommand($settingsRepository, $secrets, $keys, new WpConfigFile(), $console),
                 'config' => new ConfigCommand($settingsRepository, $settingsInput, $catalogPages, $scheduler, $console),
                 'test-connection' => new TestConnectionCommand($settingsRepository, $connectionChecker, $console),
                 'sync' => $syncCommand,

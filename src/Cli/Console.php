@@ -98,21 +98,4 @@ final class Console
 
         return rtrim(false === $input ? '' : $input, "\r\n");
     }
-
-    /**
-     * Runs another WP-CLI command in this process, so its arguments never appear
-     * in the process list. The caller passes only values that need no quoting.
-     *
-     * @return bool whether the command succeeded
-     */
-    public function run(string $command): bool
-    {
-        $result = WP_CLI::runcommand($command, [
-            'launch' => false,
-            'exit_error' => false,
-            'return' => 'all',
-        ]);
-
-        return is_object($result) && isset($result->return_code) && 0 === $result->return_code;
-    }
 }
