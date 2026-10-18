@@ -147,8 +147,8 @@ ST=$($W mpcl status --format=json)
 expect "status reports the version and schema" "$ST" '"plugin_version":"[0-9.]+","schema_version":3,"schema_current":true'
 expect "status reports the credentials" "$ST" '"api_key":"set","api_token":"set"'
 expect "status counts the machines" "$ST" '"machines":120'
-expect "status shows the last sync" "$ST" '"last_sync":"20[0-9-]+T[0-9:]+Z \(.* ago\)"'
-expect "status shows the next scheduled check" "$ST" '"next_check":"20[0-9-]+T[0-9:]+Z \(.* (ago|from now)\)"'
+expect "status shows the last sync" "$ST" '"last_sync":"20[0-9-]+T[0-9:]+Z \([0-9]+ (s|min) ago\)"'
+expect "status shows the next scheduled check" "$ST" '"next_check":"20[0-9-]+T[0-9:]+Z \(([0-9]+ (s|min|h|d) ago|in [0-9]+ (s|min|h|d))\)"'
 expect "status reports a missing catalogue page as not set" "$ST" '"catalog_page_id":0,"catalog_page":"not set"'
 expect_not "status never shows the token" "$ST" "mpcl:v1:"
 CAT=$($W post create --post_type=page --post_status=publish --post_title=Katalog --porcelain)

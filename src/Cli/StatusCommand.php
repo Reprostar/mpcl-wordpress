@@ -67,7 +67,9 @@ final class StatusCommand
     }
 
     /**
-     * ISO 8601 with the distance from now, or "never".
+     * ISO 8601 with the distance from now, or "never". Untranslated, like the
+     * other values here: WordPress' own Polish strings render "in 2 minutes"
+     * as "2 minuty temu" (ago).
      */
     private function time(int $timestamp): string
     {
@@ -75,12 +77,17 @@ final class StatusCommand
             return 'never';
         }
 
-        $relative = $timestamp <= time()
-            /* translators: %s: human-readable time difference, e.g. "5 mins". */
-            ? sprintf(__('%s ago', 'mpcl'), human_time_diff($timestamp))
-            /* translators: %s: human-readable time difference, e.g. "5 mins". */
-            : sprintf(__('in %s', 'mpcl'), human_time_diff($timestamp));
+        $seconds = abs(time() - $timestamp);
+        if ($seconds < 60) {
+            $distance = $seconds . ' s';
+        } elseif ($seconds < 3600) {
+            $distance = intdiv($seconds, 60) . ' min';
+        } elseif ($seconds < 86400) {
+            $distance = intdiv($seconds, 3600) . ' h';
+        } else {
+            $distance = intdiv($seconds, 86400) . ' d';
+        }
 
-        return gmdate('Y-m-d\TH:i:s\Z', $timestamp) . ' (' . $relative . ')';
+        return gmdate('Y-m-d\TH:i:s\Z', $timestamp) . ' (' . ($timestamp <= time() ? $distance . ' ago' : 'in ' . $distance) . ')';
     }
 }

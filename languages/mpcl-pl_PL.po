@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MyPClist WP\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/mpcl\n"
-"POT-Creation-Date: 2026-10-18T12:09:54+00:00\n"
+"POT-Creation-Date: 2026-10-18T12:24:16+00:00\n"
 "PO-Revision-Date: 2016-12-04 23:23+0100\n"
 "Last-Translator: \n"
 "Language-Team: MyPClist\n"
@@ -269,18 +269,6 @@ msgstr ""
 
 #: src/Cli/SecretsCommand.php:265
 msgid "STDIN is empty."
-msgstr ""
-
-#. translators: %s: human-readable time difference, e.g. "5 mins".
-#: src/Cli/StatusCommand.php:80
-#, php-format
-msgid "%s ago"
-msgstr ""
-
-#. translators: %s: human-readable time difference, e.g. "5 mins".
-#: src/Cli/StatusCommand.php:82
-#, php-format
-msgid "in %s"
 msgstr ""
 
 #: src/Cli/SyncCommand.php:50
