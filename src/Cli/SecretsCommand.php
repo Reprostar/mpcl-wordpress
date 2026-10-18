@@ -208,7 +208,7 @@ final class SecretsCommand
         ]);
     }
 
-    public function tokenState(): string
+    private function tokenState(): string
     {
         $stored = $this->settings->loadStoredToken();
         if ('' === $stored) {

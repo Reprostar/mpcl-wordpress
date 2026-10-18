@@ -165,7 +165,7 @@ final class ConfigCommand
     /**
      * @return array<string, scalar>
      */
-    public function values(Settings $settings): array
+    private function values(Settings $settings): array
     {
         return [
             'api_key' => $settings->apiKey,

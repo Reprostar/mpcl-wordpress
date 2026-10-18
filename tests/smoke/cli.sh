@@ -11,6 +11,8 @@ out() { local o rc; o=$("$@" 2>&1); rc=$?; printf '%s exit=%s' "$o" "$rc" | tr '
 
 echo "== secrets"
 expect "the command group is registered" "$($W help mpcl)" "secrets"
+expect "command help is rendered" "$($W help mpcl status)" "Shows the connection, synchronisation and catalogue state"
+expect_not "helper methods are not exposed as commands" "$($W mpcl secrets 2>&1; $W mpcl config 2>&1)" "wp mpcl (secrets tokenState|config values)"
 $W option patch update mpcl-options api_key k >/dev/null
 $W option patch update mpcl-options api_token t >/dev/null
 expect "a token saved by 1.x is reported as plain text" "$(status_of)" '"key_source":"salt","token":"plaintext"'
@@ -146,7 +148,7 @@ expect "status reports the version and schema" "$ST" '"plugin_version":"[0-9.]+"
 expect "status reports the credentials" "$ST" '"api_key":"set","api_token":"set"'
 expect "status counts the machines" "$ST" '"machines":120'
 expect "status shows the last sync" "$ST" '"last_sync":"20[0-9-]+T[0-9:]+Z \(.* ago\)"'
-expect "status shows the next scheduled check" "$ST" '"next_check":"20[0-9-]+T'
+expect "status shows the next scheduled check" "$ST" '"next_check":"20[0-9-]+T[0-9:]+Z \(.* (ago|from now)\)"'
 expect "status reports a missing catalogue page as not set" "$ST" '"catalog_page_id":0,"catalog_page":"not set"'
 expect_not "status never shows the token" "$ST" "mpcl:v1:"
 CAT=$($W post create --post_type=page --post_status=publish --post_title=Katalog --porcelain)
