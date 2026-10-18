@@ -54,6 +54,12 @@ Embed one machine in any post or page:
 
 where `15` is the machine's ID on MyPCList.
 
+## Privacy
+
+The plugin sets no cookies and does no tracking; the machine photos it embeds come from mypclist.net
+without cookies. It declares compliance with the [WP Consent API](https://wordpress.org/plugins/wp-consent-api/),
+so Site Health no longer lists it among the plugins that do not.
+
 ## WP-CLI
 
 Every command has `wp help mpcl <command>`. No command prints the API token or key material.

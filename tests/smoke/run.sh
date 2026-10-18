@@ -24,6 +24,12 @@ if [ ! -f "$WP_DIR/wordpress/wp-includes/version.php" ]; then
     mkdir -p "$WP_DIR" && tar -xzf "$TARBALL" -C "$WP_DIR"
 fi
 
+CONSENT_API_VERSION=2.1.0
+if [ ! -f "$CACHE/wp-consent-api-$CONSENT_API_VERSION/wp-consent-api/wp-consent-api.php" ]; then
+    curl -sSfL -o "$CACHE/wp-consent-api-$CONSENT_API_VERSION.zip" "https://downloads.wordpress.org/plugin/wp-consent-api.$CONSENT_API_VERSION.zip"
+    mkdir -p "$CACHE/wp-consent-api-$CONSENT_API_VERSION" && unzip -qo "$CACHE/wp-consent-api-$CONSENT_API_VERSION.zip" -d "$CACHE/wp-consent-api-$CONSENT_API_VERSION"
+fi
+
 PLUGIN_DIR="$CACHE/plugin-$$/mpcl"
 mkdir -p "$PLUGIN_DIR"
 cp -R "$ROOT"/{src,css,img,js,languages,licenses,templates,mpcl.php,uninstall.php} "$PLUGIN_DIR/"
@@ -57,4 +63,5 @@ docker run --rm --name "$NAME-cli" --network "$NAME" -u root \
     -v "$ROOT/tests/smoke:/smoke:ro" \
     ${LEGACY_MOUNT[@]+"${LEGACY_MOUNT[@]}"} \
     -e DB_HOST="$NAME-db" \
+    -e CONSENT_API_DIR="/smoke/.cache/wp-consent-api-$CONSENT_API_VERSION/wp-consent-api" \
     "wordpress:cli-php$PHP_VERSION" bash "/smoke/$SCENARIO.sh"

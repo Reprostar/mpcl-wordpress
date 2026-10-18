@@ -10,6 +10,17 @@ expect "machines table is utf8mb4" "$($W db query "SELECT TABLE_COLLATION FROM i
 expect_empty "no legacy options table" "$($W db query "SHOW TABLES LIKE 'wp_mpcl_options'" --skip-column-names)"
 expect "recurring sync event scheduled" "$($W cron event list --hook=mpcl_sync --fields=recurrence --format=csv)" "5 minutes"
 
+echo "== consent api"
+expect "the plugin declares Consent API compliance" "$($W eval 'var_dump(apply_filters("wp_consent_api_registered_mpcl/mpcl.php", false));')" "bool\(true\)"
+cp -r "$CONSENT_API_DIR" wp-content/plugins/ && $W plugin activate wp-consent-api hello --quiet
+CONSENT_TEST='require_once ABSPATH . "wp-admin/includes/class-wp-site-health.php"; $tests = apply_filters("site_status_tests", ["direct" => [], "async" => []]); $result = call_user_func($tests["direct"]["wp-consent-api"]["test"]); echo $result["status"], " | ", wp_strip_all_tags(str_replace("<p>", " ", $result["actions"]));'
+CONSENT=$($W --exec='define("WP_ADMIN", true);' eval "$CONSENT_TEST")
+expect "Site Health (WP Consent API) flags a plugin without the declaration" "$CONSENT" "^recommended \|.* hello\.php"
+expect_not "Site Health (WP Consent API) does not list mpcl" "$CONSENT" "mpcl"
+$W plugin deactivate hello --quiet
+expect "with only declaring plugins the Consent API check passes" "$($W --exec='define("WP_ADMIN", true);' eval "$CONSENT_TEST")" "^good \| *$"
+$W plugin deactivate wp-consent-api --quiet
+
 echo "== sync"
 $W option patch update mpcl-options api_key k >/dev/null
 $W option patch update mpcl-options api_token t >/dev/null

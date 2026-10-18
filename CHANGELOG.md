@@ -23,6 +23,8 @@ No command prints the API token or key material.
 - `wp mpcl secrets status|generate-key [--write]|rekey` manage the encryption
   key: add or remove `MPCL_ENCRYPTION_KEY` without re-entering the API token,
   and recover the token after the salts were shuffled (old salt read from STDIN).
+- Declares compliance with the WP Consent API, so Site Health no longer lists
+  the plugin as not compliant. The plugin sets no cookies.
 - The plugin's author is now Reprostar, and its address points to the
   lowercase GitHub organisation (github.com/reprostar/mpcl-wordpress).
 - A token encrypted with the salt still reads after `MPCL_ENCRYPTION_KEY` is

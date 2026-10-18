@@ -23,6 +23,7 @@ use Reprostar\MpclWordpress\Formatting\BbCode;
 use Reprostar\MpclWordpress\Machine\MachineRepository;
 use Reprostar\MpclWordpress\Machine\SyncScheduler;
 use Reprostar\MpclWordpress\Machine\Synchronizer;
+use Reprostar\MpclWordpress\Privacy\ConsentApi;
 use Reprostar\MpclWordpress\Settings\SettingsPage;
 use Reprostar\MpclWordpress\Security\KeyMaterial;
 use Reprostar\MpclWordpress\Security\Secrets;
@@ -83,6 +84,8 @@ final class Plugin
         add_action('init', static function () use ($languagesPath): void {
             load_plugin_textdomain('mpcl', false, $languagesPath);
         });
+
+        (new ConsentApi($this->file))->register();
 
         $assets = new Assets($baseUrl, MPCL_VERSION);
         $assets->register();
